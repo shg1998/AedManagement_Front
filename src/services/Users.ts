@@ -10,26 +10,38 @@ import {AdminType} from "../containers/Admins/NewAdmin";
 
 class Users extends Api {
     urls = {
-        objects: "Admin/GetAll",
-        add: "Admin/Create",
+        objects: "User/get-all-users",
+        add: "User/create-user",
         systemReset: "user/v1/system_reset_password/",
         sendCode: "user/v1/send_validation_code",
         personalInfo: "user/v1/personal_info/",
         batchDeleteUser: "user/v1/batch_delete/",
         userDetails: "Admin/GetEdit",
-        userEdit: "Admin/Edit",
+        userEdit: "User/edit-user",
         userChangeIsActive: "Admin/ChangeIsActive",
     };
-    getUsers = async (limit?: number, skip?: number): Promise<any> => {
+    getUsers = async (limit?: number, skip?: number, filter?: string): Promise<any> => {
         try {
-            const result = await this.getData(
-                this.urls.objects,
-                {},
-                // `limit=${limit}&skip=${skip}`
-            );
-            return result.data;
+            let queryParams = `top=${limit}&skip=${skip}`;
+            if (filter) {
+                queryParams += `&filter=${filter}`;
+            }
+            const result = await this.getData(this.urls.objects + "?" + queryParams, {});
+            if (!result)
+                return {
+                    data: []
+                }
+            let pagination = JSON.parse(result.headers.pagination);
+            return {
+                data: result.data,
+                totalPages: pagination.totalPages,
+                itemsPerPage: pagination.itemsPerPage,
+                totalItems: pagination.totalItems,
+                currentPage: pagination.currentPage,
+            };
         } catch (e) {
-            return Promise.reject(e);
+            console.log(e)
+            return Promise.reject(e)
         }
     };
 
@@ -98,7 +110,7 @@ class Users extends Api {
                 fullName : data.fullName,
                 userName: data.userName,
                 id: data.id,
-                mobile: data.mobile
+                email: data.email
             }
             const result = await this.putJsonData(
                 `/${this.urls.userEdit}`,

@@ -1,10 +1,10 @@
 import Container from "@mui/material/Container";
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
-import {useStyles} from "../../assets/scss/timeFilterStyle";
+import React, {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import {Checkbox, IconButton, InputAdornment, InputLabel} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import clsx from "clsx";
+import {useStyles} from "../../assets/scss/timeFilterStyle";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useFormik} from "formik";
 import * as Yup from "yup";
@@ -14,31 +14,9 @@ import Users from "../../services/Users";
 import {tError, tSuccess, tWarn} from "../../utils/toast";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {MessageTypes} from "../../utils/messageTypes";
+import { styled } from "@mui/material/styles";
+import {AdminType, NewAdminHandle, NewUserProps} from "../Admins/NewAdmin";
 
-export const DEFAULT_USER_INFORMATION: AdminType = {
-    id: 0,
-    userName: "",
-    fullName: "",
-    email: "",
-    password: "",
-    passwordConfirm: "",
-    isActive: true
-};
-
-export type AdminType = {
-    id: number;
-    userName: string;
-    fullName: string;
-    email: string;
-    password: string;
-    passwordConfirm: string;
-    isActive: boolean;
-};
-
-export interface NewUserProps {
-    data: AdminType;
-    closeModal: () => void;
-}
 
 const AddAdminSchema = Yup.object().shape({
     userName: Yup.string().required("⛔ Username is required!"),
@@ -70,45 +48,52 @@ const EditAdminSchema = Yup.object().shape({
         .required("⛔ Email address is required"),
 });
 
-export interface NewAdminHandle {
-    sendRequest: () => void;
-}
 
-const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, ref) => {
-    const {postNewUserForm, editUserForm} = new Users();
+const StyledTextField = styled(TextField)(({ theme }) => ({
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(4),
+    width: "100%",
+
+    "& input": {
+        fontSize: "18px",
+        paddingRight: theme.spacing(1),
+        height: "25px",
+        direction: "ltr",
+        textAlign: "left",
+        borderRadius: "100px",
+    },
+}));
+
+const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, ref) => {
     const classes = useStyles();
     const submitBtnRef = useRef<any>();
+    const {postNewUserForm, editUserForm} = new Users();
     const [isVisiblePassword, setIsVisiblePassword] = useState(false);
     const [isVisibleConfirmPassword, setIsVisibleConfirmPassword] = useState(false);
 
     const {mutate: addUser} = useMutation(postNewUserForm, {
         onSuccess: async (data) => {
-            if (data?.messageType === "success") {
+            if (data?.isSuccess) {
                 closeModal();
-                tSuccess(data?.message);
+                tSuccess(data?.data);
             }
         },
         onError: async (error: any) => {
-            console.log(error);
             closeModal();
-            tError(error.response.data.message);
+            tError(error.response.data.Message);
         },
     });
 
     const {mutate: editUser} = useMutation(editUserForm, {
         onSuccess: async (data) => {
-            if (data?.messageType === MessageTypes[MessageTypes.success].toString()) {
+            if (data?.isSuccess) {
                 closeModal();
                 tSuccess(data?.message);
-            } else if (data?.messageType === MessageTypes[MessageTypes.warning].toString()) {
-                closeModal();
-                tWarn(data?.message);
             }
         },
         onError: async (error: any) => {
-            console.log(error);
             closeModal();
-            tError(error.response.data.message);
+            tError(error.response.data.Message);
         },
     });
 
@@ -120,8 +105,6 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
             if (values.id === 0) {
                 // @ts-ignore
                 delete values.id;
-                // @ts-ignore
-                delete values.isActive;
                 addUser(values);
             } else
                 editUser(values);
@@ -156,10 +139,10 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
                 <form className={classes.formContainer} onSubmit={formik.handleSubmit}>
                     <InputLabel htmlFor="userName">
                         <Typography className={classes.inputLabel}>
-                            نام کاربری
+                            Username
                         </Typography>
                     </InputLabel>
-                    <TextField
+                    <StyledTextField
                         disabled={data.id !== 0}
                         margin="normal"
                         fullWidth
@@ -169,16 +152,6 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
                             mb: 3,
                         }}
                         {...formik.getFieldProps("userName")}
-                        inputProps={{
-                            sx: {
-                                borderRadius: "10px",
-                                fontSize: "18px",
-                                paddingRight: 1,
-                                height: "25px",
-                                direction: "ltr",
-                                textAlign: "right",
-                            },
-                        }}
                         className={clsx({
                             [classes.errorBorder]:
                             formik.errors.userName && formik.touched.userName,
@@ -193,10 +166,10 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
 
                     <InputLabel htmlFor="fullName">
                         <Typography className={classes.inputLabel}>
-                            نام و نام خانوادگی
+                            FullName
                         </Typography>
                     </InputLabel>
-                    <TextField
+                    <StyledTextField
                         margin="normal"
                         fullWidth
                         id="fullName"
@@ -205,16 +178,6 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
                             mb: 3,
                         }}
                         {...formik.getFieldProps("fullName")}
-                        inputProps={{
-                            sx: {
-                                borderRadius: "10px",
-                                fontSize: "18px",
-                                paddingRight: 1,
-                                height: "25px",
-                                direction: "ltr",
-                                textAlign: "right",
-                            },
-                        }}
                         className={clsx({
                             [classes.errorBorder]:
                             formik.errors.fullName && formik.touched.fullName,
@@ -228,10 +191,10 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
 
                     <InputLabel htmlFor="email">
                         <Typography className={classes.inputLabel}>
-                            شماره همراه
+                            Email Address
                         </Typography>
                     </InputLabel>
-                    <TextField
+                    <StyledTextField
                         margin="normal"
                         fullWidth
                         id="email"
@@ -240,16 +203,6 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
                             mb: 3,
                         }}
                         {...formik.getFieldProps("email")}
-                        inputProps={{
-                            sx: {
-                                borderRadius: "10px",
-                                fontSize: "18px",
-                                paddingRight: 1,
-                                height: "25px",
-                                direction: "ltr",
-                                textAlign: "right",
-                            },
-                        }}
                         className={clsx({
                             [classes.errorBorder]:
                             formik.errors.email && formik.touched.email,
@@ -263,10 +216,10 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
 
                     <InputLabel htmlFor="password">
                         <Typography className={classes.inputLabel}>
-                            رمز عبور
+                            Password
                         </Typography>
                     </InputLabel>
-                    <TextField
+                    <StyledTextField
                         margin="normal"
                         fullWidth
                         type={isVisiblePassword ? "text" : "password"}
@@ -274,16 +227,6 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
                         autoComplete="current-password"
                         sx={{mb: 4, mt: 2}}
                         {...formik.getFieldProps("password")}
-                        inputProps={{
-                            sx: {
-                                fontSize: "18px",
-                                paddingRight: 1,
-                                height: "25px",
-                                direction: "ltr",
-                                textAlign: "right",
-                                borderRadius: '100px'
-                            },
-                        }}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end" sx={{marginRight: "12px"}}>
@@ -317,10 +260,10 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
 
                     <InputLabel htmlFor="passwordConfirm">
                         <Typography className={classes.inputLabel}>
-                            ورود مجدد رمز عبور
+                            Confirm Password
                         </Typography>
                     </InputLabel>
-                    <TextField
+                    <StyledTextField
                         margin="normal"
                         fullWidth
                         type={isVisibleConfirmPassword ? "text" : "password"}
@@ -328,16 +271,6 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
                         autoComplete="current-passwordConfirm"
                         sx={{mb: 4, mt: 2}}
                         {...formik.getFieldProps("passwordConfirm")}
-                        inputProps={{
-                            sx: {
-                                fontSize: "18px",
-                                paddingRight: 1,
-                                height: "25px",
-                                direction: "ltr",
-                                textAlign: "right",
-                                borderRadius: '100px'
-                            },
-                        }}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end" sx={{marginRight: "12px"}}>
@@ -368,27 +301,24 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
                         </Typography>
                     ) : null}
 
-                    {
-                    data.id !== 0 && (
-                        <FormControlLabel
-                            className={classes.rememberContainer}
-                            control={
-                                <Checkbox
-                                    color="primary"
-                                    name="isActive"
-                                    value={formik.values.isActive}
-                                    checked={formik.values.isActive}
-                                    onChange={handleIsActiveChanged}
-                                />
-                            }
-                            label={
-                                <Typography className={classes.fontCustum}>
-                                    فعال؟
-                                </Typography>
-                            }
-                        />
-                    )
-                }
+
+                    <FormControlLabel
+                        className={classes.rememberContainer}
+                        control={
+                            <Checkbox
+                                color="primary"
+                                name="isActive"
+                                value={formik.values.isActive}
+                                checked={formik.values.isActive}
+                                onChange={handleIsActiveChanged}
+                            />
+                        }
+                        label={
+                            <Typography className={classes.fontCustum}>
+                                Is Active?
+                            </Typography>
+                        }
+                    />
 
                     <Button
                         ref={submitBtnRef}
@@ -401,4 +331,4 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
         </div>
     );
 });
-export default NewAdmin;
+export default NewUser;

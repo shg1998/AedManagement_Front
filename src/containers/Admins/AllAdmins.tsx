@@ -82,7 +82,7 @@ const AllAdmins = () => {
                 fullName: finalData?.fullName,
                 userName: finalData?.userName,
                 isActive: finalData?.isActive,
-                mobile: finalData?.mobile,
+                email: finalData?.email,
                 password: "",
                 passwordConfirm: ""
             }

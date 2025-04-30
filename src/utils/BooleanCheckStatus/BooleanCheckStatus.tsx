@@ -26,7 +26,7 @@ const BooleanCheckStatus: React.FC<checkStatusPropTypes> = ({ status }) => {
                             width: "25px",
                         }}
                     />
-                    فعال
+                    Active
                 </div>
             ) : (
                 <div
@@ -46,7 +46,7 @@ const BooleanCheckStatus: React.FC<checkStatusPropTypes> = ({ status }) => {
                             width: "25px",
                         }}
                     />
-                    غیر فعال
+                    Not Active
                 </div>
             )
             }

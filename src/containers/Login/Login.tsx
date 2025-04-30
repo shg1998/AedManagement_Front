@@ -103,7 +103,7 @@ const Login = () => {
                     navigate(location.state.from);
                     // window.location.reload();
                 } else {
-                    navigate(`${routes.cyberCrimes}`);
+                    navigate(`${routes.users}`);
                     // window.location.reload();
                 }
             }

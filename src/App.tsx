@@ -16,6 +16,7 @@ const Dashboard = lazy(() => import("./layouts/MainLayout"));
 const Login = lazy(() => import("./containers/Login/Login"));
 const AllAdmins = lazy(() => import("./containers/Admins/AllAdmins"));
 const AllAeds = lazy(() => import("./containers/Aeds/AllAeds"));
+const AllUsers = lazy(() => import("./containers/Users/AllUsers"));
 
 const App = (): React.JSX.Element => {
     const {isAuthenticated} = useAuthState();
@@ -63,6 +64,18 @@ const App = (): React.JSX.Element => {
                                         />
                                     }
                                 />
+
+                                <Route
+                                    path={routes.users}
+                                    element={
+                                        <CustomRoute
+                                            element={<Dashboard component={<AllUsers/>}/>}
+                                            section_name="users"
+                                            module_name="users"
+                                        />
+                                    }
+                                />
+
                             </Route>
                         </Routes>
                     </NavigationScroll>
