@@ -1,0 +1,80 @@
+stages:
+  - Test
+  - build
+  - push
+
+before_script:
+  - echo "Checking commits..."
+
+variables:
+  RUNNER: 'gitlab-runner'
+
+pre-deployment-Checking-Commit-Message:
+  stage: Test
+  tags:
+    - ${RUNNER}
+  script:
+    - /bin/bash ./CI-CD/checkCommit.sh "$CI_PIPELINE_SOURCE" "$CI_COMMIT_SHA" "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" "$CI_COMMIT_BEFORE_SHA"
+    - docker system prune --force
+  only:
+    - push
+    - merge_requests
+
+pre-deployment-Checking-Sonarqube:
+  stage: Test
+  tags:
+      - ${RUNNER}
+  image: 
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script: 
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dproject.settings=./CI-CD/sonar-project.properties
+  allow_failure: false
+  only:
+    - merge_requests
+  
+post-deployment-Build-Docker-Image:
+  tags:
+    - ${RUNNER}
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  stage: build
+  script:
+    - DOCKER_BUILDKIT=1 docker image build -f Dockerfile --tag ${CI_REGISTRY_IMAGE}/${CI_COMMIT_BRANCH}:latest .
+    - mkdir -p ./artifacts
+    - docker save -o ./artifacts/sata_frontend_${CI_COMMIT_BRANCH}.tar ${CI_REGISTRY_IMAGE}/${CI_COMMIT_BRANCH}:latest
+    - docker rmi -f ${CI_REGISTRY_IMAGE}/${CI_COMMIT_BRANCH}:latest
+  artifacts:
+    paths:
+      - artifacts/*
+    untracked: true
+    when: always
+    expire_in: 1 days
+    name: sata-frontend-$CI_COMMIT_BRANCH
+
+post-deployment-Build-Docker-Image-Officail:
+  tags:
+    - ${RUNNER}
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+  stage: build
+  script:
+    - DOCKER_BUILDKIT=1 docker image build -f Dockerfile --tag ${CI_REGISTRY_IMAGE}/${CI_COMMIT_BRANCH}:latest .
+    - mkdir -p ./artifacts
+    - docker save -o ./artifacts/sata_frontend_${CI_COMMIT_BRANCH}.tar ${CI_REGISTRY_IMAGE}/${CI_COMMIT_BRANCH}:latest
+    - docker rmi -f ${CI_REGISTRY_IMAGE}/${CI_COMMIT_BRANCH}:latest
+  artifacts:
+    paths:
+      - artifacts/*
+    untracked: true
+    when: always
+    expire_in: never
+    name: sata-frontend-$CI_COMMIT_BRANCH
+

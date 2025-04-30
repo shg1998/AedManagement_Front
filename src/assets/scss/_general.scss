@@ -1,0 +1,54 @@
+.Toastify__toast {
+  font-family: sans-serif;
+  border-radius: 0.3em;
+  padding-right: 1em;
+
+  .toast-message {
+    padding-right: 1em;
+  }
+}
+
+.Toastify__toast--success {
+  background: #e7f2da !important;
+  color: #5fd255 !important;
+}
+.Toastify__toast--error {
+  background: #f3ebeb !important;
+  color: #db1919 !important;
+}
+.errorMessage {
+  color: $red;
+  font-size: 0.8em;
+}
+.toastClass {
+  width: 400px;
+}
+.toast-font-class {
+  font-family: sans-serif, sans-serif;
+  font-size: 13px;
+}
+
+.empty-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 40%;
+  margin: 10vh auto;
+}
+.emptyPicture {
+  max-width: 70%;
+  margin: 0px auto;
+}
+
+.noData {
+  font-weight: 700 !important;
+  margin-top: 5vh !important;
+  display: flex;
+  justify-content: center;
+}
+.noData2 {
+  margin-top: 5vh !important;
+  display: flex;
+  justify-content: center;
+}
+

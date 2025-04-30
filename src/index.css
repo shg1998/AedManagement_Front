@@ -1,0 +1,12 @@
+html,
+body,
+#root {
+  height: 100vh;
+  min-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0;
+  font-family: sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

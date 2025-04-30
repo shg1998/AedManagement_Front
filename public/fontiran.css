@@ -1,0 +1,22 @@
+@import "fonts/shabnam-font-face.css";
+@font-face {
+    font-family: 'IRANSansWeb';
+    src: url('fonts/woff2/IRANSansWeb.woff2') format('woff2'),
+    url('fonts/woff/IRANSansWeb.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+  src:local("IRANYekan"), url('fonts/woff2/IRYekan.woff2') format('woff2');
+  font-family: IRANYekan;
+  font-weight: normal;
+  font-display: swap;
+}
+@font-face {
+  src:local("Vazir"), url('fonts/woff/Vazir.woff') format('woff');
+  font-family: Vazir;
+  font-weight: normal;
+  font-display: swap;
+}

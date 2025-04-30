@@ -1,0 +1,48 @@
+@import url(fontiran.css);
+
+@media only screen and (max-width: 1500px) {
+    *:not(.reactWordCloudContainerStyle > div > svg > g text,.MuiSvgIcon-root )
+
+    {
+        font-size: small;
+    }
+} 
+
+@media only screen and (min-width: 1501px) {
+    *:not(.reactWordCloudContainerStyle > div > svg > g text,.MuiSvgIcon-root )
+    {
+        font-size: medium;
+    }
+}
+
+body {
+    font-family: sans-serif, serif !important;
+    direction: rtl;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+text,
+textarea,
+button,
+div,
+p,
+a,
+span,
+label,
+li,
+td,
+th,
+tr,
+title {
+    font-family: sans-serif, serif !important;
+}
+
+svg{
+    font-size: 22px;
+}

@@ -1,0 +1,13 @@
+.rmc-date-picker-wrapper {
+  position: relative;
+}
+
+.rmc-date-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+
+.check{
+  /* display:none */
+}

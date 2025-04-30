@@ -1,0 +1,16 @@
+.quillBorder{
+  direction: ltr;
+}
+.quillBorder > div:first-child{
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+  background: #ebebeb;
+}
+
+.quillBorder > div:last-child{
+  border-radius: 0 0 0.5rem 0.5rem !important;
+  min-height: 10rem;
+}
+/*
+.quillBorder > div:last-child > div:first-child{
+  text-align: right;
+}*/

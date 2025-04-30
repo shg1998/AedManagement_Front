@@ -1,0 +1,7 @@
+.react-wordcloud .wordcloud-word:focus {
+    outline: none !important;
+  }
+
+  .my-wordcloud-container .react-wordcloud .wordcloud-word {
+    outline: none !important;
+  }

@@ -1,0 +1,33 @@
+Title: 
+------------------------------------------------------
+Description:
+------------------------------------------------------
+Type: 
+------------------------------------------------------
+Scope: 
+------------------------------------------------------
+Jira: 
+
+# Title:
+#   If applied, this commit will.... (Max=80 chars)
+# Description:
+#   Why is this change needed? and how does it address the issue? (Max=200 chars)  
+# Type:
+# Shuold be on of the following: 
+#   * feat (new feature)
+#   * fix or bug (bug fix)
+#   * docs (changes to documentation)
+#   * style (formatting, missing semi colons, etc; no code change)
+#   * refactor (refactoring production code)
+#   * test (adding missing tests, refactoring tests; no production code change)
+#   * merge 
+# Scope:
+#   Is just the scope of the change. Something like (master) or (developer) or (guest).
+# JIRA:
+#   It can be only an ISSUE_KEY or one of JIRA action words(Resolves/Fixes/Closes) followed by a ISSUE_KEY.
+# =>ALERT<=:
+#   * All sections are better off to be followed by a scpace character.
+#   * It is highly recommended that all sections end up at the same line of the section keyword but "Description:".
+# =>Recommendation<=
+#   * You can check out http://172.16.107.13:8090/pages/viewpage.action?pageId=1704072 for more detail on how to use a file
+#     as a costum git commit message.

@@ -1,0 +1,16 @@
+button[class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"] {
+  display: none;
+}
+
+[aria-label="فیلتر با نام سازمان - {filtertype} {filtervalue}"]::before {
+  display: none;
+}
+
+button[aria-label*="فیلتر با"] {
+  display: none;
+}
+
+
+div[class*="MuiInputBase-root MuiOutlinedInput-root "] {
+  display: none;
+}

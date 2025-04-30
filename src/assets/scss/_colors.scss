@@ -1,0 +1,21 @@
+$secondary: #605E5C;
+$Primaryblue: #486af5;
+$red: #C4314B;
+$backTabs: #faf9f8;
+$backTabsdark: #272523;
+
+.darkColor {
+  color: $backTabsdark;
+}
+
+.secondaryColor {
+  color: $secondary
+}
+
+.primaryColor {
+  color: $backTabs
+}
+
+.blueColor {
+  color: $Primaryblue
+}
