@@ -33,7 +33,7 @@ export const convertToISOString = (inputDateTime: any): string => {
 };
 export const convertTimeToLocale = (inputDateTime: string): string => {
   if (inputDateTime !== "") {
-    const timezoneOffset = 0; // Offset in minutes (+3:30 hours = 210 minutes)
+    const timezoneOffset = 210; // Offset in minutes (+3:30 hours = 210 minutes)
 
     const utcDateTime = new Date(inputDateTime);
     const adjustedTime = new Date(

@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 export interface ItemType {
   index?: number;
-  value: string;
+  value: string | number;
   title: string;
 }
 interface SelectProps {

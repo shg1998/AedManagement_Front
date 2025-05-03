@@ -7,13 +7,17 @@ import PageHeader from "../../components/PageHeader/PageHeader";
 import {useCustomTableQuery} from "../../hooks/use-custom-table-query";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import {useThemeContext} from "../../ThemeContext";
-import CyberCrimes from "../../services/CyberCrimes";
+import Aed from "../../services/Aed";
 import LeftModal from "../../components/Modal/LeftModal";
 import DateTimeFilter, {
     DateTimeFilterType,
     NewFilterHandle
 } from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import AedImage from "../../assets/images/aed.png"
+import CardTopActions from "../../components/CardTopActions/CardTopActions";
+import NewAdmin, {AdminType, DEFAULT_USER_INFORMATION, NewAdminHandle} from "../Admins/NewAdmin";
+import NewAed, {AedType, NewAedHandle} from "./NewAed";
+import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/time";
 
 export type CyberCrimesObject = {
     id?: string;
@@ -40,12 +44,23 @@ export type CyberCrimesObject = {
     dateOrganizationOrder?: string;
 };
 
+const DEFAULT_AED_INFORMATION: AedType = {
+    id: '0',
+    serialNumber: '',
+    province: 'Tehran',
+    city: 'Tehran',
+    place: '',
+    registerDateTime: Date(),
+    aedBatteryType: 0
+}
+
 const AllAeds = () => {
 
     const {
-        getCyberCrimes,
-    } = new CyberCrimes();
+        getAll,
+    } = new Aed();
 
+    const newAedRef = useRef<NewAedHandle>(null);
     const {themeMode, theme} = useThemeContext();
     const timeFilterRef = useRef<NewFilterHandle>(null);
     const tableInstanceRef = useRef(null);
@@ -56,21 +71,25 @@ const AllAeds = () => {
     });
     const [openTimeFilterModal, setOpenTimeFilterModal] =
         useState<boolean>(false);
-    const [timeQuery, setTimeQuery] = useState<string>(`date ge ${dateFilters?.from} and date le ${dateFilters?.to}`);
+
+    const [openManageAedModal, setOpenManageAedModal] =
+        useState<boolean>(false);
+
+    // const [timeQuery, setTimeQuery] = useState<string>(`date ge ${dateFilters?.from} and date le ${dateFilters?.to}`);
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
     const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
     const [query, setQuery] = useState<string>("");
-
+    const [selectedAed, setSelectedAed] = useState<AedType>();
     const [pagination, setPagination] = useState<MRT_PaginationState>({
         pageIndex: 0,
         pageSize: 10,
     });
     const {data, isFetching, isLoading} = useCustomTableQuery(
-        "cyberCrimes",
+        "aeds",
         refetchTableData,
         pagination,
-        getCyberCrimes,
-        query + timeQuery
+        getAll,
+        query //+ timeQuery
     );
 
     const columns = useMemo<MRT_ColumnDef<CyberCrimesObject>[]>(
@@ -98,7 +117,7 @@ const AllAeds = () => {
                 header: "Battery Type",
                 maxSize: 20,
                 enableSorting: false,
-                accessorFn: (row: any) => row.batteryType === null ? "" : row.batteryType,
+                accessorFn: (row: any) => row.batteryType === null ? "" : row.batteryType == 0 ? "Non-Chargeable" : "Chargeable",
             },
             {
                 accessorKey: "location.province",
@@ -126,14 +145,16 @@ const AllAeds = () => {
                 header: "Register Date",
                 maxSize: 20,
                 enableSorting: false,
-                accessorFn: (row: any) => row.registerDateTime === null ? "" : row.registerDateTime,
+                enableColumnFilter: false,
+                accessorFn: (row: any) => row.registerDateTime === null ? "" : getJalaliDateTime(row.registerDateTime),
             },
             {
                 accessorKey: "lastPmDateTime",
                 header: "Last PM Date",
                 maxSize: 20,
                 enableSorting: false,
-                accessorFn: (row: any) => row.lastPmDateTime === null ? "" : row.lastPmDateTime,
+                enableColumnFilter: false,
+                accessorFn: (row: any) => row.lastPmDateTime === null ? "" : row.lastPmDateTime === '0001-01-01T00:00:00' ? '-' : row.lastPmDateTime,
             },
             {
                 accessorKey: "internalTestResult",
@@ -157,7 +178,7 @@ const AllAeds = () => {
         if (dates !== null) {
             let newQuery = query !== "" ? ` date ge ${dates?.from} and date le ${dates?.to}` : `date ge ${dates?.from} and date le ${dates?.to}`;
             setPagination({pageIndex: 0, pageSize: pagination.pageSize});
-            setTimeQuery(newQuery);
+            // setTimeQuery(newQuery);
         }
     }
 
@@ -165,6 +186,33 @@ const AllAeds = () => {
         setOpenTimeFilterModal(false);
     }
 
+    const handleCloseManageModal = (): void => {
+        setSelectedAed(DEFAULT_AED_INFORMATION);
+        setOpenManageAedModal(false);
+    };
+
+    const handleAddAed = async () => {
+        newAedRef?.current?.sendRequest();
+    };
+
+    const closeCreateEditModal = () => {
+        setSelectedAed(DEFAULT_AED_INFORMATION);
+        setOpenManageAedModal(false);
+        setRefetchTableData(!refetchTableData);
+    }
+
+    const handleEditAed = (row: any) => {
+        setSelectedAed({
+            id: row.id,
+            serialNumber: row.serialNumber,
+            city: row.location.city,
+            province: row.location.province,
+            place: row.location.place,
+            registerDateTime: row.registerDateTime,
+            aedBatteryType: row.batteryType,
+        });
+        setOpenManageAedModal(true);
+    };
 
     useEffect(() => {
         let filterString = columnFilters
@@ -173,8 +221,8 @@ const AllAeds = () => {
                 return `contains(${item.id},'${value}')`;
             })
             .join(" and ");
-        if (timeQuery !== "" && columnFilters.length > 0)
-            filterString += " and ";
+        // if (timeQuery !== "" && columnFilters.length > 0)
+        //     filterString += " and ";
 
         setQuery(filterString);
         setPagination({pageIndex: 0, pageSize: pagination.pageSize});
@@ -201,11 +249,22 @@ const AllAeds = () => {
             <BasicCard
                 header=""
                 headerChildren={
-                    <>
-                        <Button onClick={() => {
-                            setOpenTimeFilterModal(true);
-                        }}>⌚ Time Filter</Button>
-                    </>
+                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
+
+                        {/*<Button onClick={() => {*/}
+                        {/*    setOpenTimeFilterModal(true);*/}
+                        {/*}}>⌚ Time Filter</Button>*/}
+
+                        <CardTopActions
+                            firstAction={() => {
+                            }}
+                            secondTitle={"Add AED"}
+                            secondAction={() => {
+                                setSelectedAed(DEFAULT_AED_INFORMATION);
+                                setOpenManageAedModal(true);
+                            }}
+                        />
+                    </div>
                 }
             >
                 {isLoading ? (
@@ -224,16 +283,34 @@ const AllAeds = () => {
                                 columnFilters={columnFilters}
                                 totalCount={data.totalItems}
                                 onRowClicked={(row: any) => handleShowUserInfo(row)}
-                                hasRowAction={false}
+                                hasRowAction={true}
                                 disableRowSelection={true}
                                 columnVisibility={columnVisibility}
                                 setColumnVisibility={setColumnVisibility}
+                                editRow={handleEditAed}
                             />
                         </div>
                     </>
                 )}
                 {isFetching && <div data-testid={"fetching"}></div>}
             </BasicCard>
+
+            <LeftModal
+                title={
+                    selectedAed?.id === '0' ? "🖥️ Create Aed" : "✏️ Edit Aed"
+                }
+                open={openManageAedModal}
+                maxWidth={"sm"}
+                handleClose={handleCloseManageModal}
+                handleAdd={handleAddAed}
+                buttonLabel={selectedAed?.id === '0' ? "Submit" : "Apply"}
+            >
+                <NewAed
+                    ref={newAedRef}
+                    data={selectedAed?.id === '0' ? DEFAULT_AED_INFORMATION : selectedAed!}
+                    closeModal={closeCreateEditModal}
+                />
+            </LeftModal>
 
             <LeftModal
                 title={"⏰ Time Filter"}

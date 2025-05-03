@@ -89,7 +89,7 @@ const MyDateTimePicker: React.FC<DateTimePickerProps> = ({
                 <></>
             )}
             <div style={{marginTop: 0}}>
-                <DateInput
+                <DateTimeInput
                     value={value}
                     name={name}
                     // autoPop
@@ -116,7 +116,7 @@ const MyDateTimePicker: React.FC<DateTimePickerProps> = ({
                 />
                 {hasError && (
                     <div style={{marginTop: "5px", color: "red"}}>
-                        زمان شروع نمی تواند از زمان پایان بزرگتر باشد.
+                        The start time cannot be later than the end time.
                     </div>
                 )}
             </div>

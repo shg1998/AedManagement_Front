@@ -18,6 +18,11 @@ export interface NewFilterHandle {
     setBoundaries: () => DateTimeFilterType;
 }
 
+export const removeCharsAfterZ = (dateString: string) => {
+    const zIndex = dateString.indexOf('Z');
+    return zIndex !== -1 ? dateString.substring(0, zIndex + 1) : dateString;
+}
+
 const DateTimeFilter = forwardRef<NewFilterHandle, DateTimeFilterProps>(({data}, ref) => {
 
     const [fromDate, setFromDate] = useState<string>(data ? data?.from : new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
@@ -33,11 +38,6 @@ const DateTimeFilter = forwardRef<NewFilterHandle, DateTimeFilterProps>(({data},
             from: fromDate,
             to: toDate
         };
-    }
-
-    function removeCharsAfterZ(dateString: string) {
-        const zIndex = dateString.indexOf('Z');
-        return zIndex !== -1 ? dateString.substring(0, zIndex + 1) : dateString;
     }
 
     return (
@@ -63,7 +63,7 @@ const DateTimeFilter = forwardRef<NewFilterHandle, DateTimeFilterProps>(({data},
             <br/>
             <InputLabel htmlFor="DateTimePickerTo">
                 <Typography className={classes.inputLabel}>
-                   To Date
+                    To Date
                 </Typography>
             </InputLabel>
             <br/>

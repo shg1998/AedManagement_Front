@@ -264,9 +264,9 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
                     message === "Not authenticated" ||
                     response.data?.code === "ERR_UNAUTHORIZED"
                 ) {
-                    message = "کاربر به سیستم وارد نشده است.";
+                    message = "Your session has expired. Please log in again.";
                 } else {
-                    message = "اعتبار شما به پایان رسیده است. مجددا وارد شوید.";
+                    message = "Your session has expired. Please log in again.";
                 }
                 tError(message);
                 deleteItemSecure("mainToken");
