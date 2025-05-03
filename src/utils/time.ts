@@ -48,6 +48,23 @@ export const convertTimeToLocale = (inputDateTime: string): string => {
   }
 };
 
+export const convertTimeToLocale2 = (inputDateTime: string): string => {
+  if (inputDateTime !== "") {
+    const timezoneOffset = 210; // Offset in minutes (+3:30 hours = 210 minutes)
+
+    const utcDateTime = new Date(inputDateTime);
+    const adjustedTime = new Date(
+        utcDateTime?.getTime() - timezoneOffset * 60000
+    );
+
+    const isoString = convertToISOString(adjustedTime);
+    const formattedDateTime = isoString?.slice(0, 16);
+    return formattedDateTime;
+  } else {
+    return "";
+  }
+};
+
 export const convertDateToDesiredResult = (dateTime: Date) => {
   const year = dateTime.getFullYear();
   const month = String(dateTime.getMonth() + 1).padStart(2, '0');

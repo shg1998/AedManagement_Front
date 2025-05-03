@@ -17,6 +17,7 @@ import {provinceItems} from "../../utils/ProvinceUtils";
 import MyDateTimePicker from "../../components/DateTimePicker Jalali/DateTimePicker";
 import {removeCharsAfterZ} from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import Aed from "../../services/Aed";
+import {convertTimeToLocale} from "../../utils/time";
 
 
 const BatteryTypes: ItemType[] = [
@@ -243,7 +244,7 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                         name="registerDateTime"
                         blur={() => {
                         }}
-                        value={formik.values.registerDateTime}
+                        value={convertTimeToLocale(formik.values.registerDateTime)}
                         onChangeFunc={(d: any) => {
                             const formattedDate = d ? removeCharsAfterZ(d) : "";
                             formik.setFieldValue('registerDateTime', formattedDate);

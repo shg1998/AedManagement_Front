@@ -15,9 +15,8 @@ import DateTimeFilter, {
 } from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import AedImage from "../../assets/images/aed.png"
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
-import NewAdmin, {AdminType, DEFAULT_USER_INFORMATION, NewAdminHandle} from "../Admins/NewAdmin";
 import NewAed, {AedType, NewAedHandle} from "./NewAed";
-import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/time";
+import {convertTimeToLocale2, getJalaliDateTime} from "../../utils/time";
 
 export type CyberCrimesObject = {
     id?: string;
@@ -50,7 +49,7 @@ const DEFAULT_AED_INFORMATION: AedType = {
     province: 'Tehran',
     city: 'Tehran',
     place: '',
-    registerDateTime: Date(),
+    registerDateTime: convertTimeToLocale2(Date()),
     aedBatteryType: 0
 }
 

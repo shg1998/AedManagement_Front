@@ -5,8 +5,7 @@ class Aed extends Api {
     urls = {
         objects: "Aed/get-all-aeds",
         addAed: "Aed/create-aed",
-        downloadCyberCrimeFile: "Aed/download-cyber-crime-file",
-        downloadCyberCrimeResponseFile: "SigmaResponses/download-cyber-crime-response-file",
+        editAed: "Aed/edit-aed",
     };
 
     getAll = async (
@@ -65,17 +64,20 @@ class Aed extends Api {
     editAedForm = async (data: AedType): Promise<any> => {
         try {
             let dataForApi: any = {
-                // password : data.password.toString().trim() === "" ? null : data.password,
-                // passwordConfirm: data.passwordConfirm.toString().trim() === "" ? null : data.passwordConfirm,
-                // isActive : data.isActive,
-                // fullName : data.fullName,
-                // userName: data.userName,
-                // userId: data.id,
-                // email: data.email,
-                // province: data.province
+                id: data.id,
+                serialNumber: data.serialNumber,
+                registerDateTime: data.registerDateTime,
+                batteryType: data.aedBatteryType,
+                location: {
+                    province: data.province,
+                    city: data.city,
+                    place: data.place,
+                    long: 0,
+                    lat: 0
+                },
             }
             const result = await this.putJsonData(
-                `/${this.urls.addAed}`,
+                `/${this.urls.editAed}`,
                 dataForApi
             );
             return result.data;
