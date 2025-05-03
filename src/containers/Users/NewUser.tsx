@@ -11,14 +11,15 @@ import * as Yup from "yup";
 import Button from "@mui/material/Button";
 import {useMutation} from "react-query";
 import Users from "../../services/Users";
-import {tError, tSuccess, tWarn} from "../../utils/toast";
+import {tError, tSuccess} from "../../utils/toast";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import {MessageTypes} from "../../utils/messageTypes";
 import { styled } from "@mui/material/styles";
 import {AdminType, NewAdminHandle, NewUserProps} from "../Admins/NewAdmin";
+import MySelect from "../../components/MySelect/MySelect";
+import {provinceItems} from "../../utils/ProvinceUtils";
 
 
-const AddAdminSchema = Yup.object().shape({
+const AddUserSchema = Yup.object().shape({
     userName: Yup.string().required("⛔ Username is required!"),
     fullName: Yup.string().required("⛔ FullName is required!"),
     password: Yup.string()
@@ -37,7 +38,7 @@ const AddAdminSchema = Yup.object().shape({
 
 });
 
-const EditAdminSchema = Yup.object().shape({
+const EditUserSchema = Yup.object().shape({
     userName: Yup.string().required("⛔ Username is required!"),
     fullName: Yup.string().required("⛔ FullName is required!"),
     email: Yup.string()
@@ -47,7 +48,6 @@ const EditAdminSchema = Yup.object().shape({
         )
         .required("⛔ Email address is required"),
 });
-
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
     marginTop: theme.spacing(2),
@@ -88,7 +88,7 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
         onSuccess: async (data) => {
             if (data?.isSuccess) {
                 closeModal();
-                tSuccess(data?.message);
+                tSuccess(data?.data);
             }
         },
         onError: async (error: any) => {
@@ -100,7 +100,7 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
 
     const formik = useFormik<AdminType>({
         initialValues: data,
-        validationSchema: data.id === 0 ? AddAdminSchema : EditAdminSchema,
+        validationSchema: data.id === 0 ? AddUserSchema : EditUserSchema,
         onSubmit: async (values): Promise<any> => {
             if (values.id === 0) {
                 // @ts-ignore
@@ -213,6 +213,23 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
                             {formik.errors.email}
                         </Typography>
                     ) : null}
+
+                    <InputLabel htmlFor="province">
+                        <Typography className={classes.inputLabel}>Province</Typography>
+                    </InputLabel>
+                    <MySelect
+                        label=""
+                        formik={formik}
+                        items={provinceItems}
+                        {...formik.getFieldProps("province")}
+                    />
+                    {formik.errors.province && formik.touched.province ? (
+                        <Typography className={clsx(classes.errorText, "errorMessage")}>
+                            {formik.errors.province}
+                        </Typography>
+                    ) : null}
+                    <br/>
+                    <br/>
 
                     <InputLabel htmlFor="password">
                         <Typography className={classes.inputLabel}>

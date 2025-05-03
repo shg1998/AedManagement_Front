@@ -35,6 +35,7 @@ const UserMenu: React.FC<UserMenuProps> = (props) => {
         tSuccess("You have successfully logged out. You will be redirected to the login page shortly!")
         setTimeout(() => {
             localStorage.removeItem("mainToken");
+            localStorage.removeItem("userRoleName");
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key?.startsWith('/')) {

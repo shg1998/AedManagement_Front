@@ -1,4 +1,4 @@
-import React, {lazy, Suspense} from "react";
+import React, {lazy, Suspense, useEffect} from "react";
 import "./App.css";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import LoadingComponent from "./components/LoadingComponent/LoadingComponent";
@@ -11,6 +11,7 @@ import NavigationScroll from "./layouts/MainLayout/NavigationScroll";
 import CustomRoute from "./components/CustomRoute/CustomRoute";
 import {styled} from "@mui/system";
 import {useThemeContext} from "./ThemeContext";
+import {getItemSecure} from "./utils/AESCrypto";
 
 const Dashboard = lazy(() => import("./layouts/MainLayout"));
 const Login = lazy(() => import("./containers/Login/Login"));
@@ -19,12 +20,13 @@ const AllAeds = lazy(() => import("./containers/Aeds/AllAeds"));
 const AllUsers = lazy(() => import("./containers/Users/AllUsers"));
 
 const App = (): React.JSX.Element => {
-    const {isAuthenticated} = useAuthState();
+    const {isAuthenticated, isAdmin, isSuperAdmin} = useAuthState();
     const {theme} = useThemeContext();
     const StyledApp = styled("div")({
         backgroundColor: theme.palette.background.paper,
         height: "100%",
     });
+
 
     return (
         <StyledApp>
@@ -65,16 +67,35 @@ const App = (): React.JSX.Element => {
                                     }
                                 />
 
-                                <Route
-                                    path={routes.users}
-                                    element={
-                                        <CustomRoute
-                                            element={<Dashboard component={<AllUsers/>}/>}
-                                            section_name="users"
-                                            module_name="users"
+                                {
+                                    isAdmin || isSuperAdmin ? (
+                                        <Route
+                                            path={routes.users}
+                                            element={
+                                                <CustomRoute
+                                                    element={<Dashboard component={<AllUsers/>}/>}
+                                                    section_name="users"
+                                                    module_name="users"
+                                                />
+                                            }
                                         />
-                                    }
-                                />
+                                    ) : <></>
+                                }
+
+                                {
+                                    isSuperAdmin ? (
+                                        <Route
+                                            path={routes.admins}
+                                            element={
+                                                <CustomRoute
+                                                    element={<Dashboard component={<AllAdmins/>}/>}
+                                                    section_name="admins"
+                                                    module_name="admins"
+                                                />
+                                            }
+                                        />
+                                    ) : <></>
+                                }
 
                             </Route>
                         </Routes>

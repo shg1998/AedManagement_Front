@@ -104,11 +104,11 @@ const MySelect: React.FC<SelectProps> = ({
         variant={variant ?? "outlined"}
         inputProps={{
           sx: {
-            backgroundColor: "#ffffff",
+            backgroundColor: "transparent",
             borderRadius: isQueryBuilderValue ? "8px" : "5px",
-
-            fontSize: "0.9rem",
-            paddingRight: "4px",
+            ml: 1,
+            fontSize: "1.2rem",
+            paddingLeft: "4px",
             direction: "rtl",
             height: isQueryBuilderValue ? "0px" : "54px",
           },
@@ -129,7 +129,6 @@ const MySelect: React.FC<SelectProps> = ({
         {items ? (
           items.length > 0 ? (
             items.map((item) => {
-              console.log("items", item?.index);
               return (
                 <MenuItem
                   key={item?.index}

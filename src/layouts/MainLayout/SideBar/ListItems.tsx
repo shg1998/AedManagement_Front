@@ -7,14 +7,17 @@ import {useStyles} from "./style";
 import {faListAlt} from "@fortawesome/free-solid-svg-icons";
 import DvrIcon from '@mui/icons-material/Dvr';
 import GroupIcon from '@mui/icons-material/Group';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {ListItemInterface} from "../../../interfaces";
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
 import AccessControl from "../../../components/AccessControl/AccessControl";
+import {useAuthState} from "../../../context/AuthContext";
 
 const {
     aeds,
-    users
+    users,
+    admins
 } = routes;
 
 /**
@@ -25,8 +28,8 @@ const {
 const ListItems: React.FC = () => {
     const {linkWrapper, openSideLinkWrapper, sidebar, divider, menuContainer} =
         useStyles();
+    const {isAdmin, isSuperAdmin} = useAuthState();
     const {t} = useTranslation();
-    // const { open } = React.useContext(layoutContext);
     const storedValue = sessionStorage.getItem("openSidebar");
     const isOpenSidebar = storedValue === "true";
 
@@ -73,22 +76,39 @@ const ListItems: React.FC = () => {
                             style={{padding: "0"}}
                             className={isOpenSidebar ? openSideLinkWrapper : linkWrapper}
                         >
+                            {isSuperAdmin ?
+                                getListItem({
+                                    section: "undefined",
+                                    name: "admins",
+                                    Icon: AdminPanelSettingsIcon,
+                                    text: 'Admins',
+                                    selected: isOpenPageOfThisGroup(admins),
+                                    link: admins,
+                                    isNested: false,
+                                    props: {
+                                        icon: faListAlt,
+                                        size: "lg",
+                                    },
+                                }) : (<></>)}
+
+                            {isAdmin || isSuperAdmin ?
+                                getListItem({
+                                    section: "undefined",
+                                    name: "users",
+                                    Icon: GroupIcon,
+                                    text: 'Users',
+                                    selected: isOpenPageOfThisGroup(users),
+                                    link: users,
+                                    isNested: false,
+                                    props: {
+                                        icon: faListAlt,
+                                        size: "lg",
+                                    },
+                                }) : (<></>)}
+
                             {getListItem({
                                 section: "undefined",
-                                name: "users",
-                                Icon: GroupIcon,
-                                text: 'Users',
-                                selected: isOpenPageOfThisGroup(users),
-                                link: users,
-                                isNested: false,
-                                props: {
-                                    icon: faListAlt,
-                                    size: "lg",
-                                },
-                            })}
-                            {getListItem({
-                                section: "undefined",
-                                name: "undefined",
+                                name: "aeds",
                                 Icon: DvrIcon,
                                 text: 'AEDs',
                                 selected: isOpenPageOfThisGroup(aeds),

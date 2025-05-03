@@ -98,7 +98,13 @@ const Login = () => {
             setIsLoading(false);
             if (data !== undefined) {
                 setItemSecure("mainToken", data.data.token);
-                AuthDispatch({type: "LOGIN_SUCCESS"});
+                setItemSecure("userRoleName", data.data.userRoleName);
+                AuthDispatch({
+                    type: "LOGIN_SUCCESS", payload: {
+                        isAdmin: data.data.userRoleName === 'Admin',
+                        isSuperAdmin: data.data.userRoleName === 'SuperAdmin',
+                    }
+                });
                 if (location?.state?.from) {
                     navigate(location.state.from);
                     // window.location.reload();
@@ -272,7 +278,8 @@ const Login = () => {
                                 type="cylon"
                                 color={theme.palette.primaryColor.main}
                             /> :
-                            <Typography className={clsx(classes.fontCustum)} sx={{fontWeight: 'bold', textTransform: 'none'}}>
+                            <Typography className={clsx(classes.fontCustum)}
+                                        sx={{fontWeight: 'bold', textTransform: 'none'}}>
                                 {" 🔑 "}
                                 Login
                             </Typography>

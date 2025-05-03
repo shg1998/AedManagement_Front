@@ -8,7 +8,6 @@ import {
   MRT_ShowHideColumnsButton,
 } from "material-react-table";
 import { DataTableProps } from "../../interfaces/DataTableTypes";
-import { MRT_Localization_FA } from "material-react-table/locales/fa";
 import { makeStyles } from "@mui/styles";
 import { ReactComponent as XcelIcon } from "../../assets/images/Microsoft Excel.svg";
 import { ReactComponent as TableSettingIcon } from "../../assets/images/Table Settings.svg";

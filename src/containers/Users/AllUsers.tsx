@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import DataTable from "../../components/DataTable/DataTable";
-import {Backdrop, Paper} from "@mui/material";
+import {Backdrop, MenuItem, Paper} from "@mui/material";
 import {useQuery} from "react-query";
 import {MRT_ColumnDef, MRT_ColumnFiltersState, MRT_PaginationState} from "material-react-table";
 import BasicCard from "../../components/Card/BasicCard";
@@ -15,6 +15,7 @@ import {useThemeContext} from "../../ThemeContext";
 import BooleanCheckStatus from "../../utils/BooleanCheckStatus/BooleanCheckStatus";
 import NewUser from "./NewUser";
 import {AdminType, DEFAULT_USER_INFORMATION, NewAdminHandle} from "../Admins/NewAdmin";
+import Select from "@mui/material/Select";
 
 type UserObject = {
     id: any;
@@ -28,7 +29,6 @@ const AllUsers = () => {
 
     const {
         getUsers,
-        getUserDetails
     } = new Users();
 
     const {themeMode} = useThemeContext();
@@ -82,10 +82,37 @@ const AllUsers = () => {
                 accessorFn: (row: any) => row.email,
             },
             {
+                accessorKey: "province",
+                header: "Province",
+                accessorFn: (row: any) => row.province,
+            },
+            {
                 accessorKey: "isActive",
                 header: "IsActive",
                 maxSize: 10,
-                accessorFn: (row: any) => <BooleanCheckStatus status={row.isActive}/>,
+                Cell: ({cell}) => <BooleanCheckStatus status={cell.getValue<boolean>()}/>,
+                filterFn: (row, columnId, filterValue) => {
+                    if (filterValue === 'all') return true;
+                    const isActive = row.getValue<boolean>(columnId);
+                    return filterValue === 'yes' ? isActive : !isActive;
+                },
+                Filter: ({column}) => (
+                    <Select
+                        sx={{
+                            width: 120,
+                            height: 36,
+                            fontSize: '0.875rem',
+                            padding: '0 8px',
+                        }}
+                        size="small"
+                        value={(column.getFilterValue() as string) ?? 'all'}
+                        onChange={(e) => column.setFilterValue(e.target.value)}>
+                        <MenuItem value="all">All</MenuItem>
+                        <MenuItem value="yes">Yes</MenuItem>
+                        <MenuItem value="no">No</MenuItem>
+                    </Select>
+                ),
+                filterVariant: 'select',
             },
         ],
         []
@@ -108,7 +135,8 @@ const AllUsers = () => {
             email: row.email,
             password: '',
             passwordConfirm: '',
-            isActive: row.isActive
+            isActive: row.isActive,
+            province: row.province
         });
         setOpenManageUserModal(true);
     };
@@ -125,13 +153,15 @@ const AllUsers = () => {
     useEffect(() => {
         let filterString = columnFilters
             .map((item: any) => {
+                if (item.id === 'isActive') {
+                    if (item.value === 'yes') return `${item.id} eq true`;
+                    if (item.value === 'no') return `${item.id} eq false`;
+                    return null;
+                }
                 const value = item.value.trim();
                 return `contains(${item.id},'${value}')`;
             })
             .join(" and ");
-        // if (timeQuery !== "" && columnFilters.length > 0)
-        //     filterString += " and ";
-
         setQuery(filterString);
         setPagination({pageIndex: 0, pageSize: pagination.pageSize});
     }, [columnFilters]);
@@ -173,7 +203,6 @@ const AllUsers = () => {
                                 remoteFilter={setColumnFilters}
                                 columnFilters={columnFilters}
                                 totalCount={data.totalItems}
-                                // onRowClicked={(row: any) => handleShowUserInfo(row.id)}
                                 hasRowAction={true}
                                 editRow={handleEditRole}
                                 disableRowSelection={true}
