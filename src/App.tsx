@@ -19,6 +19,8 @@ const AllAdmins = lazy(() => import("./containers/Admins/AllAdmins"));
 const AllAeds = lazy(() => import("./containers/Aeds/AllAeds"));
 const AllUsers = lazy(() => import("./containers/Users/AllUsers"));
 const AllSelfTests = lazy(() => import("./containers/SelfTests/AllSelfTests"));
+const NotFound = lazy(() => import("./containers/NotFound/NotFound"));
+
 
 const App = (): React.JSX.Element => {
     const {isAuthenticated, isAdmin, isSuperAdmin} = useAuthState();
@@ -49,10 +51,10 @@ const App = (): React.JSX.Element => {
                                     <Route path="*" element={<Navigate replace to="/login"/>}/>
                                 </>
                             )}
-                            <Route path="/" element={<Navigate replace to="/dashboard/admins"/>}/>
+                            <Route path="/" element={<Navigate replace to="/dashboard/aeds"/>}/>
                             <Route
                                 path="/login"
-                                element={<Navigate replace to="/dashboard"/>}
+                                element={<Navigate replace to="/dashboard/aeds"/>}
                             />
                             {/*Private Routes */}
                             <Route element={<PrivateRoutes/>}>
@@ -108,6 +110,8 @@ const App = (): React.JSX.Element => {
                                         />
                                     ) : <></>
                                 }
+
+                                <Route path="*" element={<NotFound />} />
 
                             </Route>
                         </Routes>

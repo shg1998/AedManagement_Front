@@ -107,10 +107,8 @@ const Login = () => {
                 });
                 if (location?.state?.from) {
                     navigate(location.state.from);
-                    // window.location.reload();
                 } else {
-                    navigate(`${routes.users}`);
-                    // window.location.reload();
+                    navigate(`${routes.aeds}`);
                 }
             }
         },
