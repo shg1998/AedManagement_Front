@@ -143,7 +143,7 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                 <form className={classes.formContainer} onSubmit={formik.handleSubmit}>
                     <InputLabel htmlFor="serialNumber">
                         <Typography className={classes.inputLabel}>
-                            Serial Number
+                            🔢 Serial Number
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -166,10 +166,11 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                         </Typography>
                     ) : null}
 
+                    <br/>
 
                     <InputLabel htmlFor="province">
                         <Typography className={classes.inputLabel}>
-                            Province
+                            🗺️ Province
                         </Typography>
                     </InputLabel>
                     <MySelect
@@ -184,9 +185,11 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                         </Typography>
                     ) : null}
 
+                    <br/><br/>
+
                     <InputLabel htmlFor="city">
                         <Typography className={classes.inputLabel}>
-                            City
+                            🏙️ City
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -209,8 +212,10 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                         </Typography>
                     ) : null}
 
+                    <br/>
+
                     <InputLabel htmlFor="place">
-                        <Typography className={classes.inputLabel}>Place</Typography>
+                        <Typography className={classes.inputLabel}>📍 Place</Typography>
                     </InputLabel>
                     <StyledTextField
                         margin="normal"
@@ -232,11 +237,11 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                         </Typography>
                     ) : null}
                     <br/>
-                    <br/>
 
                     <InputLabel htmlFor="registerDateTime">
-                        <Typography className={classes.inputLabel}>Register DateTime</Typography>
+                        <Typography className={classes.inputLabel}>📅 Register DateTime</Typography>
                     </InputLabel>
+                    <br/>
                     <MyDateTimePicker
                         required
                         name="registerDateTime"
@@ -254,13 +259,13 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                         </Typography>
                     ) : null}
                     <br/>
-                    <br/>
 
                     <InputLabel htmlFor="aedBatteryType">
                         <Typography className={classes.inputLabel}>
-                            Battery Type
+                            🔋 Battery Type
                         </Typography>
                     </InputLabel>
+                    <br/>
                     <MySelect
                         label=""
                         formik={formik}

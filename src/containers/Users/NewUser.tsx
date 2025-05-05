@@ -139,7 +139,7 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
                 <form className={classes.formContainer} onSubmit={formik.handleSubmit}>
                     <InputLabel htmlFor="userName">
                         <Typography className={classes.inputLabel}>
-                            Username
+                            🧑‍💻 Username
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -166,7 +166,7 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
 
                     <InputLabel htmlFor="fullName">
                         <Typography className={classes.inputLabel}>
-                            FullName
+                            🧑 FullName
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -191,7 +191,7 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
 
                     <InputLabel htmlFor="email">
                         <Typography className={classes.inputLabel}>
-                            Email Address
+                            📧 Email Address
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -215,8 +215,9 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
                     ) : null}
 
                     <InputLabel htmlFor="province">
-                        <Typography className={classes.inputLabel}>Province</Typography>
+                        <Typography className={classes.inputLabel}>🗺️ Province</Typography>
                     </InputLabel>
+                    <br/>
                     <MySelect
                         label=""
                         formik={formik}
@@ -233,7 +234,7 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
 
                     <InputLabel htmlFor="password">
                         <Typography className={classes.inputLabel}>
-                            Password
+                            🔒 Password
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -277,7 +278,7 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
 
                     <InputLabel htmlFor="passwordConfirm">
                         <Typography className={classes.inputLabel}>
-                            Confirm Password
+                            ✅ Confirm Password
                         </Typography>
                     </InputLabel>
                     <StyledTextField

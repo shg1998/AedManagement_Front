@@ -171,7 +171,7 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
                 <form className={classes.formContainer} onSubmit={formik.handleSubmit}>
                     <InputLabel htmlFor="userName">
                         <Typography className={classes.inputLabel}>
-                            Username
+                            🧑‍💻 Username
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -198,7 +198,7 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
 
                     <InputLabel htmlFor="fullName">
                         <Typography className={classes.inputLabel}>
-                            FullName
+                            🧑 FullName
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -223,7 +223,7 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
 
                     <InputLabel htmlFor="email">
                         <Typography className={classes.inputLabel}>
-                            Email Address
+                            📧 Email Address
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -248,7 +248,7 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
 
                     <InputLabel htmlFor="password">
                         <Typography className={classes.inputLabel}>
-                            Password
+                            🔒 Password
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -292,7 +292,7 @@ const NewAdmin = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, r
 
                     <InputLabel htmlFor="passwordConfirm">
                         <Typography className={classes.inputLabel}>
-                            Confirm Password
+                            ✅ Confirm Password
                         </Typography>
                     </InputLabel>
                     <StyledTextField
