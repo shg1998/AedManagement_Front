@@ -15,12 +15,9 @@ import { Box, IconButton, Theme, Tooltip } from "@mui/material";
 import { ReactComponent as Recycle } from "../../../src/assets/images/publicIcons/recycle.svg";
 import ArticleIcon from "@mui/icons-material/Article";
 import EditIcon from "@mui/icons-material/Edit";
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import BiotechIcon from '@mui/icons-material/Biotech';
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
-import DnsIcon from '@mui/icons-material/Dns';
 import React, {
   useEffect,
   useState,
@@ -36,7 +33,6 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { useContextMenu } from "react-contexify";
 import IdentitiesContextMenu from "../IdentitiesContextMenu/IdentitiesContextMenu";
-import { useMutation } from "react-query";
 import { tError, tSuccess } from "../../utils/toast";
 import { ReactComponent as Warning } from "../../assets/images/publicIcons/redWarning.svg";
 import MyMenu from "../MyMenu/MyMenu";
@@ -47,7 +43,6 @@ import {
   setItemSecure,
 } from "../../utils/AESCrypto";
 import { useLocation } from "react-router-dom";
-import ForumIcon from '@mui/icons-material/Forum';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -216,7 +211,6 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
     disableRowSelection,
     disablePagination,
     onRowClicked,
-    refetchTable,
     hasContextMenu,
     deleteRows,
     viewRows,
@@ -225,8 +219,8 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
     showRowDetail,
     editRow,
     deleteRow,
-    resetPassword,
-    showGraph,
+    rowSelfTests,
+    rowServices,
     enableRowVirtual,
     selectedRows,
     columnVisibility,
@@ -241,11 +235,7 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
     hasOtp,
     exportAll,
     remoteFilter,
-    remoteSorting,
-    enableEntity,
-    checkValidIp,
-    goToValidIps,
-    goToSmsBulk
+    remoteSorting
   } = props;
 
   const IDENTITIES_CONTEXT_MENU = "indentities_context_menu";
@@ -301,7 +291,7 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
   const [idToDelete, setIdToDelete] = React.useState("");
 
   const [deleteContextOpen, setDeleteContextOpen] = React.useState(false);
-  const [deleteContextId, setDeleteContextId] = React.useState(null);
+  const [, setDeleteContextId] = React.useState(null);
 
   useEffect(() => {
     const selectedRowData = Object.keys(rowSelection).map((index) => {
@@ -354,7 +344,7 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
 
 
   // @ts-ignore
-  const handleItemClick = async ({ id, event, props }) => {
+  const handleItemClick = async ({ id, props }) => {
     switch (id) {
       case "open-details-in-new-tab": {
         window.open(
@@ -514,7 +504,7 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
     },
     onColumnVisibilityChange: setColumnVisibility,
     positionToolbarAlertBanner: !noAlertBanner ? "top" : "none",
-    muiTableBodyRowProps: ({ isDetailPanel, row }) => ({
+    muiTableBodyRowProps: ({ row }) => ({
       onClick: (event: any) => {
         if (onRowClicked) {
           event.preventDefault();
@@ -544,7 +534,7 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
     //For row actions
     positionActionsColumn: "last",
     enableRowActions: hasRowAction,
-    renderRowActions: ({ row, table }) => (
+    renderRowActions: ({ row }) => (
       <Box
         style={{
           display: "flex",
@@ -564,32 +554,32 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
             </IconButton>
           </Tooltip>
         )}
-        {resetPassword && (
-          <Tooltip title={"بازنشانی رمز عبور"}>
-            <IconButton
-              onClick={async (e) => {
-                e.stopPropagation();
-                resetPassword?.(row?.original);
-              }}
-            >
-              <VpnKeyIcon />
-            </IconButton>
-          </Tooltip>
+        {rowServices && (
+            <Tooltip title={"AED Services"}>
+              <IconButton
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    rowServices?.(row?.original);
+                  }}
+              >
+                <DesignServicesIcon />
+              </IconButton>
+            </Tooltip>
         )}
 
-        {showGraph && (
-          <Tooltip title={"نمایش گراف"}>
-            <IconButton
-              sx={{ paddingY: 0 }}
-              onClick={async (e) => {
-                e.stopPropagation();
-                showGraph?.(row?.original);
-              }}
-            >
-              <AccountTreeIcon />
-            </IconButton>
-          </Tooltip>
+        {rowSelfTests && (
+            <Tooltip title={"AED Self Tests"}>
+              <IconButton
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    rowSelfTests?.(row?.original);
+                  }}
+              >
+                <BiotechIcon />
+              </IconButton>
+            </Tooltip>
         )}
+
         {editRow && (
           <Tooltip title={"Edit"}>
             <IconButton
@@ -603,58 +593,7 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
             </IconButton>
           </Tooltip>
         )}
-        {enableEntity && (
-            <Tooltip title={"تغییر وضعیت"}>
-              <IconButton
-                  sx={{ paddingY: 0 }}
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    enableEntity?.(row?.original?.id);
-                  }}
-              >
-                <AutorenewIcon />
-              </IconButton>
-            </Tooltip>
-        )}
-        {checkValidIp && (
-            <Tooltip title={"اعتبار IP چک شود/ نشود؟"}>
-              <IconButton
-                  sx={{ paddingY: 0 }}
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    checkValidIp?.(row?.original?.id);
-                  }}
-              >
-                <PlaylistAddCheckIcon />
-              </IconButton>
-            </Tooltip>
-        )}
-        {goToValidIps && (
-            <Tooltip title={"IP های اپلیکیشن"}>
-              <IconButton
-                  sx={{ paddingY: 0 }}
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    goToValidIps?.(row?.original);
-                  }}
-              >
-                <DnsIcon />
-              </IconButton>
-            </Tooltip>
-        )}
-        {goToSmsBulk && (
-            <Tooltip title={"پیامک های دسته جمعی"}>
-              <IconButton
-                  sx={{ paddingY: 0 }}
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    goToSmsBulk?.(row?.original);
-                  }}
-              >
-                <ForumIcon />
-              </IconButton>
-            </Tooltip>
-        )}
+
         {deleteRow && (
           <Tooltip title={"Delete"}>
             <IconButton

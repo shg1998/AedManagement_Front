@@ -1,5 +1,5 @@
 import Container from "@mui/material/Container";
-import React, {forwardRef, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {InputLabel} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -9,7 +9,6 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import Button from "@mui/material/Button";
 import {useMutation} from "react-query";
-import Users from "../../services/Users";
 import {tError, tSuccess} from "../../utils/toast";
 import {styled} from "@mui/material/styles";
 import MySelect, {ItemType} from "../../components/MySelect/MySelect";
@@ -22,10 +21,10 @@ import {convertTimeToLocale} from "../../utils/time";
 
 const BatteryTypes: ItemType[] = [
     {
-        value: 0, title: 'Non-Chargeable'
+        value: 'NonChargeable', title: 'Non Chargeable'
     },
     {
-        value: 1, title: 'Chargeable'
+        value: 'Chargeable', title: 'Chargeable'
     }
 ]
 
@@ -76,7 +75,7 @@ export type AedType = {
     city: string;
     place: string;
     registerDateTime: string;
-    aedBatteryType: number;
+    aedBatteryType: string;
 }
 
 interface NewAedProps {
@@ -124,7 +123,7 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                 // @ts-ignore
                 delete values.id;
                 addAed(values);
-            } else{
+            } else {
                 editAed(values);
             }
         },
@@ -148,7 +147,6 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                         </Typography>
                     </InputLabel>
                     <StyledTextField
-                        disabled={data.id !== '0'}
                         margin="normal"
                         fullWidth
                         id="serialNumber"

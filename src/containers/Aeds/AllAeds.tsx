@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import DataTable from "../../components/DataTable/DataTable";
-import {Button, Paper} from "@mui/material";
+import {MenuItem, Paper} from "@mui/material";
 import {MRT_ColumnDef, MRT_ColumnFiltersState, MRT_PaginationState} from "material-react-table";
 import BasicCard from "../../components/Card/BasicCard";
 import PageHeader from "../../components/PageHeader/PageHeader";
@@ -17,6 +17,8 @@ import AedImage from "../../assets/images/aed.png"
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import NewAed, {AedType, NewAedHandle} from "./NewAed";
 import {convertTimeToLocale2, getJalaliDateTime} from "../../utils/time";
+import BooleanCheckStatus from "../../utils/BooleanCheckStatus/BooleanCheckStatus";
+import Select from "@mui/material/Select";
 
 export type CyberCrimesObject = {
     id?: string;
@@ -50,7 +52,7 @@ const DEFAULT_AED_INFORMATION: AedType = {
     city: 'Tehran',
     place: '',
     registerDateTime: convertTimeToLocale2(Date()),
-    aedBatteryType: 0
+    aedBatteryType: 'Chargeable'
 }
 
 const AllAeds = () => {
@@ -112,11 +114,40 @@ const AllAeds = () => {
                 accessorFn: (row: any) => row.serialNumber === null ? "" : row.serialNumber,
             },
             {
-                accessorKey: "batteryType",
+                accessorKey: "aedBatteryType",
                 header: "Battery Type",
-                maxSize: 20,
-                enableSorting: false,
-                accessorFn: (row: any) => row.batteryType === null ? "" : row.batteryType == 0 ? "Non-Chargeable" : "Chargeable",
+                maxSize: 10,
+                Cell: ({cell}) => {
+                    const value = cell.getValue<string>();
+                    return value === "Chargeable"
+                        ? "🔋 Chargeable"
+                        : value === "NonChargeable"
+                            ? "❌ Non-Chargeable"
+                            : value;
+                },
+                filterFn: (row, columnId, filterValue) => {
+                    if (filterValue === 'all') return true;
+                    const value = row.getValue<string>(columnId);
+                    return value === filterValue;
+                },
+                Filter: ({column}) => (
+                    <Select
+                        sx={{
+                            width: 160,
+                            height: 36,
+                            fontSize: '0.875rem',
+                            padding: '0 8px',
+                        }}
+                        size="small"
+                        value={(column.getFilterValue() as string) ?? 'all'}
+                        onChange={(e) => column.setFilterValue(e.target.value)}
+                    >
+                        <MenuItem value="all">All</MenuItem>
+                        <MenuItem value="Chargeable">Chargeable</MenuItem>
+                        <MenuItem value="NonChargeable">Non-Chargeable</MenuItem>
+                    </Select>
+                ),
+                filterVariant: 'select',
             },
             {
                 accessorKey: "location.province",
@@ -200,6 +231,14 @@ const AllAeds = () => {
         setRefetchTableData(!refetchTableData);
     }
 
+    const handleRowSelfTests = (row: any) => {
+
+    }
+
+    const handleRowServices = (row: any) => {
+
+    }
+
     const handleEditAed = (row: any) => {
         setSelectedAed({
             id: row.id,
@@ -208,20 +247,37 @@ const AllAeds = () => {
             province: row.location.province,
             place: row.location.place,
             registerDateTime: row.registerDateTime,
-            aedBatteryType: row.batteryType,
+            aedBatteryType: row.aedBatteryType,
         });
         setOpenManageAedModal(true);
     };
 
+    function toODataPath(input: string): string {
+        return input
+            .split('.')
+            .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+            .join('/');
+    }
+
     useEffect(() => {
+        console.log(columnFilters)
         let filterString = columnFilters
+            .filter((item: any) => {
+                return !(item.id === 'aedBatteryType' && item.value === 'all');
+            })
             .map((item: any) => {
+                let key = item.id;
+                if (key.toString().includes('.')) {
+                    key = toODataPath(key.toString());
+                }
+                if (key === 'aedBatteryType')
+                    return `${key} eq '${item.value}'`
+
                 const value = item.value.trim();
-                return `contains(${item.id},'${value}')`;
+                return `contains(${key},'${value}')`;
+
             })
             .join(" and ");
-        // if (timeQuery !== "" && columnFilters.length > 0)
-        //     filterString += " and ";
 
         setQuery(filterString);
         setPagination({pageIndex: 0, pageSize: pagination.pageSize});
@@ -287,6 +343,8 @@ const AllAeds = () => {
                                 columnVisibility={columnVisibility}
                                 setColumnVisibility={setColumnVisibility}
                                 editRow={handleEditAed}
+                                rowSelfTests={handleRowSelfTests}
+                                rowServices={handleRowServices}
                             />
                         </div>
                     </>

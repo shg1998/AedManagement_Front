@@ -27,6 +27,8 @@ export interface DataTableProps {
   hasRowAction?: boolean;
   showRowDetail?: (row: any) => void;
   editRow?: (row: any) => void;
+  rowSelfTests?: (row: any) => void;
+  rowServices?: (row: any) => void;
   deleteRow?: (row: any) => void;
   resetPassword?: (row: any) => void;
   showGraph?: (row: any) => void;
