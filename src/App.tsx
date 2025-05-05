@@ -18,6 +18,7 @@ const Login = lazy(() => import("./containers/Login/Login"));
 const AllAdmins = lazy(() => import("./containers/Admins/AllAdmins"));
 const AllAeds = lazy(() => import("./containers/Aeds/AllAeds"));
 const AllUsers = lazy(() => import("./containers/Users/AllUsers"));
+const AllSelfTests = lazy(() => import("./containers/SelfTests/AllSelfTests"));
 
 const App = (): React.JSX.Element => {
     const {isAuthenticated, isAdmin, isSuperAdmin} = useAuthState();
@@ -63,6 +64,17 @@ const App = (): React.JSX.Element => {
                                             element={<Dashboard component={<AllAeds/>}/>}
                                             section_name="aeds"
                                             module_name="aeds"
+                                        />
+                                    }
+                                />
+
+                                <Route
+                                    path={routes.selfTests}
+                                    element={
+                                        <CustomRoute
+                                            element={<Dashboard component={<AllSelfTests/>}/>}
+                                            section_name="selfTests"
+                                            module_name="selfTests"
                                         />
                                     }
                                 />

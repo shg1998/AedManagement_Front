@@ -17,33 +17,8 @@ import AedImage from "../../assets/images/aed.png"
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import NewAed, {AedType, NewAedHandle} from "./NewAed";
 import {convertTimeToLocale2, getJalaliDateTime} from "../../utils/time";
-import BooleanCheckStatus from "../../utils/BooleanCheckStatus/BooleanCheckStatus";
 import Select from "@mui/material/Select";
-
-export type CyberCrimesObject = {
-    id?: string;
-    requestStatusTXT?: string;
-    webServiceTrackingCode?: string;
-    requestSubtitleTXT?: string;
-    timeRegistration?: string;
-    handReferralTimeByKashef?: string;
-    senderNameTXT?: string;
-    caseNumber?: string;
-    originalOrderTrackingCode?: string;
-    nameIssuingOrder?: string;
-    receiverTXT?: string;
-    bankNameTXT?: string;
-    destinationBankNameTXT?: string;
-    orderRegistrationAuthorityTXT?: string;
-    judicialOfficeIssuingOrder?: string;
-    name?: string;
-    autocompletePosition?: string;
-    mainTitleRequestTXT?: string;
-    description?: string;
-    fileType?: string;
-    additionalExplanationTriage?: string;
-    dateOrganizationOrder?: string;
-};
+import {useNavigate} from "react-router-dom";
 
 const DEFAULT_AED_INFORMATION: AedType = {
     id: '0',
@@ -61,6 +36,7 @@ const AllAeds = () => {
         getAll,
     } = new Aed();
 
+    const navigate = useNavigate();
     const newAedRef = useRef<NewAedHandle>(null);
     const {themeMode, theme} = useThemeContext();
     const timeFilterRef = useRef<NewFilterHandle>(null);
@@ -93,7 +69,7 @@ const AllAeds = () => {
         query //+ timeQuery
     );
 
-    const columns = useMemo<MRT_ColumnDef<CyberCrimesObject>[]>(
+    const columns = useMemo<MRT_ColumnDef<any>[]>(
         () => [
             {
                 id: 'row-number',
@@ -154,21 +130,21 @@ const AllAeds = () => {
                 header: "Province",
                 maxSize: 20,
                 enableSorting: false,
-                accessorFn: (row: any) => row.location.province === null ? "" : row.location.province,
+                accessorFn: (row: any) => row.location?.province === null ? "" : row.location?.province,
             },
             {
                 accessorKey: "location.city",
                 header: "City",
                 maxSize: 20,
                 enableSorting: false,
-                accessorFn: (row: any) => row.location.city === null ? "" : row.location.city,
+                accessorFn: (row: any) => row.location?.city === null ? "" : row.location?.city,
             },
             {
                 accessorKey: "location.place",
                 header: "Place",
                 maxSize: 20,
                 enableSorting: false,
-                accessorFn: (row: any) => row.location.place === null ? "" : row.location.place,
+                accessorFn: (row: any) => row.location?.place === null ? "" : row.location?.place,
             },
             {
                 accessorKey: "registerDateTime",
@@ -176,7 +152,7 @@ const AllAeds = () => {
                 maxSize: 20,
                 enableSorting: false,
                 enableColumnFilter: false,
-                accessorFn: (row: any) => row.registerDateTime === null ? "" : getJalaliDateTime(row.registerDateTime),
+                accessorFn: (row: any) => row.registerDateTime === null ? "" : getJalaliDateTime(row?.registerDateTime),
             },
             {
                 accessorKey: "lastPmDateTime",
@@ -189,17 +165,48 @@ const AllAeds = () => {
             {
                 accessorKey: "internalTestResult",
                 header: "Last Self Test",
-                maxSize: 20,
-                enableSorting: false,
-                accessorFn: (row: any) => row.internalTestResult === null ? "" : row.internalTestResult,
+                Cell: ({cell}) => {
+                    const value = cell.getValue<string>();
+                    switch (value) {
+                        case 'NoWifi':
+                            return "📛 No Wifi";
+                        case 'Pass':
+                            return '✅ Passed'
+                        case 'Fail':
+                            return '❌ Not Passed'
+                        case 'Disconnected':
+                            return '🔌 Disconnected'
+                    }
+                },
+                filterFn: (row, columnId, filterValue) => {
+                    if (filterValue === 'all') return true;
+                    const value = row.getValue<string>(columnId);
+                    return value === filterValue;
+                },
+                Filter: ({column}) => (
+                    <Select
+                        sx={{
+                            width: 160,
+                            height: 36,
+                            fontSize: '0.875rem',
+                            padding: '0 8px',
+                        }}
+                        size="small"
+                        value={(column.getFilterValue() as string) ?? 'all'}
+                        onChange={(e) => column.setFilterValue(e.target.value)}
+                    >
+                        <MenuItem value="all">All</MenuItem>
+                        <MenuItem value="NoWifi">No Wifi</MenuItem>
+                        <MenuItem value="Pass">Passed</MenuItem>
+                        <MenuItem value="Fail">Not Passed</MenuItem>
+                        <MenuItem value="Disconnected">Disconnected</MenuItem>
+                    </Select>
+                ),
+                filterVariant: 'select',
             },
         ],
         []
     );
-
-    const handleShowUserInfo = (rowData: any) => {
-
-    }
 
     const handleCloseModalWithSavedDateTime = async () => {
         setOpenTimeFilterModal(false);
@@ -232,7 +239,7 @@ const AllAeds = () => {
     }
 
     const handleRowSelfTests = (row: any) => {
-
+        navigate('/dashboard/selfTests?id=' + row.id, {state: {row}});
     }
 
     const handleRowServices = (row: any) => {
@@ -265,12 +272,15 @@ const AllAeds = () => {
             .filter((item: any) => {
                 return !(item.id === 'aedBatteryType' && item.value === 'all');
             })
+            .filter((item: any) => {
+                return !(item.id === 'internalTestResult' && item.value === 'all');
+            })
             .map((item: any) => {
                 let key = item.id;
                 if (key.toString().includes('.')) {
                     key = toODataPath(key.toString());
                 }
-                if (key === 'aedBatteryType')
+                if (key === 'aedBatteryType' || key === 'internalTestResult')
                     return `${key} eq '${item.value}'`
 
                 const value = item.value.trim();
@@ -337,7 +347,6 @@ const AllAeds = () => {
                                 remoteFilter={setColumnFilters}
                                 columnFilters={columnFilters}
                                 totalCount={data.totalItems}
-                                onRowClicked={(row: any) => handleShowUserInfo(row)}
                                 hasRowAction={true}
                                 disableRowSelection={true}
                                 columnVisibility={columnVisibility}
