@@ -97,8 +97,10 @@ const Login = () => {
         onSuccess: async (data) => {
             setIsLoading(false);
             if (data !== undefined) {
+                console.log(data.data,"🖥️🖥️🖥️")
                 setItemSecure("mainToken", data.data.token);
                 setItemSecure("userRoleName", data.data.userRoleName);
+                setItemSecure("province", data.data?.province);
                 AuthDispatch({
                     type: "LOGIN_SUCCESS", payload: {
                         isAdmin: data.data.userRoleName === 'Admin',

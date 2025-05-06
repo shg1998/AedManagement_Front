@@ -20,6 +20,8 @@ import {convertTimeToLocale2, getJalaliDateTime} from "../../utils/time";
 import Select from "@mui/material/Select";
 import {useNavigate} from "react-router-dom";
 import ListItemText from "@mui/material/ListItemText";
+import {useAuthState} from "../../context/AuthContext";
+import {getItemSecure} from "../../utils/AESCrypto";
 
 const DEFAULT_AED_INFORMATION: AedType = {
     id: '0',
@@ -44,6 +46,7 @@ const AllAeds = () => {
         getAll,
     } = new Aed();
 
+    const {isAdmin, isSuperAdmin} = useAuthState();
     const navigate = useNavigate();
     const newAedRef = useRef<NewAedHandle>(null);
     const {themeMode, theme} = useThemeContext();
@@ -314,8 +317,11 @@ const AllAeds = () => {
             .join('/');
     }
 
+    const isInUserRole = () => {
+        return !isAdmin && !isSuperAdmin;
+    }
+
     useEffect(() => {
-        console.log(columnFilters)
         let filterString = columnFilters
             .filter((item: any) => {
                 return !(item.id === 'aedBatteryType' && item.value === 'all');
@@ -350,6 +356,17 @@ const AllAeds = () => {
         setQuery(filterString);
         setPagination({pageIndex: 0, pageSize: pagination.pageSize});
     }, [columnFilters]);
+
+    useEffect(() => {
+        if (isInUserRole()) {
+            const province = getItemSecure('province');
+            if (province !== null && province !== "") {
+                setColumnFilters([...columnFilters, {
+                    id: 'Location/Province', value: province
+                }]);
+            }
+        }
+    }, []);
 
 
     return (
@@ -397,7 +414,7 @@ const AllAeds = () => {
                         <div data-testid={"table"} style={{width: "100%"}}>
                             <DataTable
                                 ref={tableInstanceRef}
-                                columns={columns}
+                                columns={isInUserRole() ? columns.filter(s => s?.accessorKey !== 'location.province') : columns}
                                 data={data.data.data}
                                 isFetching={isFetching}
                                 pagination={pagination}
