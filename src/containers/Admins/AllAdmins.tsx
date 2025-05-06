@@ -153,6 +153,7 @@ const AllAdmins = () => {
                 return `contains(${item.id},'${value}')`;
             })
             .join(" and ");
+
         setQuery(filterString);
         setPagination({pageIndex: 0, pageSize: pagination.pageSize});
     }, [columnFilters]);

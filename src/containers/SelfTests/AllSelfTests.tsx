@@ -37,10 +37,11 @@ const AllSelfTests = () => {
     const [openTimeFilterModal, setOpenTimeFilterModal] =
         useState<boolean>(false);
 
-    // const [timeQuery, setTimeQuery] = useState<string>(`date ge ${dateFilters?.from} and date le ${dateFilters?.to}`);
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
     const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([{
         id: 'aedId', value: aedId
+    }, {
+        id: 'sentTime', value: {from: dateFilters?.from, to: dateFilters?.to}
     }]);
     const [query, setQuery] = useState<string>();
     const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -52,7 +53,7 @@ const AllSelfTests = () => {
         refetchTableData,
         pagination,
         getAll,
-        query //+ timeQuery
+        query
     );
 
     const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -73,6 +74,7 @@ const AllSelfTests = () => {
                 enableHiding: false,
                 maxSize: 20,
                 enableSorting: false,
+                enableColumnFilter: false,
                 accessorFn: (row: any) => row.sentTime === null ? "" : getJalaliDateTime(row.sentTime),
             },
             {
@@ -122,6 +124,7 @@ const AllSelfTests = () => {
                 header: "Test Result",
                 maxSize: 100,
                 enableSorting: false,
+                enableColumnFilter: false,
                 accessorFn: (row: any) => row.internalTestResult === null ? "" : internalTestConverter(parseInt(row.internalTestResult)),
             },
         ],
@@ -168,9 +171,12 @@ const AllSelfTests = () => {
         let dates = timeFilterRef?.current?.setBoundaries();
         setDateFilters(dates);
         if (dates !== null) {
-            let newQuery = query !== "" ? ` date ge ${dates?.from} and date le ${dates?.to}` : `date ge ${dates?.from} and date le ${dates?.to}`;
+            let colFil = columnFilters.filter(s => s.id !== 'sentTime');
+            colFil.push({
+                id: 'sentTime', value: {from: dates?.from, to: dates?.to}
+            });
+            setColumnFilters(colFil);
             setPagination({pageIndex: 0, pageSize: pagination.pageSize});
-            // setTimeQuery(newQuery);
         }
     }
 
@@ -186,7 +192,6 @@ const AllSelfTests = () => {
     }
 
     useEffect(() => {
-        console.log(columnFilters)
         let filterString = columnFilters
             .map((item: any) => {
                 let key = item.id;
@@ -194,7 +199,10 @@ const AllSelfTests = () => {
                     key = toODataPath(key.toString());
                 }
                 if (key === 'aedId')
-                    return `${key} eq ${item.value}`
+                    return `${key} eq ${item.value}`;
+
+                if (key === 'sentTime')
+                    return `sentTime ge ${item.value?.from} and sentTime le ${item.value?.to}`
 
                 const value = item.value.trim();
                 return `contains(${key},'${value}')`;

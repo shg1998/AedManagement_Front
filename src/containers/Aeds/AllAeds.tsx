@@ -96,9 +96,9 @@ const AllAeds = () => {
                 Cell: ({cell}) => {
                     const value = cell.getValue<string>();
                     return value === "Chargeable"
-                        ? "🔋 Chargeable"
+                        ? "⚡ Chargeable"
                         : value === "NonChargeable"
-                            ? "❌ Non-Chargeable"
+                            ? "🔋 Non-Chargeable"
                             : value;
                 },
                 filterFn: (row, columnId, filterValue) => {
