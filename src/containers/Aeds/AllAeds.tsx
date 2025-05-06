@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import DataTable from "../../components/DataTable/DataTable";
-import {Button, MenuItem, Paper} from "@mui/material";
+import {Button, Checkbox, MenuItem, Paper} from "@mui/material";
 import {MRT_ColumnDef, MRT_ColumnFiltersState, MRT_PaginationState} from "material-react-table";
 import BasicCard from "../../components/Card/BasicCard";
 import PageHeader from "../../components/PageHeader/PageHeader";
@@ -19,6 +19,7 @@ import NewAed, {AedType, NewAedHandle} from "./NewAed";
 import {convertTimeToLocale2, getJalaliDateTime} from "../../utils/time";
 import Select from "@mui/material/Select";
 import {useNavigate} from "react-router-dom";
+import ListItemText from "@mui/material/ListItemText";
 
 const DEFAULT_AED_INFORMATION: AedType = {
     id: '0',
@@ -29,6 +30,13 @@ const DEFAULT_AED_INFORMATION: AedType = {
     registerDateTime: convertTimeToLocale2(Date()),
     aedBatteryType: 'Chargeable'
 }
+
+const testOptions = [
+    {label: "No Wifi", value: "NoWifi"},
+    {label: "Passed", value: "Pass"},
+    {label: "Failed", value: "Fail"},
+    {label: "Disconnected", value: "Disconnected"}
+];
 
 const AllAeds = () => {
 
@@ -172,35 +180,71 @@ const AllAeds = () => {
                         case 'NoWifi':
                             return "📛 No Wifi";
                         case 'Pass':
-                            return '✅ Passed'
+                            return '✅ Passed';
                         case 'Fail':
-                            return '❌ Not Passed'
+                            return '❌ Failed';
                         case 'Disconnected':
-                            return '🔌 Disconnected'
+                            return '🔌 Disconnected';
                     }
                 },
                 filterFn: (row, columnId, filterValue) => {
-                    if (filterValue === 'all') return true;
+                    if (!Array.isArray(filterValue) || filterValue.length === 0) return true;
                     const value = row.getValue<string>(columnId);
-                    return value === filterValue;
+                    return filterValue.includes(value);
                 },
                 Filter: ({column}) => (
                     <Select
-                        sx={{
-                            width: 160,
-                            height: 36,
-                            fontSize: '0.875rem',
-                            padding: '0 8px',
+                        multiple
+                        displayEmpty
+                        value={column.getFilterValue() ?? []}
+                        onChange={(e) => {
+                            let selected: string[] = e.target.value as string[];
+                            if (selected.includes("all")) {
+                                if (selected.length === testOptions.length + 1) {
+                                    column.setFilterValue([]);
+                                } else {
+                                    column.setFilterValue(testOptions.map(o => o.value));
+                                }
+                            } else {
+                                column.setFilterValue(selected);
+                            }
                         }}
-                        size="small"
-                        value={(column.getFilterValue() as string) ?? 'all'}
-                        onChange={(e) => column.setFilterValue(e.target.value)}
+                        renderValue={(selected) => {
+                            if ((selected as string[]).length === 0) {
+                                return "All";
+                            }
+                            selected = (column.getFilterValue() as string[] | undefined) ?? [];
+
+                            return testOptions
+                                .filter(opt => (selected as string[]).includes(opt.value))
+                                .map(opt => opt.label)
+                                .join(", ");
+                        }}
+                        sx={{
+                            width: 200,
+                            fontSize: "0.875rem"
+                        }}
                     >
-                        <MenuItem value="all">All</MenuItem>
-                        <MenuItem value="NoWifi">No Wifi</MenuItem>
-                        <MenuItem value="Pass">Passed</MenuItem>
-                        <MenuItem value="Fail">Not Passed</MenuItem>
-                        <MenuItem value="Disconnected">Disconnected</MenuItem>
+                        <MenuItem value="all">
+                            <Checkbox
+                                checked={
+                                    ((column.getFilterValue() as string[] | undefined) ?? []).length === testOptions.length
+                                }
+                                indeterminate={
+                                    ((column.getFilterValue() as string[] | undefined)?.length ?? 0) > 0 &&
+                                    ((column.getFilterValue() as string[] | undefined)?.length ?? 0) < testOptions.length
+                                }
+                            />
+                            <ListItemText primary="All"/>
+                        </MenuItem>
+                        {testOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                <Checkbox
+                                    checked={((column.getFilterValue() as string[] | undefined) ?? []).includes(option.value)}
+                                />
+                                <ListItemText primary={option.label}/>
+                            </MenuItem>
+                        ))}
                     </Select>
                 ),
                 filterVariant: 'select',
@@ -284,15 +328,23 @@ const AllAeds = () => {
                 if (key.toString().includes('.')) {
                     key = toODataPath(key.toString());
                 }
-                if (key === 'aedBatteryType' || key === 'internalTestResult')
-                    return `${key} eq '${item.value}'`
+                if (key === 'aedBatteryType')
+                    return `${key} eq '${item.value}'`;
 
                 if (key === 'registerDateTime')
-                    return `registerDateTime ge ${item.value?.from} and registerDateTime le ${item.value?.to}`
-                const value = item.value.trim();
+                    return `registerDateTime ge ${item.value?.from} and registerDateTime le ${item.value?.to}`;
+
+                if (key === 'internalTestResult') {
+                    if (!item.value || item.value.length === 0) return null;
+                    const multiFilters = item.value.map((val: string) => `${key} eq '${val}'`);
+                    return `(${multiFilters.join(' or ')})`;
+                }
+
+                const value = item.value?.trim?.() ?? '';
                 return `contains(${key},'${value}')`;
 
             })
+            .filter(Boolean)
             .join(" and ");
 
         setQuery(filterString);
