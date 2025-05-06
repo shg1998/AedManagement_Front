@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import DataTable from "../../components/DataTable/DataTable";
-import {MenuItem, Paper} from "@mui/material";
+import {Button, MenuItem, Paper} from "@mui/material";
 import {MRT_ColumnDef, MRT_ColumnFiltersState, MRT_PaginationState} from "material-react-table";
 import BasicCard from "../../components/Card/BasicCard";
 import PageHeader from "../../components/PageHeader/PageHeader";
@@ -43,7 +43,7 @@ const AllAeds = () => {
     const tableInstanceRef = useRef(null);
     const [refetchTableData, setRefetchTableData] = useState<boolean>(true);
     const [dateFilters, setDateFilters] = useState<DateTimeFilterType | undefined>({
-        from: new Date(Date.now() - 2190 * 24 * 60 * 60 * 1000).toISOString(), // 6 years
+        from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
         to: new Date(Date.now()).toISOString()
     });
     const [openTimeFilterModal, setOpenTimeFilterModal] =
@@ -52,9 +52,10 @@ const AllAeds = () => {
     const [openManageAedModal, setOpenManageAedModal] =
         useState<boolean>(false);
 
-    // const [timeQuery, setTimeQuery] = useState<string>(`date ge ${dateFilters?.from} and date le ${dateFilters?.to}`);
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
-    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
+    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([{
+        id: 'registerDateTime', value: {from: dateFilters?.from, to: dateFilters?.to}
+    }]);
     const [query, setQuery] = useState<string>("");
     const [selectedAed, setSelectedAed] = useState<AedType>();
     const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -66,7 +67,7 @@ const AllAeds = () => {
         refetchTableData,
         pagination,
         getAll,
-        query //+ timeQuery
+        query
     );
 
     const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -213,9 +214,12 @@ const AllAeds = () => {
         let dates = timeFilterRef?.current?.setBoundaries();
         setDateFilters(dates);
         if (dates !== null) {
-            let newQuery = query !== "" ? ` date ge ${dates?.from} and date le ${dates?.to}` : `date ge ${dates?.from} and date le ${dates?.to}`;
+            let colFil = columnFilters.filter(s => s.id !== 'registerDateTime');
+            colFil.push({
+                id: 'registerDateTime', value: {from: dates?.from, to: dates?.to}
+            });
+            setColumnFilters(colFil);
             setPagination({pageIndex: 0, pageSize: pagination.pageSize});
-            // setTimeQuery(newQuery);
         }
     }
 
@@ -283,6 +287,8 @@ const AllAeds = () => {
                 if (key === 'aedBatteryType' || key === 'internalTestResult')
                     return `${key} eq '${item.value}'`
 
+                if (key === 'registerDateTime')
+                    return `registerDateTime ge ${item.value?.from} and registerDateTime le ${item.value?.to}`
                 const value = item.value.trim();
                 return `contains(${key},'${value}')`;
 
@@ -316,9 +322,9 @@ const AllAeds = () => {
                 headerChildren={
                     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
 
-                        {/*<Button onClick={() => {*/}
-                        {/*    setOpenTimeFilterModal(true);*/}
-                        {/*}}>⌚ Time Filter</Button>*/}
+                        <Button onClick={() => {
+                            setOpenTimeFilterModal(true);
+                        }}>⌚ Register Date Filter</Button>
 
                         <CardTopActions
                             firstAction={() => {

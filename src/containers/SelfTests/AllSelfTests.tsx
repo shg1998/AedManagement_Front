@@ -31,7 +31,7 @@ const AllSelfTests = () => {
     const aedId = searchParams.get('id');
     const [refetchTableData, setRefetchTableData] = useState<boolean>(true);
     const [dateFilters, setDateFilters] = useState<DateTimeFilterType | undefined>({
-        from: new Date(Date.now() - 2190 * 24 * 60 * 60 * 1000).toISOString(), // 6 years
+        from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 6 years
         to: new Date(Date.now()).toISOString()
     });
     const [openTimeFilterModal, setOpenTimeFilterModal] =
