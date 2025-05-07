@@ -19,6 +19,7 @@ const AllAdmins = lazy(() => import("./containers/Admins/AllAdmins"));
 const AllAeds = lazy(() => import("./containers/Aeds/AllAeds"));
 const AllUsers = lazy(() => import("./containers/Users/AllUsers"));
 const AllSelfTests = lazy(() => import("./containers/SelfTests/AllSelfTests"));
+const AllAedServices = lazy(() => import("./containers/AedServices/AllAedServices"));
 const NotFound = lazy(() => import("./containers/NotFound/NotFound"));
 
 
@@ -77,6 +78,17 @@ const App = (): React.JSX.Element => {
                                             element={<Dashboard component={<AllSelfTests/>}/>}
                                             section_name="selfTests"
                                             module_name="selfTests"
+                                        />
+                                    }
+                                />
+
+                                <Route
+                                    path={routes.aedServices}
+                                    element={
+                                        <CustomRoute
+                                            element={<Dashboard component={<AllAedServices/>}/>}
+                                            section_name="aedServices"
+                                            module_name="aedServices"
                                         />
                                     }
                                 />

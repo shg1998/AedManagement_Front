@@ -5,6 +5,7 @@ const routes = {
   users: '/dashboard/users',
   admins: '/dashboard/admins',
   selfTests: '/dashboard/selfTests',
+  aedServices: '/dashboard/services',
 };
 
 export default routes;

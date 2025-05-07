@@ -294,7 +294,7 @@ const AllAeds = () => {
     }
 
     const handleRowServices = (row: any) => {
-
+        navigate('/dashboard/services?id=' + row.id, {state: {row}});
     }
 
     const handleEditAed = (row: any) => {
