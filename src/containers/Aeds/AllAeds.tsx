@@ -49,7 +49,7 @@ const AllAeds = () => {
     const {isAdmin, isSuperAdmin} = useAuthState();
     const navigate = useNavigate();
     const newAedRef = useRef<NewAedHandle>(null);
-    const {themeMode, theme} = useThemeContext();
+    const {themeMode} = useThemeContext();
     const timeFilterRef = useRef<NewFilterHandle>(null);
     const tableInstanceRef = useRef(null);
     const [refetchTableData, setRefetchTableData] = useState<boolean>(true);

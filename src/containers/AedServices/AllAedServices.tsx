@@ -13,19 +13,14 @@ import DateTimeFilter, {
     NewFilterHandle
 } from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import {useLocation} from "react-router-dom";
-import {getJalaliDateTime} from "../../utils/time";
-import AedService from "../../services/AedSelfTest";
+import {convertTimeToLocale2, getJalaliDateTime} from "../../utils/time";
+import AedService from "../../services/AedService";
 import Select from "@mui/material/Select";
 import ListItemText from "@mui/material/ListItemText";
-
-const correctiveActionOptions = [
-    {label: "Repair", value: "Repair"},
-    {label: "Pm", value: "Pm"},
-    {label: "Recall", value: "Recall"},
-    {label: "Upgrade", value: "Upgrade"},
-    {label: "Training", value: "Training"}
-];
-
+import CardTopActions from "../../components/CardTopActions/CardTopActions";
+import {AedType, NewAedHandle} from "../Aeds/NewAed";
+import {AedServiceType, correctiveActionOptions, DEFAULT_AED_SERVICE_INFORMATION} from "./constants";
+import NewAedService from "./NewAedService";
 
 const AllAedServices = () => {
 
@@ -33,20 +28,25 @@ const AllAedServices = () => {
         getAll,
     } = new AedService();
 
+    const newAedServiceRef = useRef<NewAedHandle>(null);
     const {themeMode} = useThemeContext();
     const timeFilterRef = useRef<NewFilterHandle>(null);
     const tableInstanceRef = useRef(null);
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const aedId = searchParams.get('id');
+
+
     const [refetchTableData, setRefetchTableData] = useState<boolean>(true);
     const [dateFilters, setDateFilters] = useState<DateTimeFilterType | undefined>({
         from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 6 years
         to: new Date(Date.now()).toISOString()
     });
+    const [selectedAedService, setSelectedAedService] = useState<AedServiceType>();
     const [openTimeFilterModal, setOpenTimeFilterModal] =
         useState<boolean>(false);
-
+    const [openManageAedServiceModal, setOpenManageAedServiceModal] =
+        useState<boolean>(false);
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
     const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([{
         id: 'aedId', value: aedId
@@ -244,6 +244,29 @@ const AllAedServices = () => {
             .join('/');
     }
 
+    const handleEditService = (row: any) => {
+
+    }
+
+    const handleShowDetails = (row: any) => {
+
+    }
+
+    const handleCloseManageModal = (): void => {
+        setSelectedAedService(DEFAULT_AED_SERVICE_INFORMATION);
+        setOpenManageAedServiceModal(false);
+    };
+
+    const handleAddAedService = async () => {
+        newAedServiceRef?.current?.sendRequest();
+    };
+
+    const closeCreateEditModal = () => {
+        setSelectedAedService(DEFAULT_AED_SERVICE_INFORMATION);
+        setOpenManageAedServiceModal(false);
+        setRefetchTableData(!refetchTableData);
+    }
+
     useEffect(() => {
         let filterString = columnFilters
             .filter((item: any) => {
@@ -264,7 +287,7 @@ const AllAedServices = () => {
                     return `${key} eq '${item.value}'`;
 
                 if (key === 'callDate')
-                    return `callDate ge ${item.value?.from} and callDate le ${item.value?.to}`
+                    return `callDate ge ${item.value?.from} and callDate le ${item.value?.to}`;
 
                 if (key === 'correctiveActionGroup') {
                     if (!item.value || item.value.length === 0) return null;
@@ -297,8 +320,17 @@ const AllAedServices = () => {
 
                         <Button onClick={() => {
                             setOpenTimeFilterModal(true);
-                        }}>⌚ Time Filter</Button>
+                        }}>⌚ Call Time Filter</Button>
 
+                        <CardTopActions
+                            firstAction={() => {
+                            }}
+                            secondTitle={"Add AED Service"}
+                            secondAction={() => {
+                                setSelectedAedService(DEFAULT_AED_SERVICE_INFORMATION);
+                                setOpenManageAedServiceModal(true);
+                            }}
+                        />
                     </div>
                 }
             >
@@ -317,16 +349,35 @@ const AllAedServices = () => {
                                 remoteFilter={setColumnFilters}
                                 columnFilters={columnFilters}
                                 totalCount={data.totalItems}
-                                hasRowAction={false}
+                                hasRowAction={true}
                                 disableRowSelection={true}
                                 columnVisibility={columnVisibility}
                                 setColumnVisibility={setColumnVisibility}
+                                editRow={handleEditService}
+                                showRowDetail={handleShowDetails}
                             />
                         </div>
                     </>
                 )}
                 {isFetching && <div data-testid={"fetching"}></div>}
             </BasicCard>
+
+            <LeftModal
+                title={
+                    selectedAedService?.id === '0' ? "🧑‍🏭 Add Service" : "✏️ Edit Service"
+                }
+                open={openManageAedServiceModal}
+                maxWidth={"sm"}
+                handleClose={handleCloseManageModal}
+                handleAdd={handleAddAedService}
+                buttonLabel={selectedAedService?.id === '0' ? "Submit" : "Apply"}
+            >
+                <NewAedService
+                    ref={newAedServiceRef}
+                    data={selectedAedService?.id === '0' ? DEFAULT_AED_SERVICE_INFORMATION : selectedAedService!}
+                    closeModal={closeCreateEditModal}
+                />
+            </LeftModal>
 
             <LeftModal
                 title={"⏰ Time Filter"}
