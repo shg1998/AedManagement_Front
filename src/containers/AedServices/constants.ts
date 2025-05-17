@@ -1,4 +1,4 @@
-import {convertTimeToLocale2} from "../../utils/time";
+import {convertTimeToLocale, convertTimeToLocale2} from "../../utils/time";
 import {ItemType} from "../../components/MySelect/MySelect";
 
 export const correctiveActionOptions = [
@@ -24,7 +24,7 @@ export type AedServiceType = {
     description?: string;
     cost: string;
     userId: number;
-    aedId: string;
+    aedId: string | null;
     nonConformityId: string;
     replacementParts?: ReplacementPartType[]
 }
@@ -32,14 +32,19 @@ export type AedServiceType = {
 export const DEFAULT_AED_SERVICE_INFORMATION: AedServiceType = {
     id: '0',
     correctiveActionGroup: 'Repair',
-    visitDate: convertTimeToLocale2(Date()),
-    callDate: convertTimeToLocale2(Date()),
+    visitDate: Date(),
+    callDate: Date(),
     description: '',
     cost: 'Free',
     userId: 0,
     aedId: '',
     nonConformityId: '',
-    replacementParts: []
+    replacementParts: [{
+        prevSerialNumber: "",
+        newSerialNumber: "",
+        prevPartId: 0,
+        newPartId: 0,
+    }]
 }
 
 export const CostTypes: ItemType[] = [
@@ -78,5 +83,11 @@ export type UserType = {
 
 export type NonConformityType = {
     title: string;
+    id: string;
+}
+
+export type PartType = {
+    name: string;
+    partNumber: string;
     id: string;
 }

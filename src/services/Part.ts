@@ -1,14 +1,12 @@
 
 import Api from "./API/Api";
-import {AedServiceType} from "../containers/AedServices/constants";
 
-class AedService extends Api {
+class Part extends Api {
     urls = {
-        objects: "AedService/get-all-aed-services",
-        add: "AedService/create-aed-service",
+        objects: "Part/get-all-parts",
     };
 
-    getAll = async (
+    getAllParts = async (
         limit?: number, skip?: number, filter?: string
     ): Promise<any> => {
         try {
@@ -35,21 +33,6 @@ class AedService extends Api {
         }
     };
 
-    postNewAedServiceForm = async (data: AedServiceType): Promise<any> => {
-        try {
-            // @ts-ignore
-            delete data.id;
-            const result = await this.postJsonData(
-                this.urls.add,
-                data
-            );
-            return result.data;
-        } catch (e) {
-            return Promise.reject(e);
-        }
-    };
-
-
 }
 
-export default AedService;
+export default Part;

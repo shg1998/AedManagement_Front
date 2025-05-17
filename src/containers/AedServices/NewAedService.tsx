@@ -1,22 +1,25 @@
+import React, {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import Container from "@mui/material/Container";
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
-import {InputLabel} from "@mui/material";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
+import {InputLabel, Typography, TextField, Button} from "@mui/material";
 import clsx from "clsx";
-import {useStyles} from "../../assets/scss/timeFilterStyle";
-import {useFormik} from "formik";
-import * as Yup from "yup";
-import Button from "@mui/material/Button";
-import {useMutation, useQuery} from "react-query";
-import {tError, tSuccess} from "../../utils/toast";
 import {styled} from "@mui/material/styles";
+import {Formik, FieldArray, getIn} from "formik";
+import * as Yup from "yup";
+import {useMutation, useQuery} from "react-query";
+import {debounce} from "lodash";
+
 import MySelect from "../../components/MySelect/MySelect";
 import Autocomplete from "@mui/material/Autocomplete";
 import MyDateTimePicker from "../../components/DateTimePicker Jalali/DateTimePicker";
 import {removeCharsAfterZ} from "../../components/CustomDateTimeFilter/DateTimeFilter";
-import Aed from "../../services/Aed";
 import {convertTimeToLocale} from "../../utils/time";
+import {tError, tSuccess} from "../../utils/toast";
+
+import AedService from "../../services/AedService";
+import Users from "../../services/Users";
+import NonConformity from "../../services/NonConformity";
+import Part from "../../services/Part";
+
 import {
     AedServiceType,
     CorrectiveActionGroupTypes,
@@ -24,32 +27,10 @@ import {
     NewAedHandle,
     NewAedProps,
     NonConformityType,
-    UserType
+    PartType,
+    UserType,
 } from "./constants";
-import {debounce} from "lodash";
-import Users from "../../services/Users";
-import NonConformity from "../../services/NonConformity";
-
-const AedServiceSchema = Yup.object().shape({
-    serialNumber: Yup.string()
-        .required("⛔ Serial Number is required!"),
-
-    province: Yup.string()
-        .required("⛔ Province is required!"),
-
-    city: Yup.string()
-        .required("⛔ City is required!"),
-
-    place: Yup.string()
-        .required("⛔ Place is required!"),
-
-    registerDateTime: Yup.string()
-        .required("⛔ Register DateTime is required!")
-        .test("is-valid-date", "⛔ Invalid date format.", (value: any) => {
-            return value && !isNaN(Date.parse(value));
-        }),
-});
-
+import {useLocation} from "react-router-dom";
 
 const StyledTextField = styled(TextField)(({theme}) => ({
     marginTop: theme.spacing(2),
@@ -66,95 +47,98 @@ const StyledTextField = styled(TextField)(({theme}) => ({
     },
 }));
 
+const AedServiceSchema = Yup.object().shape({
+    userId: Yup.number()
+        .typeError("⛔ Expert selection is required!")
+        .required("⛔ Expert selection is required!")
+        .notOneOf([0], "⛔ Please select a valid Expert."),
+    nonConformityId: Yup.string().required("⛔ Non Conformity selection is required!"),
+    description: Yup.string()
+        .trim()
+        .max(500, "Description cannot exceed 500 characters")
+        .nullable(),
+    replacementParts: Yup.array().of(
+        Yup.object().shape({
+            prevSerialNumber: Yup.string().required("Previous Serial Number is required"),
+            newSerialNumber: Yup.string().required("New Serial Number is required"),
+            prevPartId: Yup.number().notOneOf([0], "Please select a valid Previous Part"),
+            newPartId: Yup.number().notOneOf([0], "Please select a valid New Part"),
+        })
+    ),
+});
+
 const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) => {
-    const classes = useStyles();
     const submitBtnRef = useRef<any>();
-    const {postNewAedForm, editAedForm} = new Aed();
+    const {postNewAedServiceForm} = new AedService();
     const {getUsers} = new Users();
     const {getAll} = new NonConformity();
-    const [searchUser, setSearchUser] = useState('');
-    const [searchNonConformity, setSearchNonConformity] = useState('');
+    const {getAllParts} = new Part();
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const aedId = searchParams.get('id');
 
-    const debouncedUserSearch = useRef(debounce((val) => {
-        setSearchUser(val);
-    }, 500)).current;
+    const [searchUser, setSearchUser] = useState("");
+    const [searchNonConformity, setSearchNonConformity] = useState("");
 
-    const debouncedNonConformitySearch = useRef(debounce((val) => {
-        setSearchNonConformity(val);
-    }, 500)).current;
+    const debouncedUserSearch = React.useRef(
+        debounce((val) => {
+            setSearchUser(val);
+        }, 500)
+    ).current;
 
-    const { data: userOptions = [], isLoading } = useQuery<UserType[]>(
-        ['user-search', searchUser],
+    const debouncedNonConformitySearch = React.useRef(
+        debounce((val) => {
+            setSearchNonConformity(val);
+        }, 500)
+    ).current;
+
+    const {data: userOptions = [], isLoading} = useQuery<UserType[]>(
+        ["user-search", searchUser],
         async () => {
-           const res = await getUsers(100, 0, `contains(fullName,'${searchUser}')`);
-           return (res.data.data).map((r: any) => {
-               return {
-                   id: r.id,
-                   fullName: r.fullName
-               }
-           });
+            const res = await getUsers(100, 0, `contains(fullName,'${searchUser}')`);
+            return res.data.data.map((r: any) => ({
+                id: r.id,
+                fullName: r.fullName,
+            }));
         },
-        {
-            staleTime: 0,
-            cacheTime: 0,
-        }
+        {staleTime: 0, cacheTime: 0}
     );
 
-    const { data: nonConformityOptions = [], isLoading: isNonLoading } = useQuery<NonConformityType[]>(
-        ['non-conformity-search', searchNonConformity],
+    const {data: nonConformityOptions = [], isLoading: isNonLoading} = useQuery<NonConformityType[]>(
+        ["non-conformity-search", searchNonConformity],
         async () => {
             const res = await getAll(10, 0, `contains(title,'${searchNonConformity}')`);
-            return (res.data.data).map((r: any) => {
-                return {
-                    id: r.id,
-                    title: r.title
-                }
-            });
+            return res.data.data.map((r: any) => ({
+                id: r.id,
+                title: r.title,
+            }));
         },
-        {
-            staleTime: 0,
-            cacheTime: 0,
-        }
+        {staleTime: 0, cacheTime: 0}
     );
 
-    const {mutate: addAed} = useMutation(postNewAedForm, {
-        onSuccess: async (data) => {
+    const {data: partOptions = [], isLoading: isPartLoading} = useQuery<PartType[]>(
+        ["parts-search"],
+        async () => {
+            const res = await getAllParts(20, 0);
+            return res.data.data.map((r: any) => ({
+                id: r.id,
+                name: r.name,
+                partNumber: r.partNumber,
+            }));
+        },
+        {staleTime: 0, cacheTime: 0}
+    );
+
+    const {mutate: addAedService} = useMutation(postNewAedServiceForm, {
+        onSuccess: (data) => {
             if (data?.isSuccess) {
                 closeModal();
                 tSuccess(data?.data);
             }
         },
-        onError: async (error: any) => {
+        onError: (error: any) => {
             closeModal();
             tError(error.response.data.Message);
-        },
-    });
-
-    const {mutate: editAed} = useMutation(editAedForm, {
-        onSuccess: async (data) => {
-            if (data?.isSuccess) {
-                closeModal();
-                tSuccess(data?.data);
-            }
-        },
-        onError: async (error: any) => {
-            closeModal();
-            tError(error.response.data.Message);
-        },
-    });
-
-
-    const formik = useFormik<AedServiceType>({
-        initialValues: data,
-        validationSchema: AedServiceSchema,
-        onSubmit: async (values): Promise<any> => {
-            if (values.id === '0') {
-                // @ts-ignore
-                delete values.id;
-                // addAed(values);
-            } else {
-                // editAed(values);
-            }
         },
     });
 
@@ -164,151 +148,315 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
 
     const sendRequest = () => {
         submitBtnRef.current.click();
-    }
+    };
 
     return (
-        <div className={classes.BgContainer}>
-            <Container className={classes.mainContainer}>
-                <form className={classes.formContainer} onSubmit={formik.handleSubmit}>
-                    <InputLabel htmlFor="correctiveActionGroup">
-                        <Typography className={classes.inputLabel}>
-                            ⚒️ Corrective Action Group
-                        </Typography>
-                    </InputLabel>
-                    <br/>
-                    <MySelect
-                        label=""
-                        formik={formik}
-                        items={CorrectiveActionGroupTypes}
-                        {...formik.getFieldProps("correctiveActionGroup")}
-                    />
-                    {formik.errors.correctiveActionGroup && formik.touched.correctiveActionGroup ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.correctiveActionGroup}
-                        </Typography>
-                    ) : null}
-                    <br/>
-                    <br/>
-                    <InputLabel htmlFor="callDate">
-                        <Typography className={classes.inputLabel}>📅 Call DateTime</Typography>
-                    </InputLabel>
-                    <br/>
-                    <MyDateTimePicker
-                        required
-                        name="callDate"
-                        blur={() => {
-                        }}
-                        value={convertTimeToLocale(formik.values.callDate)}
-                        onChangeFunc={(d: any) => {
-                            const formattedDate = d ? removeCharsAfterZ(d) : "";
-                            formik.setFieldValue('callDate', formattedDate);
-                        }}
-                    />
-                    {formik.errors.callDate && formik.touched.callDate ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.callDate}
-                        </Typography>
-                    ) : null}
-                    <br/>
-
-                    <InputLabel htmlFor="visitDate">
-                        <Typography className={classes.inputLabel}>📅 Visit DateTime</Typography>
-                    </InputLabel>
-                    <br/>
-                    <MyDateTimePicker
-                        required
-                        name="visitDate"
-                        blur={() => {
-                        }}
-                        value={convertTimeToLocale(formik.values.visitDate)}
-                        onChangeFunc={(d: any) => {
-                            const formattedDate = d ? removeCharsAfterZ(d) : "";
-                            formik.setFieldValue('visitDate', formattedDate);
-                        }}
-                    />
-                    {formik.errors.visitDate && formik.touched.visitDate ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.visitDate}
-                        </Typography>
-                    ) : null}
-                    <br/>
-
-                    <InputLabel htmlFor="userId">
-                        <Typography className={classes.inputLabel}>
-                            👤 Expert
-                        </Typography>
-                    </InputLabel>
-                    <Autocomplete
-                        disablePortal
-                        options={userOptions}
-                        loading={isLoading}
-                        getOptionLabel={(option) => option?.fullName ?? ""}
-                        onInputChange={(_, value) => {
-                            debouncedUserSearch(value);
-                        }}
-                        onChange={(_, newValue) => {
-                            formik.setFieldValue('userId', newValue ? newValue.id : '');
-                        }}
-                        renderInput={(params) => (
-                            <StyledTextField
-                                {...params}
-                                placeholder="Search expert..."
-                            />
+        <Container>
+            <Formik
+                initialValues={{
+                    ...data,
+                    replacementParts: data.replacementParts ?? [],
+                    aedId: aedId
+                }}
+                validationSchema={AedServiceSchema}
+                onSubmit={async (values) => {
+                    if (values.id === "0") {
+                        // @ts-ignore
+                        delete values.id;
+                        addAedService(values);
+                    } else {
+                        // edit logic here
+                    }
+                }}
+            >
+                {(formik) => (
+                    <form onSubmit={formik.handleSubmit}>
+                        {/* Corrective Action Group */}
+                        <br/>
+                        <InputLabel htmlFor="correctiveActionGroup">
+                            <Typography>⚒️ Corrective Action Group</Typography>
+                        </InputLabel>
+                        <MySelect
+                            label=""
+                            formik={formik}
+                            items={CorrectiveActionGroupTypes}
+                            {...formik.getFieldProps("correctiveActionGroup")}
+                        />
+                        {formik.errors.correctiveActionGroup && formik.touched.correctiveActionGroup && (
+                            <Typography color="error" variant="caption">
+                                {formik.errors.correctiveActionGroup}
+                            </Typography>
                         )}
-                    />
 
-                    <InputLabel htmlFor="nonConformityId">
-                        <Typography className={classes.inputLabel}>
-                            😖 Non Conformity
-                        </Typography>
-                    </InputLabel>
-                    <Autocomplete
-                        disablePortal
-                        options={nonConformityOptions}
-                        loading={isNonLoading}
-                        getOptionLabel={(option) => option?.title ?? ""}
-                        onInputChange={(_, value) => {
-                            debouncedNonConformitySearch(value);
-                        }}
-                        onChange={(_, newValue) => {
-                            formik.setFieldValue('nonConformityId', newValue ? newValue.id : '');
-                        }}
-                        renderInput={(params) => (
-                            <StyledTextField
-                                {...params}
-                                placeholder="Search Non Conformity..."
-                            />
+                        <br/>
+                        <br/>
+                        {/* Call Date */}
+                        <InputLabel htmlFor="callDate">
+                            <Typography>📅 Call DateTime</Typography>
+                        </InputLabel>
+                        <MyDateTimePicker
+                            required
+                            name="callDate"
+                            value={formik.values.callDate}
+                            onChangeFunc={(d: any) => {
+                                const formattedDate = d ? removeCharsAfterZ(d) : "";
+                                formik.setFieldValue("callDate", formattedDate);
+                            }}
+                            blur={() => {
+                            }}
+                        />
+                        {formik.errors.callDate && formik.touched.callDate && (
+                            <Typography color="error" variant="caption">
+                                {formik.errors.callDate}
+                            </Typography>
                         )}
-                    />
+                        <br/>
+                        {/* Visit Date */}
+                        <InputLabel htmlFor="visitDate">
+                            <Typography>📅 Visit DateTime</Typography>
+                        </InputLabel>
+                        <MyDateTimePicker
+                            required
+                            name="visitDate"
+                            value={formik.values.visitDate}
+                            onChangeFunc={(d: any) => {
+                                const formattedDate = d ? removeCharsAfterZ(d) : "";
+                                formik.setFieldValue("visitDate", formattedDate);
+                            }}
+                            blur={() => {
+                            }}
+                        />
+                        {formik.errors.visitDate && formik.touched.visitDate && (
+                            <Typography color="error" variant="caption">
+                                {formik.errors.visitDate}
+                            </Typography>
+                        )}
+                        <br/>
+                        {/* Expert */}
+                        <InputLabel htmlFor="userId">
+                            <Typography>👤 Expert</Typography>
+                        </InputLabel>
+                        <Autocomplete
+                            disablePortal
+                            options={userOptions}
+                            loading={isLoading}
+                            getOptionLabel={(option) => option?.fullName ?? ""}
+                            onInputChange={(_, value) => {
+                                debouncedUserSearch(value);
+                            }}
+                            onChange={(_, newValue) => {
+                                formik.setFieldValue("userId", newValue ? newValue.id : 0);
+                            }}
+                            renderInput={(params) => <StyledTextField {...params} placeholder="Search expert..."/>}
+                        />
+                        {formik.errors.userId && formik.touched.userId && (
+                            <Typography color="error" variant="caption">
+                                {formik.errors.userId}
+                            </Typography>
+                        )}
 
-                    <InputLabel htmlFor="cost">
-                        <Typography className={classes.inputLabel}>
-                            💰 Cost
-                        </Typography>
-                    </InputLabel>
-                    <br/>
-                    <MySelect
-                        label=""
-                        formik={formik}
-                        items={CostTypes}
-                        {...formik.getFieldProps("cost")}
-                    />
-                    {formik.errors.cost && formik.touched.cost ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.cost}
-                        </Typography>
-                    ) : null}
+                        {/* Non Conformity */}
+                        <InputLabel htmlFor="nonConformityId">
+                            <Typography>😖 Non Conformity</Typography>
+                        </InputLabel>
+                        <Autocomplete
+                            disablePortal
+                            options={nonConformityOptions}
+                            loading={isNonLoading}
+                            getOptionLabel={(option) => option?.title ?? ""}
+                            onInputChange={(_, value) => {
+                                debouncedNonConformitySearch(value);
+                            }}
+                            onChange={(_, newValue) => {
+                                formik.setFieldValue("nonConformityId", newValue ? newValue.id : "");
+                            }}
+                            renderInput={(params) => <StyledTextField {...params}
+                                                                      placeholder="Search Non Conformity..."/>}
+                        />
+                        {formik.errors.nonConformityId && formik.touched.nonConformityId && (
+                            <Typography color="error" variant="caption">
+                                {formik.errors.nonConformityId}
+                            </Typography>
+                        )}
 
+                        {/* Cost */}
+                        <InputLabel htmlFor="cost">
+                            <Typography>💰 Cost</Typography>
+                        </InputLabel>
+                        <MySelect
+                            label=""
+                            formik={formik}
+                            items={CostTypes}
+                            {...formik.getFieldProps("cost")}
+                        />
+                        {formik.errors.cost && formik.touched.cost && (
+                            <Typography color="error" variant="caption">
+                                {formik.errors.cost}
+                            </Typography>
+                        )}
 
-                    <Button
-                        ref={submitBtnRef}
-                        type="submit"
-                        hidden={true}
-                    />
+                        <br/>
+                        <br/>
 
-                </form>
-            </Container>
-        </div>
+                        {/* Description */}
+                        <InputLabel htmlFor="description">
+                            <Typography>📝 Description</Typography>
+                        </InputLabel>
+                        <StyledTextField
+                            id="description"
+                            name="description"
+                            multiline
+                            rows={4}
+                            variant="outlined"
+                            value={formik.values.description}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            placeholder="Enter description..."
+                            error={formik.touched.description && Boolean(formik.errors.description)}
+                            helperText={formik.touched.description && formik.errors.description}
+                        />
+
+                        <InputLabel>
+                            <Typography>⚙️ Replacement Parts</Typography>
+                        </InputLabel>
+                        <br/>
+                        {/* Replacement Parts - FieldArray */}
+                        <FieldArray
+                            name="replacementParts"
+                            render={(arrayHelpers) => (
+                                <div>
+                                    {formik.values.replacementParts && formik.values.replacementParts.length > 0 ? (
+                                        formik.values.replacementParts.map((part, index) => {
+                                            const prevSerialTouched = getIn(formik.touched, `replacementParts.${index}.prevSerialNumber`);
+                                            const prevSerialError = getIn(formik.errors, `replacementParts.${index}.prevSerialNumber`);
+
+                                            const newSerialTouched = getIn(formik.touched, `replacementParts.${index}.newSerialNumber`);
+                                            const newSerialError = getIn(formik.errors, `replacementParts.${index}.newSerialNumber`);
+
+                                            const prevPartIdTouched = getIn(formik.touched, `replacementParts.${index}.prevPartId`);
+                                            const prevPartIdError = getIn(formik.errors, `replacementParts.${index}.prevPartId`);
+
+                                            const newPartIdTouched = getIn(formik.touched, `replacementParts.${index}.newPartId`);
+                                            const newPartIdError = getIn(formik.errors, `replacementParts.${index}.newPartId`);
+
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    style={{
+                                                        marginBottom: 20,
+                                                        padding: 10,
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: 8,
+                                                    }}
+                                                >
+                                                    <StyledTextField
+                                                        fullWidth
+                                                        label="Previous Serial Number"
+                                                        name={`replacementParts.${index}.prevSerialNumber`}
+                                                        value={formik.values.replacementParts[index].prevSerialNumber || ""}
+                                                        onChange={formik.handleChange}
+                                                        onBlur={formik.handleBlur}
+                                                        error={Boolean(prevSerialTouched && prevSerialError)}
+                                                        helperText={prevSerialTouched && prevSerialError}
+                                                        margin="normal"
+                                                    />
+
+                                                    <StyledTextField
+                                                        fullWidth
+                                                        label="New Serial Number"
+                                                        name={`replacementParts.${index}.newSerialNumber`}
+                                                        value={formik.values.replacementParts[index].newSerialNumber || ""}
+                                                        onChange={formik.handleChange}
+                                                        onBlur={formik.handleBlur}
+                                                        error={Boolean(newSerialTouched && newSerialError)}
+                                                        helperText={newSerialTouched && newSerialError}
+                                                        margin="normal"
+                                                    />
+
+                                                    <InputLabel>Previous Part</InputLabel>
+                                                    <MySelect
+                                                        label=""
+                                                        formik={formik}
+                                                        items={partOptions.map((p) => ({
+                                                            value: p.id,
+                                                            label: p.name,
+                                                            id: p.id,
+                                                            title: p.name
+                                                        }))}
+                                                        {...formik.getFieldProps(`replacementParts.${index}.prevPartId`)}
+                                                    />
+                                                    {prevPartIdTouched && prevPartIdError && (
+                                                        <Typography color="error" variant="caption">
+                                                            {prevPartIdError}
+                                                        </Typography>
+                                                    )}
+
+                                                    <InputLabel>New Part</InputLabel>
+                                                    <MySelect
+                                                        label=""
+                                                        formik={formik}
+                                                        items={partOptions.map((p) => ({
+                                                            value: p.id,
+                                                            label: p.name,
+                                                            id: p.id,
+                                                            title: p.name
+                                                        }))}
+                                                        {...formik.getFieldProps(`replacementParts.${index}.newPartId`)}
+                                                    />
+                                                    {newPartIdTouched && newPartIdError && (
+                                                        <Typography color="error" variant="caption">
+                                                            {newPartIdError}
+                                                        </Typography>
+                                                    )}
+
+                                                    <Button
+                                                        variant="outlined"
+                                                        color="error"
+                                                        onClick={() => arrayHelpers.remove(index)}
+                                                        style={{
+                                                            marginTop: 8,
+                                                            textTransform: "none",
+                                                            fontSize: '0.9rem'
+                                                        }}
+                                                    >
+                                                        - Remove
+                                                    </Button>
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <Typography>No replacement parts added.</Typography>
+                                    )}
+
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() =>
+                                            arrayHelpers.push({
+                                                prevSerialNumber: "",
+                                                newSerialNumber: "",
+                                                prevPartId: 0,
+                                                newPartId: 0,
+                                            })
+                                        }
+                                        style={{
+                                            marginTop: 16,
+                                            fontSize: '0.9rem',
+                                            textTransform: "none"
+                                        }}
+                                    >
+                                        + Add Replacement Part
+                                    </Button>
+                                </div>
+                            )}
+                        />
+
+                        <Button ref={submitBtnRef} type="submit" hidden/>
+                    </form>
+                )}
+            </Formik>
+        </Container>
     );
 });
+
 export default NewAedService;

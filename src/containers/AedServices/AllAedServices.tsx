@@ -176,7 +176,7 @@ const AllAedServices = () => {
                 maxSize: 20,
                 enableSorting: false,
                 enableColumnFilter: false,
-                accessorFn: (row: any) => row.callDate === null ? "" : getJalaliDateTime(row.callDate),
+                accessorFn: (row: any) => row.visitDate === null ? "" : getJalaliDateTime(row.visitDate),
             },
             {
                 accessorKey: "user.fullName",
@@ -224,9 +224,9 @@ const AllAedServices = () => {
         let dates = timeFilterRef?.current?.setBoundaries();
         setDateFilters(dates);
         if (dates !== null) {
-            let colFil = columnFilters.filter(s => s.id !== 'sentTime');
+            let colFil = columnFilters.filter(s => s.id !== 'callDate');
             colFil.push({
-                id: 'sentTime', value: {from: dates?.from, to: dates?.to}
+                id: 'callDate', value: {from: dates?.from, to: dates?.to}
             });
             setColumnFilters(colFil);
             setPagination({pageIndex: 0, pageSize: pagination.pageSize});
@@ -280,6 +280,8 @@ const AllAedServices = () => {
                 if (key.toString().includes('.')) {
                     key = toODataPath(key.toString());
                 }
+
+                console.log(item);
                 if (key === 'aedId')
                     return `${key} eq ${item.value}`;
 
