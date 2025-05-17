@@ -29,6 +29,7 @@ import {
 } from "./constants";
 import NewAedService from "./NewAedService";
 import {useQuery} from "react-query";
+import AedServiceDetails from "./AedServiceDetails";
 
 const AllAedServices = () => {
 
@@ -54,6 +55,8 @@ const AllAedServices = () => {
     });
     const [selectedAedServiceId, setSelectedAedServiceId] = useState<string>();
     const [openTimeFilterModal, setOpenTimeFilterModal] =
+        useState<boolean>(false);
+    const [openDetailsModal, setOpenDetailsModal] =
         useState<boolean>(false);
     const [openManageAedServiceModal, setOpenManageAedServiceModal] =
         useState<boolean>(false);
@@ -116,6 +119,7 @@ const AllAedServices = () => {
         async () => {
             const res = await getAedServiceById(selectedAedServiceId!);
             const finalRes = res.data;
+            setOpenDetailsModal(true);
             return {
                 correctiveActionGroup: finalRes.correctiveActionGroup,
                 visitDate: finalRes.visitDate,
@@ -318,6 +322,11 @@ const AllAedServices = () => {
         setOpenTimeFilterModal(false);
     }
 
+    const handleCloseDetails = () => {
+        setOpenDetailsModal(false);
+        setSelectedAedServiceId('0');
+    }
+
     function toODataPath(input: string): string {
         return input
             .split('.')
@@ -333,7 +342,6 @@ const AllAedServices = () => {
     const handleShowDetails = (row: any) => {
         setSelectedAedServiceId(row.id);
         setMode('detail');
-        setOpenManageAedServiceModal(true);
     }
 
     const handleCloseManageModal = (): void => {
@@ -465,6 +473,15 @@ const AllAedServices = () => {
             </LeftModal>
 
             <LeftModal
+                title={"Aed Service Details"}
+                open={openDetailsModal}
+                maxWidth={"md"}
+                handleClose={handleCloseDetails}
+            >
+                <AedServiceDetails data={aedServiceDetails}/>
+            </LeftModal>
+
+            <LeftModal
                 title={"⏰ Time Filter"}
                 open={openTimeFilterModal}
                 maxWidth={"sm"}
@@ -476,7 +493,7 @@ const AllAedServices = () => {
             </LeftModal>
 
             {
-                aedServiceEditLoading && <LoadingComponent />
+                (aedServiceEditLoading || aedServiceDetailsLoading) && <LoadingComponent/>
             }
         </Paper>
     );
