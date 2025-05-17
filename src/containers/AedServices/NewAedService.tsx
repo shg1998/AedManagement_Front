@@ -79,6 +79,8 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
 
     const [searchUser, setSearchUser] = useState("");
     const [searchNonConformity, setSearchNonConformity] = useState("");
+    const [user, setUser] = useState(data.user ?? {});
+    const [nonConformity, setNonConformity] = useState(data.nonConformity ?? {});
 
     const debouncedUserSearch = React.useRef(
         debounce((val) => {
@@ -155,7 +157,7 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
             <Formik
                 initialValues={{
                     ...data,
-                    replacementParts: data.replacementParts ?? [],
+                    replacementParts: data?.replacementParts ?? [],
                     aedId: aedId
                 }}
                 validationSchema={AedServiceSchema}
@@ -163,6 +165,7 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                     if (values.id === "0") {
                         // @ts-ignore
                         delete values.id;
+                        // console.log(values)
                         addAedService(values);
                     } else {
                         // edit logic here
@@ -240,12 +243,14 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                             disablePortal
                             options={userOptions}
                             loading={isLoading}
+                            value={user}
                             getOptionLabel={(option) => option?.fullName ?? ""}
                             onInputChange={(_, value) => {
                                 debouncedUserSearch(value);
                             }}
                             onChange={(_, newValue) => {
                                 formik.setFieldValue("userId", newValue ? newValue.id : 0);
+                                setUser(newValue);
                             }}
                             renderInput={(params) => <StyledTextField {...params} placeholder="Search expert..."/>}
                         />
@@ -263,12 +268,14 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                             disablePortal
                             options={nonConformityOptions}
                             loading={isNonLoading}
+                            value={nonConformity}
                             getOptionLabel={(option) => option?.title ?? ""}
                             onInputChange={(_, value) => {
                                 debouncedNonConformitySearch(value);
                             }}
                             onChange={(_, newValue) => {
                                 formik.setFieldValue("nonConformityId", newValue ? newValue.id : "");
+                                setNonConformity(newValue);
                             }}
                             renderInput={(params) => <StyledTextField {...params}
                                                                       placeholder="Search Non Conformity..."/>}

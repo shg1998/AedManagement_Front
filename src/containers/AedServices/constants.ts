@@ -24,16 +24,45 @@ export type AedServiceType = {
     description?: string;
     cost: string;
     userId: number;
+    user?: any;
     aedId: string | null;
     nonConformityId: string;
+    nonConformity?: any;
     replacementParts?: ReplacementPartType[]
+}
+
+export type AedServiceDetailsType = {
+    correctiveActionGroup: string;
+    visitDate: string;
+    callDate: string;
+    description?: string;
+    cost: string;
+    nonConformity: string;
+    replacementParts?: ReplacementDetailsType[];
+    user: UserAedServiceType;
+
+}
+
+export type ReplacementDetailsType = {
+    prevSerialNumber: string;
+    newSerialNumber: string;
+    prevPartName: string;
+    prevPartNumber: string;
+    newPartName: string;
+    newPartNumber: string;
+}
+
+export type UserAedServiceType = {
+    fullName: string;
+    username: string;
+    province?: string;
 }
 
 export const DEFAULT_AED_SERVICE_INFORMATION: AedServiceType = {
     id: '0',
     correctiveActionGroup: 'Repair',
-    visitDate: Date(),
-    callDate: Date(),
+    visitDate: new Date().toISOString(),
+    callDate: new Date().toISOString(),
     description: '',
     cost: 'Free',
     userId: 0,

@@ -19,13 +19,22 @@ import Select from "@mui/material/Select";
 import ListItemText from "@mui/material/ListItemText";
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import {AedType, NewAedHandle} from "../Aeds/NewAed";
-import {AedServiceType, correctiveActionOptions, DEFAULT_AED_SERVICE_INFORMATION} from "./constants";
+import {
+    AedServiceDetailsType,
+    AedServiceType,
+    correctiveActionOptions,
+    DEFAULT_AED_SERVICE_INFORMATION,
+    PartType,
+    ReplacementPartType
+} from "./constants";
 import NewAedService from "./NewAedService";
+import {useQuery} from "react-query";
 
 const AllAedServices = () => {
 
     const {
         getAll,
+        getAedServiceById
     } = new AedService();
 
     const newAedServiceRef = useRef<NewAedHandle>(null);
@@ -37,12 +46,13 @@ const AllAedServices = () => {
     const aedId = searchParams.get('id');
 
 
+    const [mode, setMode] = useState<'edit' | 'detail'>('detail');
     const [refetchTableData, setRefetchTableData] = useState<boolean>(true);
     const [dateFilters, setDateFilters] = useState<DateTimeFilterType | undefined>({
         from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 6 years
         to: new Date(Date.now()).toISOString()
     });
-    const [selectedAedService, setSelectedAedService] = useState<AedServiceType>();
+    const [selectedAedServiceId, setSelectedAedServiceId] = useState<string>();
     const [openTimeFilterModal, setOpenTimeFilterModal] =
         useState<boolean>(false);
     const [openManageAedServiceModal, setOpenManageAedServiceModal] =
@@ -64,6 +74,77 @@ const AllAedServices = () => {
         pagination,
         getAll,
         query
+    );
+
+    const {data: aedServiceEditData, isLoading: aedServiceEditLoading} = useQuery<AedServiceType>(
+        ["aed-service-edit", selectedAedServiceId],
+        async () => {
+            const res = await getAedServiceById(selectedAedServiceId!);
+            const finalRes = res.data;
+            setOpenManageAedServiceModal(true);
+            return {
+                id: finalRes.id,
+                correctiveActionGroup: finalRes.correctiveActionGroup,
+                visitDate: finalRes.visitDate,
+                callDate: finalRes.callDate,
+                description: finalRes.description,
+                cost: finalRes.cost,
+                userId: finalRes.userId,
+                user: finalRes.user,
+                aedId: finalRes.aedId,
+                nonConformityId: finalRes.nonConformityId,
+                nonConformity: finalRes.nonConformity,
+                replacementParts: finalRes.replacementParts.map((rp: any) => {
+                    return {
+                        prevSerialNumber: rp.prevSerialNumber,
+                        newSerialNumber: rp.newSerialNumber,
+                        prevPartId: rp.prevPart.id,
+                        newPartId: rp.newPart.id
+                    }
+                }),
+            };
+        },
+        {
+            enabled: mode === 'edit' && !!selectedAedServiceId && selectedAedServiceId !== "0",
+            staleTime: 0,
+            cacheTime: 0,
+        }
+    );
+
+    const {data: aedServiceDetails, isLoading: aedServiceDetailsLoading} = useQuery<AedServiceDetailsType>(
+        ["aed-service-details", selectedAedServiceId],
+        async () => {
+            const res = await getAedServiceById(selectedAedServiceId!);
+            const finalRes = res.data;
+            return {
+                correctiveActionGroup: finalRes.correctiveActionGroup,
+                visitDate: finalRes.visitDate,
+                callDate: finalRes.callDate,
+                description: finalRes.description,
+                cost: finalRes.cost,
+                user: {
+                    fullName: finalRes.user.fullName,
+                    username: finalRes.user.username,
+                    province: finalRes.user.province ?? '',
+                },
+                nonConformity: finalRes.nonConformity.title,
+                replacementParts: finalRes.replacementParts.map((rp: any) => {
+                    return {
+                        prevSerialNumber: rp.prevSerialNumber,
+                        newSerialNumber: rp.newSerialNumber,
+                        prevPartName: rp.prevPart.name,
+                        prevPartNumber: rp.prevPart.partNumber,
+                        newPartName: rp.newPart.name,
+                        newPartNumber: rp.newPart.partNumber,
+                    }
+                }),
+            };
+        },
+        {
+            enabled: mode === 'detail' && !!selectedAedServiceId && selectedAedServiceId !== "0",
+            staleTime: 0,
+            cacheTime: 0,
+        }
     );
 
     const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -245,15 +326,18 @@ const AllAedServices = () => {
     }
 
     const handleEditService = (row: any) => {
-
+        setSelectedAedServiceId(row.id);
+        setMode('edit');
     }
 
     const handleShowDetails = (row: any) => {
-
+        setSelectedAedServiceId(row.id);
+        setMode('detail');
+        setOpenManageAedServiceModal(true);
     }
 
     const handleCloseManageModal = (): void => {
-        setSelectedAedService(DEFAULT_AED_SERVICE_INFORMATION);
+        setSelectedAedServiceId('0');
         setOpenManageAedServiceModal(false);
     };
 
@@ -262,7 +346,7 @@ const AllAedServices = () => {
     };
 
     const closeCreateEditModal = () => {
-        setSelectedAedService(DEFAULT_AED_SERVICE_INFORMATION);
+        setSelectedAedServiceId('0');
         setOpenManageAedServiceModal(false);
         setRefetchTableData(!refetchTableData);
     }
@@ -281,7 +365,6 @@ const AllAedServices = () => {
                     key = toODataPath(key.toString());
                 }
 
-                console.log(item);
                 if (key === 'aedId')
                     return `${key} eq ${item.value}`;
 
@@ -329,7 +412,7 @@ const AllAedServices = () => {
                             }}
                             secondTitle={"Add AED Service"}
                             secondAction={() => {
-                                setSelectedAedService(DEFAULT_AED_SERVICE_INFORMATION);
+                                setSelectedAedServiceId('0');
                                 setOpenManageAedServiceModal(true);
                             }}
                         />
@@ -366,17 +449,17 @@ const AllAedServices = () => {
 
             <LeftModal
                 title={
-                    selectedAedService?.id === '0' ? "🧑‍🏭 Add Service" : "✏️ Edit Service"
+                    selectedAedServiceId === '0' ? "🧑‍🏭 Add Service" : "✏️ Edit Service"
                 }
                 open={openManageAedServiceModal}
                 maxWidth={"sm"}
                 handleClose={handleCloseManageModal}
                 handleAdd={handleAddAedService}
-                buttonLabel={selectedAedService?.id === '0' ? "Submit" : "Apply"}
+                buttonLabel={selectedAedServiceId === '0' ? "Submit" : "Apply"}
             >
                 <NewAedService
                     ref={newAedServiceRef}
-                    data={selectedAedService?.id === '0' ? DEFAULT_AED_SERVICE_INFORMATION : selectedAedService!}
+                    data={selectedAedServiceId === '0' ? DEFAULT_AED_SERVICE_INFORMATION : aedServiceEditData!}
                     closeModal={closeCreateEditModal}
                 />
             </LeftModal>
@@ -391,6 +474,10 @@ const AllAedServices = () => {
             >
                 <DateTimeFilter ref={timeFilterRef} data={dateFilters}/>
             </LeftModal>
+
+            {
+                aedServiceEditLoading && <LoadingComponent />
+            }
         </Paper>
     );
 };

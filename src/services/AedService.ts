@@ -1,11 +1,13 @@
-
 import Api from "./API/Api";
 import {AedServiceType} from "../containers/AedServices/constants";
+import {AedType} from "../containers/Aeds/NewAed";
 
 class AedService extends Api {
     urls = {
         objects: "AedService/get-all-aed-services",
         add: "AedService/create-aed-service",
+        getById: "AedService/get-aed-service",
+        edit: "AedService/edit-aed-service",
     };
 
     getAll = async (
@@ -39,6 +41,9 @@ class AedService extends Api {
         try {
             // @ts-ignore
             delete data.id;
+            delete data.user;
+            delete data.nonConformity;
+
             const result = await this.postJsonData(
                 this.urls.add,
                 data
@@ -49,6 +54,37 @@ class AedService extends Api {
         }
     };
 
+    getAedServiceById = async (
+        id: string
+    ): Promise<any> => {
+        try {
+            const result = await this.getData(this.urls.getById + "/" + id, {});
+            if (!result)
+                return {
+                    data: []
+                }
+            return result.data;
+        } catch (e) {
+            console.log(e)
+            return Promise.reject(e)
+        }
+    };
+
+    editAedServiceForm = async (data: AedServiceType): Promise<any> => {
+        try {
+            // @ts-ignore
+            delete data.id;
+            delete data.user;
+            delete data.nonConformity;
+            const result = await this.putJsonData(
+                `/${this.urls.edit}`,
+                data
+            );
+            return result.data;
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    };
 
 }
 
