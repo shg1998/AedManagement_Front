@@ -73,9 +73,9 @@ class AedService extends Api {
     editAedServiceForm = async (data: AedServiceType): Promise<any> => {
         try {
             // @ts-ignore
-            delete data.id;
             delete data.user;
             delete data.nonConformity;
+            console.log(data)
             const result = await this.putJsonData(
                 `/${this.urls.edit}`,
                 data

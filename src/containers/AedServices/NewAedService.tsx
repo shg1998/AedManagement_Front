@@ -69,7 +69,7 @@ const AedServiceSchema = Yup.object().shape({
 
 const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) => {
     const submitBtnRef = useRef<any>();
-    const {postNewAedServiceForm} = new AedService();
+    const {postNewAedServiceForm, editAedServiceForm} = new AedService();
     const {getUsers} = new Users();
     const {getAll} = new NonConformity();
     const {getAllParts} = new Part();
@@ -144,6 +144,19 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
         },
     });
 
+    const {mutate: editAedService} = useMutation(editAedServiceForm, {
+        onSuccess: (data) => {
+            if (data?.isSuccess) {
+                closeModal();
+                tSuccess(data?.data);
+            }
+        },
+        onError: (error: any) => {
+            closeModal();
+            tError(error.response.data.Message);
+        },
+    });
+
     useImperativeHandle(ref, () => ({
         sendRequest,
     }));
@@ -168,7 +181,7 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                         // console.log(values)
                         addAedService(values);
                     } else {
-                        // edit logic here
+                        editAedService(values);
                     }
                 }}
             >
