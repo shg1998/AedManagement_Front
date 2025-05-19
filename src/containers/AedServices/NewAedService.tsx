@@ -1,27 +1,23 @@
 import React, {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import Container from "@mui/material/Container";
 import {InputLabel, Typography, TextField, Button} from "@mui/material";
-import clsx from "clsx";
 import {styled} from "@mui/material/styles";
 import {Formik, FieldArray, getIn} from "formik";
 import * as Yup from "yup";
 import {useMutation, useQuery} from "react-query";
 import {debounce} from "lodash";
-
+import UploadFileIcon from '@mui/icons-material/UploadFile'
 import MySelect from "../../components/MySelect/MySelect";
 import Autocomplete from "@mui/material/Autocomplete";
 import MyDateTimePicker from "../../components/DateTimePicker Jalali/DateTimePicker";
 import {removeCharsAfterZ} from "../../components/CustomDateTimeFilter/DateTimeFilter";
-import {convertTimeToLocale} from "../../utils/time";
 import {tError, tSuccess} from "../../utils/toast";
-
 import AedService from "../../services/AedService";
 import Users from "../../services/Users";
 import NonConformity from "../../services/NonConformity";
 import Part from "../../services/Part";
 
 import {
-    AedServiceType,
     CorrectiveActionGroupTypes,
     CostTypes,
     NewAedHandle,
@@ -31,6 +27,7 @@ import {
     UserType,
 } from "./constants";
 import {useLocation} from "react-router-dom";
+import {truncateText} from "../../utils/generalUtils";
 
 const StyledTextField = styled(TextField)(({theme}) => ({
     marginTop: theme.spacing(2),
@@ -63,6 +60,37 @@ const AedServiceSchema = Yup.object().shape({
             newSerialNumber: Yup.string().required("New Serial Number is required"),
             prevPartId: Yup.number().notOneOf([0], "Please select a valid Previous Part"),
             newPartId: Yup.number().notOneOf([0], "Please select a valid New Part"),
+        })
+    ),
+    attachments: Yup.array().of(
+        Yup.object().shape({
+            name: Yup.string().nullable(),
+            file: Yup.mixed()
+                .nullable()
+                .test(
+                    "fileFormat",
+                    "Unsupported file format. Allowed: Excel, CSV, RAR, images, PDF.",
+                    (value) => {
+                        if (!value) return true;
+                        const allowedTypes = [
+                            "application/pdf",
+                            "application/vnd.ms-excel",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "application/x-rar-compressed",
+                            "text/csv",
+                            "image/jpeg",
+                            "image/png",
+                            "image/gif",
+                            "image/bmp",
+                            "image/webp",
+                        ];
+                        if (!value) return true;
+                        if (typeof value === "object" && "type" in value) {
+                            return allowedTypes.includes((value as File).type);
+                        }
+                        return false;
+                    }
+                ),
         })
     ),
 });
@@ -165,6 +193,7 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
         submitBtnRef.current.click();
     };
 
+
     return (
         <Container>
             <Formik
@@ -178,7 +207,7 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                     if (values.id === "0") {
                         // @ts-ignore
                         delete values.id;
-                        // console.log(values)
+                        console.log(values)
                         addAedService(values);
                     } else {
                         editAedService(values);
@@ -445,7 +474,7 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                                             );
                                         })
                                     ) : (
-                                        <Typography>No replacement parts added.</Typography>
+                                        <Typography>⚠️ No replacement parts added.</Typography>
                                     )}
 
                                     <Button
@@ -466,6 +495,117 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                                         }}
                                     >
                                         + Add Replacement Part
+                                    </Button>
+                                </div>
+                            )}
+                        />
+                        <br/><br/>
+                        <InputLabel>
+                            <Typography>📎 Attachments (Optional)</Typography>
+                        </InputLabel>
+                        <br/>
+                        <FieldArray
+                            name="attachments"
+                            render={(arrayHelpers) => (
+                                <div>
+                                    {formik.values.attachments && formik.values.attachments.length > 0 ? (
+                                        formik.values.attachments.map((attachment, index) => {
+                                            const nameTouched = getIn(formik.touched, `attachments.${index}.name`);
+                                            const nameError = getIn(formik.errors, `attachments.${index}.name`);
+
+                                            const fileTouched = getIn(formik.touched, `attachments.${index}.file`);
+                                            const fileError = getIn(formik.errors, `attachments.${index}.file`);
+
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    style={{
+                                                        marginBottom: 20,
+                                                        padding: 10,
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: 8,
+                                                    }}
+                                                >
+                                                    <StyledTextField
+                                                        fullWidth
+                                                        label="Name (optional)"
+                                                        name={`attachments.${index}.fileName`}
+                                                        value={formik.values.attachments![index]?.fileName || ""}
+                                                        onChange={formik.handleChange}
+                                                        onBlur={formik.handleBlur}
+                                                        error={Boolean(nameTouched && nameError)}
+                                                        helperText={nameTouched && nameError}
+                                                        margin="normal"
+                                                    />
+
+                                                    <div style={{display: "flex", alignItems: "center", gap: 10}}>
+                                                        <label htmlFor={`attachment-file-${index}`}>
+                                                            <Button sx={{textTransform: "none",}} variant="contained"
+                                                                    component="span"
+                                                                    startIcon={<UploadFileIcon/>}>
+                                                                Upload File
+                                                            </Button>
+                                                        </label>
+
+                                                        <input
+                                                            id={`attachment-file-${index}`}
+                                                            name={`attachments.${index}.file`}
+                                                            type="file"
+                                                            accept=".xls,.xlsx,.csv,.rar,image/*,application/pdf"
+                                                            onChange={(event) => {
+                                                                const file = event.currentTarget.files?.[0];
+                                                                formik.setFieldValue(`attachments.${index}.file`, file);
+
+                                                                if (!formik.values.attachments![index]?.fileName && file)
+                                                                    formik.setFieldValue(`attachments.${index}.fileName`, file.name);
+                                                            }}
+                                                            onBlur={formik.handleBlur}
+                                                            style={{display: "none"}}
+                                                        />
+
+                                                        <Typography variant="body2" style={{
+                                                            whiteSpace: "nowrap",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis",
+                                                            maxWidth: 150
+                                                        }}>
+                                                            {formik.values.attachments![index]?.fileName
+                                                                ? truncateText(formik.values.attachments![index]?.fileName, 50)
+                                                                : "No file chosen"}
+                                                        </Typography>
+                                                    </div>
+                                                    {fileTouched && fileError && (
+                                                        <Typography color="error" variant="caption">
+                                                            {fileError}
+                                                        </Typography>
+                                                    )}
+
+                                                    <Button
+                                                        variant="outlined"
+                                                        color="error"
+                                                        onClick={() => arrayHelpers.remove(index)}
+                                                        style={{
+                                                            marginTop: 22,
+                                                            textTransform: "none",
+                                                            fontSize: '0.9rem'
+                                                        }}
+                                                    >
+                                                        - Remove
+                                                    </Button>
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <Typography>⚠️ No attachments added.</Typography>
+                                    )}
+
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => arrayHelpers.push({name: "", file: null})}
+                                        style={{marginTop: 16, fontSize: '0.9rem', textTransform: "none"}}
+                                    >
+                                        + Add Attachment
                                     </Button>
                                 </div>
                             )}

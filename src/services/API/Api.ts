@@ -120,18 +120,11 @@ class Api {
     }
 
     protected async postFormData(_url: string, _data: any): Promise<any> {
-        const formData = new FormData();
-        for (const key in _data) {
-            const val = _data[key];
-            if (val !== null) {
-                formData.append(key, Array.isArray(val) ? `[${val}]` : val);
-            }
-        }
         try {
-            return await this.authorizedUserRequest().post(_url, formData, {
+            return await this.authorizedUserRequest().post(_url, _data, {
                 cancelToken: this.axiosSource.token,
                 headers: {
-                    "Content-Type": "multipart/form-data; boundary=----",
+                    "Content-Type": "multipart/form-data;",
                 },
             });
         } catch (e) {

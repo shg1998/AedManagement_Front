@@ -224,8 +224,9 @@ const AllAeds = () => {
                                 .join(", ");
                         }}
                         sx={{
-                            width: 200,
-                            fontSize: "0.875rem"
+                            width: '100%',
+                            fontSize: "0.875rem",
+                            height: 36,
                         }}
                     >
                         <MenuItem value="all">

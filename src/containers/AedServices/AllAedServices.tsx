@@ -13,19 +13,17 @@ import DateTimeFilter, {
     NewFilterHandle
 } from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import {useLocation} from "react-router-dom";
-import {convertTimeToLocale2, getJalaliDateTime} from "../../utils/time";
+import {getJalaliDateTime} from "../../utils/time";
 import AedService from "../../services/AedService";
 import Select from "@mui/material/Select";
 import ListItemText from "@mui/material/ListItemText";
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
-import {AedType, NewAedHandle} from "../Aeds/NewAed";
+import {NewAedHandle} from "../Aeds/NewAed";
 import {
     AedServiceDetailsType,
     AedServiceType,
     correctiveActionOptions,
-    DEFAULT_AED_SERVICE_INFORMATION,
-    PartType,
-    ReplacementPartType
+    DEFAULT_AED_SERVICE_INFORMATION
 } from "./constants";
 import NewAedService from "./NewAedService";
 import {useQuery} from "react-query";
@@ -227,7 +225,8 @@ const AllAedServices = () => {
                         sx={{
                             width: '100%',
                             fontSize: "0.875rem",
-                            mt: 1
+                            mt: 1,
+                            height: 36,
                         }}
                     >
                         <MenuItem value="all">
@@ -289,7 +288,8 @@ const AllAedServices = () => {
                         sx={{
                             width: '100%',
                             fontSize: "0.875rem",
-                            mt: 1
+                            mt: 1,
+                            height: 36
                         }}
                     >
                         <MenuItem value="all">All</MenuItem>
@@ -342,6 +342,10 @@ const AllAedServices = () => {
     const handleShowDetails = (row: any) => {
         setSelectedAedServiceId(row.id);
         setMode('detail');
+    }
+
+    const handleAttachments = (row: any) => {
+
     }
 
     const handleCloseManageModal = (): void => {
@@ -448,6 +452,7 @@ const AllAedServices = () => {
                                 setColumnVisibility={setColumnVisibility}
                                 editRow={handleEditService}
                                 showRowDetail={handleShowDetails}
+                                onRowClicked={handleShowDetails}
                             />
                         </div>
                     </>

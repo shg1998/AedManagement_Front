@@ -16,6 +16,13 @@ export type ReplacementPartType = {
     newPartId: number;
 }
 
+export type AttachmentType = {
+    id?: string;
+    fileName: string;
+    filePath?: string;
+    file?: File;
+}
+
 export type AedServiceType = {
     id: string;
     correctiveActionGroup: string;
@@ -28,7 +35,8 @@ export type AedServiceType = {
     aedId: string | null;
     nonConformityId: string;
     nonConformity?: any;
-    replacementParts?: ReplacementPartType[]
+    replacementParts?: ReplacementPartType[],
+    attachments? : AttachmentType[]
 }
 
 export type AedServiceDetailsType = {
@@ -68,12 +76,8 @@ export const DEFAULT_AED_SERVICE_INFORMATION: AedServiceType = {
     userId: 0,
     aedId: '',
     nonConformityId: '',
-    replacementParts: [{
-        prevSerialNumber: "",
-        newSerialNumber: "",
-        prevPartId: 0,
-        newPartId: 0,
-    }]
+    replacementParts: [],
+    attachments: []
 }
 
 export const CostTypes: ItemType[] = [

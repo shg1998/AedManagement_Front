@@ -26,6 +26,7 @@ export interface DataTableProps {
   reViewRows?: () => void;
   hasRowAction?: boolean;
   showRowDetail?: (row: any) => void;
+  attachments?: (row: any) => void;
   editRow?: (row: any) => void;
   rowSelfTests?: (row: any) => void;
   rowServices?: (row: any) => void;

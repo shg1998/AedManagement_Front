@@ -126,3 +126,8 @@ export function formatNumber(num: number): string {
   const numStr = num.toString();
   return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+export  function truncateText(text: string, maxLength: number) {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + "…";
+}

@@ -90,7 +90,7 @@ const AllAdmins = () => {
                 Filter: ({column}) => (
                     <Select
                         sx={{
-                            width: 120,
+                            width: '100%',
                             height: 36,
                             fontSize: '0.875rem',
                             padding: '0 8px',

@@ -14,6 +14,7 @@ import { ReactComponent as TableSettingIcon } from "../../assets/images/Table Se
 import { Box, IconButton, Theme, Tooltip } from "@mui/material";
 import { ReactComponent as Recycle } from "../../../src/assets/images/publicIcons/recycle.svg";
 import ArticleIcon from "@mui/icons-material/Article";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import EditIcon from "@mui/icons-material/Edit";
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import BiotechIcon from '@mui/icons-material/Biotech';
@@ -217,6 +218,7 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
     reViewRows,
     hasRowAction,
     showRowDetail,
+    attachments,
     editRow,
     deleteRow,
     rowSelfTests,
@@ -553,6 +555,18 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
               <ArticleIcon />
             </IconButton>
           </Tooltip>
+        )}
+        {attachments && (
+            <Tooltip title={"Attachments"}>
+              <IconButton
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    attachments?.(row?.original);
+                  }}
+              >
+                <AttachFileIcon />
+              </IconButton>
+            </Tooltip>
         )}
         {rowServices && (
             <Tooltip title={"AED Services"}>

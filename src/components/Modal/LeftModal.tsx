@@ -135,9 +135,10 @@ const LeftModal: React.FC<PropsWithChildren<ModalProps>> = ({
     });
 
     const handleCloseWithBackDrop = (event: {}, reason: string) => {
-        if (reason !== "backdropClick") {
-            handleClose();
-        }
+        // if (reason !== "backdropClick") {
+        //
+        // }
+        handleClose();
     };
     const {theme} = useThemeContext();
     return (
@@ -151,7 +152,7 @@ const LeftModal: React.FC<PropsWithChildren<ModalProps>> = ({
                 sx={{height: "100%"}}
                 style={{
                     backgroundColor: "rgba(255,255,255, 0.1)",
-                    backdropFilter: "blur(10px)",
+                    // backdropFilter: "blur(10px)",
                 }}
                 PaperProps={{
                     style: {
