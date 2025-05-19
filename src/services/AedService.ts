@@ -90,10 +90,26 @@ class AedService extends Api {
             // @ts-ignore
             delete data.user;
             delete data.nonConformity;
-            console.log(data)
-            const result = await this.putJsonData(
+
+            const formData = new FormData();
+            formData.append("correctiveActionGroup", data.correctiveActionGroup);
+            formData.append("visitDate", data.visitDate);
+            formData.append("callDate", data.callDate);
+            formData.append("description", data.description ?? '');
+            formData.append("userId", data.userId.toString());
+            formData.append("nonConformityId", data.nonConformityId);
+            formData.append("replacementParts", JSON.stringify(data.replacementParts ?? []));
+
+            (data.attachments ?? []).forEach((attachment, index) => {
+                if (attachment.file) {
+                    formData.append(`attachments[${index}].file`, attachment.file);
+                }
+                formData.append(`attachments[${index}].fileName`, attachment.fileName || attachment.file?.name || "");
+            });
+
+            const result = await this.putFormData(
                 `/${this.urls.edit}`,
-                data
+                formData
             );
             return result.data;
         } catch (e) {

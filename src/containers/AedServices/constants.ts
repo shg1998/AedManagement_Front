@@ -19,7 +19,6 @@ export type ReplacementPartType = {
 export type AttachmentType = {
     id?: string;
     fileName: string;
-    filePath?: string;
     file?: File;
 }
 
@@ -96,7 +95,7 @@ export const CorrectiveActionGroupTypes: ItemType[] = [
     {title: "Repair", value: "Repair"},
     {title: "Pm", value: "Pm"},
     {title: "Recall", value: "Recall"},
-    {title: "Upgrade", value: "Upgrade"},
+    // {title: "Upgrade", value: "Upgrade"},
     {title: "Training", value: "Training"}
 ]
 

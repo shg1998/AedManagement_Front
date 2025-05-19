@@ -6,7 +6,8 @@ import {Formik, FieldArray, getIn} from "formik";
 import * as Yup from "yup";
 import {useMutation, useQuery} from "react-query";
 import {debounce} from "lodash";
-import UploadFileIcon from '@mui/icons-material/UploadFile'
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import DownloadIcon from '@mui/icons-material/Download';
 import MySelect from "../../components/MySelect/MySelect";
 import Autocomplete from "@mui/material/Autocomplete";
 import MyDateTimePicker from "../../components/DateTimePicker Jalali/DateTimePicker";
@@ -107,8 +108,8 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
 
     const [searchUser, setSearchUser] = useState("");
     const [searchNonConformity, setSearchNonConformity] = useState("");
-    const [user, setUser] = useState(data.user ?? {});
-    const [nonConformity, setNonConformity] = useState(data.nonConformity ?? {});
+    const [user, setUser] = useState(data?.user ?? {});
+    const [nonConformity, setNonConformity] = useState(data?.nonConformity ?? {});
 
     const debouncedUserSearch = React.useRef(
         debounce((val) => {
@@ -540,11 +541,24 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
 
                                                     <div style={{display: "flex", alignItems: "center", gap: 10}}>
                                                         <label htmlFor={`attachment-file-${index}`}>
-                                                            <Button sx={{textTransform: "none",}} variant="contained"
-                                                                    component="span"
-                                                                    startIcon={<UploadFileIcon/>}>
-                                                                Upload File
-                                                            </Button>
+                                                            {
+                                                                (formik.values.attachments![index]?.id)
+                                                                    ? (
+                                                                        <Button sx={{textTransform: "none"}}
+                                                                                variant="contained"
+                                                                                component="span"
+                                                                                startIcon={<DownloadIcon/>}>
+                                                                            Download File
+                                                                        </Button>
+                                                                    ) : (
+                                                                        <Button sx={{textTransform: "none"}}
+                                                                                variant="contained"
+                                                                                component="span"
+                                                                                startIcon={<UploadFileIcon/>}>
+                                                                            Upload File
+                                                                        </Button>
+                                                                    )
+                                                            }
                                                         </label>
 
                                                         <input
@@ -583,7 +597,9 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                                                     <Button
                                                         variant="outlined"
                                                         color="error"
-                                                        onClick={() => arrayHelpers.remove(index)}
+                                                        onClick={() => {
+                                                            arrayHelpers.remove(index)
+                                                        }}
                                                         style={{
                                                             marginTop: 22,
                                                             textTransform: "none",

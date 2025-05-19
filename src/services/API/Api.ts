@@ -131,6 +131,18 @@ class Api {
         }
     }
 
+    protected async putFormData(_url: string, _data: any): Promise<any> {
+        try {
+            return await this.authorizedUserRequest().put(_url, _data, {
+                cancelToken: this.axiosSource.token,
+                headers: {
+                    "Content-Type": "multipart/form-data;",
+                },
+            });
+        } catch (e) {
+        }
+    }
+
     // protected async getData(
     //   url: string,
     //   options: any = {},

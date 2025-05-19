@@ -62,7 +62,7 @@ const AllAedServices = () => {
     const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([{
         id: 'aedId', value: aedId
     }, {
-        id: 'callDate', value: {from: dateFilters?.from, to: dateFilters?.to}
+        id: 'visitDate', value: {from: dateFilters?.from, to: dateFilters?.to}
     }]);
     const [query, setQuery] = useState<string>();
     const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -103,6 +103,12 @@ const AllAedServices = () => {
                         newPartId: rp.newPart.id
                     }
                 }),
+                attachments: finalRes.attachments.map((at: any) => {
+                    return {
+                        id: at.id,
+                        fileName: at.fileName,
+                    }
+                })
             };
         },
         {
@@ -162,14 +168,23 @@ const AllAedServices = () => {
                 }
             },
             {
-                accessorKey: "callDate",
-                header: "Call Time",
+                accessorKey: "visitDate",
+                header: "Visit Time",
                 enableHiding: false,
                 maxSize: 20,
                 enableSorting: false,
                 enableColumnFilter: false,
-                accessorFn: (row: any) => row.callDate === null ? "" : getJalaliDateTime(row.callDate),
+                accessorFn: (row: any) => row.visitDate === null ? "" : getJalaliDateTime(row.visitDate),
             },
+            // {
+            //     accessorKey: "callDate",
+            //     header: "Call Time",
+            //     enableHiding: false,
+            //     maxSize: 20,
+            //     enableSorting: false,
+            //     enableColumnFilter: false,
+            //     accessorFn: (row: any) => row.callDate === null ? "" : getJalaliDateTime(row.callDate),
+            // },
             {
                 accessorKey: "correctiveActionGroup",
                 header: "Corrective Action Group",
@@ -183,8 +198,6 @@ const AllAedServices = () => {
                             return '🧰 Pm';
                         case 'Recall':
                             return '📢 Recall';
-                        case 'Upgrade':
-                            return '⬆️ Upgrade';
                         case 'Training':
                             return '🎓 Training';
                     }
@@ -253,15 +266,7 @@ const AllAedServices = () => {
                 ),
                 filterVariant: 'select',
             },
-            {
-                accessorKey: "visitDate",
-                header: "Visit Time",
-                enableHiding: false,
-                maxSize: 20,
-                enableSorting: false,
-                enableColumnFilter: false,
-                accessorFn: (row: any) => row.visitDate === null ? "" : getJalaliDateTime(row.visitDate),
-            },
+
             {
                 accessorKey: "user.fullName",
                 header: "Expert",
@@ -309,9 +314,9 @@ const AllAedServices = () => {
         let dates = timeFilterRef?.current?.setBoundaries();
         setDateFilters(dates);
         if (dates !== null) {
-            let colFil = columnFilters.filter(s => s.id !== 'callDate');
+            let colFil = columnFilters.filter(s => s.id !== 'visitDate');
             colFil.push({
-                id: 'callDate', value: {from: dates?.from, to: dates?.to}
+                id: 'visitDate', value: {from: dates?.from, to: dates?.to}
             });
             setColumnFilters(colFil);
             setPagination({pageIndex: 0, pageSize: pagination.pageSize});
@@ -383,8 +388,8 @@ const AllAedServices = () => {
                 if (key === 'cost')
                     return `${key} eq '${item.value}'`;
 
-                if (key === 'callDate')
-                    return `callDate ge ${item.value?.from} and callDate le ${item.value?.to}`;
+                if (key === 'visitDate')
+                    return `visitDate ge ${item.value?.from} and visitDate le ${item.value?.to}`;
 
                 if (key === 'correctiveActionGroup') {
                     if (!item.value || item.value.length === 0) return null;
@@ -417,7 +422,7 @@ const AllAedServices = () => {
 
                         <Button onClick={() => {
                             setOpenTimeFilterModal(true);
-                        }}>⌚ Call Time Filter</Button>
+                        }}>⌚ Visit Time Filter</Button>
 
                         <CardTopActions
                             firstAction={() => {
