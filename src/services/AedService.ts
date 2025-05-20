@@ -64,6 +64,8 @@ class AedService extends Api {
                 this.urls.add,
                 formData
             );
+            if (result.name === "AxiosError")
+                return result.response.data;
             return result.data;
         } catch (e) {
             return Promise.reject(e);
@@ -88,11 +90,8 @@ class AedService extends Api {
 
     editAedServiceForm = async (data: AedServiceType): Promise<any> => {
         try {
-            // @ts-ignore
-            delete data.user;
-            delete data.nonConformity;
-
             const formData = new FormData();
+            formData.append("id", data.id);
             formData.append("correctiveActionGroup", data.correctiveActionGroup);
             formData.append("visitDate", data.visitDate);
             formData.append("callDate", data.callDate);
@@ -112,6 +111,9 @@ class AedService extends Api {
                 `/${this.urls.edit}`,
                 formData
             );
+            if (result.name === "AxiosError")
+                return result.response.data;
+
             return result.data;
         } catch (e) {
             return Promise.reject(e);

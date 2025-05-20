@@ -176,9 +176,11 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
     const {mutate: editAedService} = useMutation(editAedServiceForm, {
         onSuccess: (data) => {
             if (data?.isSuccess) {
-                closeModal();
                 tSuccess(data?.data);
+            }else{
+                tError(data?.Message);
             }
+            closeModal();
         },
         onError: (error: any) => {
             closeModal();

@@ -126,7 +126,7 @@ class Api {
                 headers: {
                     "Content-Type": "multipart/form-data;",
                 },
-            });
+            }).then(res => res).catch(e => e);
         } catch (e) {
         }
     }
@@ -138,7 +138,7 @@ class Api {
                 headers: {
                     "Content-Type": "multipart/form-data;",
                 },
-            });
+            }).then(res => res).catch(e => e);
         } catch (e) {
         }
     }
