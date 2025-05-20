@@ -1,12 +1,12 @@
-import {convertTimeToLocale, convertTimeToLocale2} from "../../utils/time";
 import {ItemType} from "../../components/MySelect/MySelect";
+import {MRT_ColumnDef} from "material-react-table";
 
 export const correctiveActionOptions = [
-    {label: "Repair", value: "Repair"},
-    {label: "Pm", value: "Pm"},
-    {label: "Recall", value: "Recall"},
-    {label: "Upgrade", value: "Upgrade"},
-    {label: "Training", value: "Training"}
+    {label: "🔧 Repair", value: "Repair"},
+    {label: "🧰 Pm", value: "Pm"},
+    {label: "📢 Recall", value: "Recall"},
+    // {label: "Upgrade", value: "Upgrade"},
+    {label: "🎓 Training", value: "Training"}
 ];
 
 export type ReplacementPartType = {
@@ -122,4 +122,9 @@ export type PartType = {
     name: string;
     partNumber: string;
     id: string;
+}
+
+export interface AedServicesProps {
+    process: string;
+    columns: MRT_ColumnDef<any>[];
 }

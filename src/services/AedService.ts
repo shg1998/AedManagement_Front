@@ -8,13 +8,14 @@ class AedService extends Api {
         add: "AedService/create-aed-service",
         getById: "AedService/get-aed-service",
         edit: "AedService/edit-aed-service",
+        delete: "AedService/delete-aed-service",
     };
 
     getAll = async (
         limit?: number, skip?: number, filter?: string
     ): Promise<any> => {
         try {
-            let queryParams = `top=${limit}&skip=${skip}`;
+            let queryParams = `top=${limit}&skip=${skip} &orderby=VisitDate desc`;
             if (filter) {
                 queryParams += `&filter=${filter}`;
             }
@@ -51,7 +52,7 @@ class AedService extends Api {
             formData.append("userId", data.userId.toString());
             formData.append("aedId", data.aedId ?? '');
             formData.append("nonConformityId", data.nonConformityId);
-            formData.append("replacementParts", JSON.stringify(data.replacementParts ?? []));
+            formData.append("replacementPartsJson", JSON.stringify(data.replacementParts ?? []));
 
             (data.attachments ?? []).forEach((attachment, index) => {
                 if (attachment.file) {
@@ -98,7 +99,7 @@ class AedService extends Api {
             formData.append("description", data.description ?? '');
             formData.append("userId", data.userId.toString());
             formData.append("nonConformityId", data.nonConformityId);
-            formData.append("replacementParts", JSON.stringify(data.replacementParts ?? []));
+            formData.append("replacementPartsJson", JSON.stringify(data.replacementParts ?? []));
 
             (data.attachments ?? []).forEach((attachment, index) => {
                 if (attachment.file) {
@@ -110,6 +111,18 @@ class AedService extends Api {
             const result = await this.putFormData(
                 `/${this.urls.edit}`,
                 formData
+            );
+            return result.data;
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    };
+
+
+    deleteAedService = async (id: string): Promise<any> => {
+        try {
+            const result = await this.deleteData(
+                `/${this.urls.delete}/${id}`
             );
             return result.data;
         } catch (e) {

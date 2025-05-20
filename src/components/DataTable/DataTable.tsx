@@ -700,7 +700,7 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
           open={deleteConfirmOpen}
           handleClose={handleCloseConfirm}
           handleConfirm={handleDeleteRow}
-          title={"حذف"}
+          title={"Delete"}
           description={
             <div
               style={{

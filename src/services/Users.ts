@@ -19,7 +19,7 @@ class Users extends Api {
     };
     getUsers = async (limit?: number, skip?: number, filter?: string): Promise<any> => {
         try {
-            let queryParams = `top=${limit}&skip=${skip}`;
+            let queryParams = `top=${limit}&skip=${skip} &orderby=Id desc`;
             if (filter) {
                 queryParams += `&filter=${filter}`;
             }
@@ -44,7 +44,7 @@ class Users extends Api {
 
     getAdmins = async (limit?: number, skip?: number, filter?: string): Promise<any> => {
         try {
-            let queryParams = `top=${limit}&skip=${skip}`;
+            let queryParams = `top=${limit}&skip=${skip} &orderby=Id desc`;
             if (filter) {
                 queryParams += `&filter=${filter}`;
             }

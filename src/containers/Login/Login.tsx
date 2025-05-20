@@ -97,7 +97,6 @@ const Login = () => {
         onSuccess: async (data) => {
             setIsLoading(false);
             if (data !== undefined) {
-                console.log(data.data,"🖥️🖥️🖥️")
                 setItemSecure("mainToken", data.data.token);
                 setItemSecure("userRoleName", data.data.userRoleName);
                 setItemSecure("province", data.data?.province);
@@ -115,8 +114,12 @@ const Login = () => {
             }
         },
         onError: async (error: any) => {
+            // console.log(error)
             setIsLoading(false);
-            tError(error?.response?.data?.Message);
+            if (error.code === "ERR_NETWORK")
+                tError(error?.message);
+            else
+                tError(error?.response?.data?.Message);
         },
     });
 

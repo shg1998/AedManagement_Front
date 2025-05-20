@@ -50,7 +50,7 @@ const AedServiceSchema = Yup.object().shape({
         .typeError("⛔ Expert selection is required!")
         .required("⛔ Expert selection is required!")
         .notOneOf([0], "⛔ Please select a valid Expert."),
-    nonConformityId: Yup.string().required("⛔ Non Conformity selection is required!"),
+    // nonConformityId: Yup.string().required("⛔ Non Conformity selection is required!"),
     description: Yup.string()
         .trim()
         .max(500, "Description cannot exceed 500 characters")
@@ -220,9 +220,10 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                         {/* Corrective Action Group */}
                         <br/>
                         <InputLabel htmlFor="correctiveActionGroup">
-                            <Typography>⚒️ Corrective Action Group</Typography>
+                            <Typography>⚒️ Process </Typography>
                         </InputLabel>
                         <MySelect
+                            disabled={true}
                             label=""
                             formik={formik}
                             items={CorrectiveActionGroupTypes}
@@ -237,26 +238,26 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                         <br/>
                         <br/>
                         {/* Call Date */}
-                        <InputLabel htmlFor="callDate">
-                            <Typography>📅 Call DateTime</Typography>
-                        </InputLabel>
-                        <MyDateTimePicker
-                            required
-                            name="callDate"
-                            value={formik.values.callDate}
-                            onChangeFunc={(d: any) => {
-                                const formattedDate = d ? removeCharsAfterZ(d) : "";
-                                formik.setFieldValue("callDate", formattedDate);
-                            }}
-                            blur={() => {
-                            }}
-                        />
-                        {formik.errors.callDate && formik.touched.callDate && (
-                            <Typography color="error" variant="caption">
-                                {formik.errors.callDate}
-                            </Typography>
-                        )}
-                        <br/>
+                        {/*<InputLabel htmlFor="callDate">*/}
+                        {/*    <Typography>📅 Call DateTime</Typography>*/}
+                        {/*</InputLabel>*/}
+                        {/*<MyDateTimePicker*/}
+                        {/*    required*/}
+                        {/*    name="callDate"*/}
+                        {/*    value={formik.values.callDate}*/}
+                        {/*    onChangeFunc={(d: any) => {*/}
+                        {/*        const formattedDate = d ? removeCharsAfterZ(d) : "";*/}
+                        {/*        formik.setFieldValue("callDate", formattedDate);*/}
+                        {/*    }}*/}
+                        {/*    blur={() => {*/}
+                        {/*    }}*/}
+                        {/*/>*/}
+                        {/*{formik.errors.callDate && formik.touched.callDate && (*/}
+                        {/*    <Typography color="error" variant="caption">*/}
+                        {/*        {formik.errors.callDate}*/}
+                        {/*    </Typography>*/}
+                        {/*)}*/}
+                        {/*<br/>*/}
                         {/* Visit Date */}
                         <InputLabel htmlFor="visitDate">
                             <Typography>📅 Visit DateTime</Typography>
