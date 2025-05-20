@@ -29,6 +29,7 @@ import {
 } from "./constants";
 import {useLocation} from "react-router-dom";
 import {truncateText} from "../../utils/generalUtils";
+import Attachment from "../../services/Attachment";
 
 const StyledTextField = styled(TextField)(({theme}) => ({
     marginTop: theme.spacing(2),
@@ -101,6 +102,7 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
     const {postNewAedServiceForm, editAedServiceForm} = new AedService();
     const {getUsers} = new Users();
     const {getAll} = new NonConformity();
+    const {downloadAttachment} = new Attachment();
     const {getAllParts} = new Part();
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -177,7 +179,7 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
         onSuccess: (data) => {
             if (data?.isSuccess) {
                 tSuccess(data?.data);
-            }else{
+            } else {
                 tError(data?.Message);
             }
             closeModal();
@@ -196,6 +198,9 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
         submitBtnRef.current.click();
     };
 
+    const handleDownloadClicked = (id: any) => {
+        downloadAttachment(id).then();
+    }
 
     return (
         <Container>
@@ -543,26 +548,26 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                                                     />
 
                                                     <div style={{display: "flex", alignItems: "center", gap: 10}}>
-                                                        <label htmlFor={`attachment-file-${index}`}>
-                                                            {
-                                                                (formik.values.attachments![index]?.id)
-                                                                    ? (
-                                                                        <Button sx={{textTransform: "none"}}
-                                                                                variant="contained"
-                                                                                component="span"
-                                                                                startIcon={<DownloadIcon/>}>
-                                                                            Download File
-                                                                        </Button>
-                                                                    ) : (
+                                                        {
+                                                            (formik.values.attachments![index]?.id)
+                                                                ? (
+                                                                    <Button sx={{textTransform: "none"}} onClick={() => handleDownloadClicked(formik.values.attachments![index]?.id)}
+                                                                            variant="contained"
+                                                                            component="span"
+                                                                            startIcon={<DownloadIcon/>}>
+                                                                        Download File
+                                                                    </Button>
+                                                                ) : (
+                                                                    <label htmlFor={`attachment-file-${index}`}>
                                                                         <Button sx={{textTransform: "none"}}
                                                                                 variant="contained"
                                                                                 component="span"
                                                                                 startIcon={<UploadFileIcon/>}>
                                                                             Upload File
                                                                         </Button>
-                                                                    )
-                                                            }
-                                                        </label>
+                                                                    </label>
+                                                                )
+                                                        }
 
                                                         <input
                                                             id={`attachment-file-${index}`}

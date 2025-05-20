@@ -47,6 +47,7 @@ export type AedServiceDetailsType = {
     nonConformity: string;
     replacementParts?: ReplacementDetailsType[];
     user: UserAedServiceType;
+    attachments?: AttachmentType[]
 
 }
 

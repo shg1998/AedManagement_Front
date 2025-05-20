@@ -150,6 +150,7 @@ const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
                         newPartNumber: rp.newPart.partNumber,
                     }
                 }),
+                attachments: finalRes.attachments
             };
         },
         {
