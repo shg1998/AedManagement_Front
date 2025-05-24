@@ -13,11 +13,15 @@ import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
 import AccessControl from "../../../components/AccessControl/AccessControl";
 import {useAuthState} from "../../../context/AuthContext";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import WidgetsIcon from '@mui/icons-material/Widgets';
 
 const {
     aeds,
     users,
-    admins
+    admins,
+    nonConformity,
+    parts
 } = routes;
 
 /**
@@ -99,6 +103,36 @@ const ListItems: React.FC = () => {
                                     text: 'Users',
                                     selected: isOpenPageOfThisGroup(users),
                                     link: users,
+                                    isNested: false,
+                                    props: {
+                                        icon: faListAlt,
+                                        size: "lg",
+                                    },
+                                }) : (<></>)}
+
+                            {isAdmin || isSuperAdmin ?
+                                getListItem({
+                                    section: "undefined",
+                                    name: "nonConformity",
+                                    Icon: ErrorOutlineIcon,
+                                    text: 'NonConformity',
+                                    selected: isOpenPageOfThisGroup(nonConformity),
+                                    link: nonConformity,
+                                    isNested: false,
+                                    props: {
+                                        icon: faListAlt,
+                                        size: "lg",
+                                    },
+                                }) : (<></>)}
+
+                            {isAdmin || isSuperAdmin ?
+                                getListItem({
+                                    section: "undefined",
+                                    name: "parts",
+                                    Icon: WidgetsIcon,
+                                    text: 'Parts',
+                                    selected: isOpenPageOfThisGroup(parts),
+                                    link: parts,
                                     isNested: false,
                                     props: {
                                         icon: faListAlt,

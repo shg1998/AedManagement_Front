@@ -1,9 +1,13 @@
 
 import Api from "./API/Api";
+import {PartType} from "../containers/Part/constants";
 
 class Part extends Api {
     urls = {
         objects: "Part/get-all-parts",
+        add: "Part/create-part",
+        edit: "Part/edit-part",
+        delete: "Part/delete-part",
     };
 
     getAllParts = async (
@@ -30,6 +34,41 @@ class Part extends Api {
         } catch (e) {
             console.log(e)
             return Promise.reject(e)
+        }
+    };
+
+    postPart = async (data: PartType): Promise<any> => {
+        try {
+            const result = await this.postJsonData(
+                this.urls.add,
+                data
+            );
+            return result.data;
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    };
+
+    editPart = async (data: PartType): Promise<any> => {
+        try {
+            const result = await this.putJsonData(
+                `/${this.urls.edit}`,
+                data
+            );
+            return result.data;
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    };
+
+    deletePart = async (id: string): Promise<any> => {
+        try {
+            const result = await this.deleteData(
+                `/${this.urls.delete}/${id}`
+            );
+            return result.data;
+        } catch (e) {
+            return Promise.reject(e);
         }
     };
 

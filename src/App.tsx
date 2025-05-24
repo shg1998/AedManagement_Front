@@ -20,6 +20,8 @@ const AllAeds = lazy(() => import("./containers/Aeds/AllAeds"));
 const AllUsers = lazy(() => import("./containers/Users/AllUsers"));
 const AllSelfTests = lazy(() => import("./containers/SelfTests/AllSelfTests"));
 const AllAedServices = lazy(() => import("./containers/AedServices/AllAedServices"));
+const AllParts = lazy(() => import("./containers/Part/AllParts"));
+const AllNonConformity = lazy(() => import("./containers/NonConformity/AllNonConformities"));
 const NotFound = lazy(() => import("./containers/NotFound/NotFound"));
 
 
@@ -102,6 +104,36 @@ const App = (): React.JSX.Element => {
                                                     element={<Dashboard component={<AllUsers/>}/>}
                                                     section_name="users"
                                                     module_name="users"
+                                                />
+                                            }
+                                        />
+                                    ) : <></>
+                                }
+
+                                {
+                                    isAdmin || isSuperAdmin ? (
+                                        <Route
+                                            path={routes.nonConformity}
+                                            element={
+                                                <CustomRoute
+                                                    element={<Dashboard component={<AllNonConformity/>}/>}
+                                                    section_name="nonConformity"
+                                                    module_name="nonConformity"
+                                                />
+                                            }
+                                        />
+                                    ) : <></>
+                                }
+
+                                {
+                                    isAdmin || isSuperAdmin ? (
+                                        <Route
+                                            path={routes.parts}
+                                            element={
+                                                <CustomRoute
+                                                    element={<Dashboard component={<AllParts/>}/>}
+                                                    section_name="parts"
+                                                    module_name="parts"
                                                 />
                                             }
                                         />

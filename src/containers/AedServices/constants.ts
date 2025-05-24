@@ -115,8 +115,8 @@ export type UserType = {
 }
 
 export type NonConformityType = {
-    title: string;
-    id: string;
+    title?: string;
+    id?: string;
 }
 
 export type PartType = {
