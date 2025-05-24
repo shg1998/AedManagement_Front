@@ -172,7 +172,7 @@ const AllAeds = () => {
                 maxSize: 20,
                 enableSorting: false,
                 enableColumnFilter: false,
-                accessorFn: (row: any) => row.lastPmDateTime === null ? "" : row.lastPmDateTime === '0001-01-01T00:00:00' ? '-' : row.lastPmDateTime,
+                accessorFn: (row: any) => row.lastPmDateTime === null ? "" : row.lastPmDateTime === '0001-01-01T00:00:00' ? '-' : getJalaliDateTime(row?.lastPmDateTime),
             },
             {
                 accessorKey: "internalTestResult",

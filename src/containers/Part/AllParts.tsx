@@ -146,7 +146,7 @@ const AllParts = () => {
         <Paper className={`main-container-${themeMode}`}>
             <PageHeader title={
                 <>
-                    😖 Part List
+                    🔨 Part List
                 </>
             }/>
             <BasicCard
