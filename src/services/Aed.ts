@@ -6,6 +6,7 @@ class Aed extends Api {
         objects: "Aed/get-all-aeds",
         addAed: "Aed/create-aed",
         editAed: "Aed/edit-aed",
+        deleteAed: "Aed/delete-aed",
     };
 
     getAll = async (
@@ -79,6 +80,17 @@ class Aed extends Api {
             const result = await this.putJsonData(
                 `/${this.urls.editAed}`,
                 dataForApi
+            );
+            return result.data;
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    };
+
+    deleteAed = async (id: string): Promise<any> => {
+        try {
+            const result = await this.deleteData(
+                `/${this.urls.deleteAed}/${id}`
             );
             return result.data;
         } catch (e) {

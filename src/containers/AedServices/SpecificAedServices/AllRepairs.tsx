@@ -3,10 +3,16 @@ import {MenuItem} from "@mui/material";
 import {MRT_ColumnDef} from "material-react-table";
 import {getJalaliDateTime} from "../../../utils/time";
 import Select from "@mui/material/Select";
-import {truncateText} from "../../../utils/generalUtils";
 import AedServices from "../AedServices";
 
 const AllRepairs = () => {
+
+    const displayReplacementParts = (data: any) => {
+        return data?.map((item: any)=> {
+            return item?.prevPart?.name + "\n";
+        })
+    }
+
     const columns = useMemo<MRT_ColumnDef<any>[]>(
         () => [
             {
@@ -86,10 +92,10 @@ const AllRepairs = () => {
                 filterVariant: 'select',
             },
             {
-                accessorKey: "description",
-                header: "Description",
+                accessorKey: "prevParts",
+                header: "Prev Parts",
                 enableSorting: false,
-                accessorFn: (row: any) => row.description === null || row?.description?.trim() === '' ? "📪 No Description" : truncateText(row.description, 30)
+                accessorFn: (row: any) => row.replacementParts === null || row?.replacementParts?.length === 0 ? "-" : displayReplacementParts(row?.replacementParts)
             },
         ],
         []

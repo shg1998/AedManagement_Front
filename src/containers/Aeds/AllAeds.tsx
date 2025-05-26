@@ -22,6 +22,7 @@ import {useNavigate} from "react-router-dom";
 import ListItemText from "@mui/material/ListItemText";
 import {useAuthState} from "../../context/AuthContext";
 import {getItemSecure} from "../../utils/AESCrypto";
+import {tError, tSuccess} from "../../utils/toast";
 
 const DEFAULT_AED_INFORMATION: AedType = {
     id: '0',
@@ -44,6 +45,7 @@ const AllAeds = () => {
 
     const {
         getAll,
+        deleteAed
     } = new Aed();
 
     const {isAdmin, isSuperAdmin} = useAuthState();
@@ -107,7 +109,7 @@ const AllAeds = () => {
                 enableHiding: false,
                 maxSize: 20,
                 enableSorting: false,
-                accessorFn: (row: any) => row.user === null ? "-" : row.user,
+                accessorFn: (row: any) => row.user === null ? "-" : row.user?.fullName,
             },
             {
                 accessorKey: "aedBatteryType",
@@ -330,6 +332,20 @@ const AllAeds = () => {
         return !isAdmin && !isSuperAdmin;
     }
 
+    const handleDelete = (id: any) => {
+        deleteAed(id).then(res => {
+            if (res.isSuccess) {
+                tSuccess(res?.data);
+                setRefetchTableData(!refetchTableData);
+            } else {
+                tError("There is problem with deleting item.")
+                console.log(res)
+            }
+        }).catch(err => {
+            tError(err.response.data.Message);
+        })
+    }
+
     useEffect(() => {
         let filterString = columnFilters
             .filter((item: any) => {
@@ -438,6 +454,7 @@ const AllAeds = () => {
                                 editRow={handleEditAed}
                                 rowSelfTests={handleRowSelfTests}
                                 rowServices={handleRowServices}
+                                deleteRow={isSuperAdmin || isAdmin ? handleDelete : undefined}
                             />
                         </div>
                     </>
