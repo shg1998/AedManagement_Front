@@ -8,10 +8,13 @@ import AedServices from "../AedServices";
 const AllRepairs = () => {
 
     const displayReplacementParts = (data: any) => {
-        return data?.map((item: any)=> {
-            return item?.prevPart?.name + "\n";
-        })
-    }
+        return data?.map((item: any, idx: number) => (
+            <React.Fragment key={idx}>
+                📱 {item?.prevPart?.name}
+                {idx !== data.length - 1 && <hr />}
+            </React.Fragment>
+        ));
+    };
 
     const columns = useMemo<MRT_ColumnDef<any>[]>(
         () => [
@@ -94,6 +97,7 @@ const AllRepairs = () => {
             {
                 accessorKey: "prevParts",
                 header: "Prev Parts",
+                size: 400,
                 enableSorting: false,
                 accessorFn: (row: any) => row.replacementParts === null || row?.replacementParts?.length === 0 ? "-" : displayReplacementParts(row?.replacementParts)
             },

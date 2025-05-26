@@ -339,7 +339,6 @@ const AllAeds = () => {
                 setRefetchTableData(!refetchTableData);
             } else {
                 tError("There is problem with deleting item.")
-                console.log(res)
             }
         }).catch(err => {
             tError(err.response.data.Message);

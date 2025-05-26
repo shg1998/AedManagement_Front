@@ -1,7 +1,7 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import DataTable from "../../components/DataTable/DataTable";
-import {Button, MenuItem, Paper} from "@mui/material";
-import {MRT_ColumnDef, MRT_ColumnFiltersState, MRT_PaginationState} from "material-react-table";
+import {Button, Paper} from "@mui/material";
+import {MRT_ColumnFiltersState, MRT_PaginationState} from "material-react-table";
 import BasicCard from "../../components/Card/BasicCard";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import {useCustomTableQuery} from "../../hooks/use-custom-table-query";
@@ -13,9 +13,7 @@ import DateTimeFilter, {
     NewFilterHandle
 } from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import {useLocation} from "react-router-dom";
-import {getJalaliDateTime} from "../../utils/time";
 import AedService from "../../services/AedService";
-import Select from "@mui/material/Select";
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import {NewAedHandle} from "../Aeds/NewAed";
 import {
@@ -26,7 +24,6 @@ import {
 import NewAedService from "./NewAedService";
 import {useQuery} from "react-query";
 import AedServiceDetails from "./AedServiceDetails";
-import {truncateText} from "../../utils/generalUtils";
 import {tSuccess} from "../../utils/toast";
 import {useAuthState} from "../../context/AuthContext";
 
