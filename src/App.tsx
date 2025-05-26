@@ -21,6 +21,7 @@ const AllUsers = lazy(() => import("./containers/Users/AllUsers"));
 const AllSelfTests = lazy(() => import("./containers/SelfTests/AllSelfTests"));
 const AllAedServices = lazy(() => import("./containers/AedServices/AllAedServices"));
 const AllParts = lazy(() => import("./containers/Part/AllParts"));
+const AllRepairTypes = lazy(() => import("./containers/RepairType/AllRepairTypes"));
 const AllNonConformity = lazy(() => import("./containers/NonConformity/AllNonConformities"));
 const NotFound = lazy(() => import("./containers/NotFound/NotFound"));
 
@@ -134,6 +135,21 @@ const App = (): React.JSX.Element => {
                                                     element={<Dashboard component={<AllParts/>}/>}
                                                     section_name="parts"
                                                     module_name="parts"
+                                                />
+                                            }
+                                        />
+                                    ) : <></>
+                                }
+
+                                {
+                                    isAdmin || isSuperAdmin ? (
+                                        <Route
+                                            path={routes.repairType}
+                                            element={
+                                                <CustomRoute
+                                                    element={<Dashboard component={<AllRepairTypes/>}/>}
+                                                    section_name="repairType"
+                                                    module_name="repairType"
                                                 />
                                             }
                                         />

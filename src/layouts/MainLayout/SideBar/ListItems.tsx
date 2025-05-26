@@ -15,13 +15,15 @@ import AccessControl from "../../../components/AccessControl/AccessControl";
 import {useAuthState} from "../../../context/AuthContext";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import WidgetsIcon from '@mui/icons-material/Widgets';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 
 const {
     aeds,
     users,
     admins,
     nonConformity,
-    parts
+    parts,
+    repairType
 } = routes;
 
 /**
@@ -133,6 +135,21 @@ const ListItems: React.FC = () => {
                                     text: 'Parts',
                                     selected: isOpenPageOfThisGroup(parts),
                                     link: parts,
+                                    isNested: false,
+                                    props: {
+                                        icon: faListAlt,
+                                        size: "lg",
+                                    },
+                                }) : (<></>)}
+
+                            {isAdmin || isSuperAdmin ?
+                                getListItem({
+                                    section: "undefined",
+                                    name: "repairTypes",
+                                    Icon: HomeRepairServiceIcon,
+                                    text: 'Repair Types',
+                                    selected: isOpenPageOfThisGroup(repairType),
+                                    link: repairType,
                                     isNested: false,
                                     props: {
                                         icon: faListAlt,

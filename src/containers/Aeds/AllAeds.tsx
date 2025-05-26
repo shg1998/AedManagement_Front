@@ -102,6 +102,14 @@ const AllAeds = () => {
                 accessorFn: (row: any) => row.serialNumber === null ? "" : row.serialNumber,
             },
             {
+                accessorKey: "registerExpert",
+                header: "Register Expert",
+                enableHiding: false,
+                maxSize: 20,
+                enableSorting: false,
+                accessorFn: (row: any) => row.user === null ? "-" : row.user,
+            },
+            {
                 accessorKey: "aedBatteryType",
                 header: "Battery Type",
                 maxSize: 10,
@@ -399,7 +407,7 @@ const AllAeds = () => {
                         <CardTopActions
                             firstAction={() => {
                             }}
-                            secondTitle={"Add AED"}
+                            secondTitle={(isSuperAdmin || isAdmin) ? undefined : "Add AED"}
                             secondAction={() => {
                                 setSelectedAed(DEFAULT_AED_INFORMATION);
                                 setOpenManageAedModal(true);

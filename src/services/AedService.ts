@@ -52,6 +52,7 @@ class AedService extends Api {
             formData.append("userId", data.userId.toString());
             formData.append("aedId", data.aedId ?? '');
             formData.append("nonConformityId", data.nonConformityId);
+            formData.append("repairTypeId", data.repairTypeId!);
             formData.append("replacementPartsJson", JSON.stringify(data.replacementParts ?? []));
 
             (data.attachments ?? []).forEach((attachment, index) => {
@@ -98,6 +99,7 @@ class AedService extends Api {
             formData.append("description", data.description ?? '');
             formData.append("userId", data.userId.toString());
             formData.append("nonConformityId", data.nonConformityId);
+            formData.append("repairTypeId", data.repairTypeId!);
             formData.append("replacementPartsJson", JSON.stringify(data.replacementParts ?? []));
 
             (data.attachments ?? []).forEach((attachment, index) => {

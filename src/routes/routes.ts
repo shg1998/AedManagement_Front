@@ -8,6 +8,7 @@ const routes = {
   selfTests: '/dashboard/selfTests',
   aedServices: '/dashboard/services',
   parts: '/dashboard/parts',
+  repairType: '/dashboard/repairType'
 };
 
 export default routes;

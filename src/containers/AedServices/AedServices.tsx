@@ -28,6 +28,7 @@ import {useQuery} from "react-query";
 import AedServiceDetails from "./AedServiceDetails";
 import {truncateText} from "../../utils/generalUtils";
 import {tSuccess} from "../../utils/toast";
+import {useAuthState} from "../../context/AuthContext";
 
 const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
 
@@ -36,7 +37,7 @@ const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
         getAedServiceById,
         deleteAedService
     } = new AedService();
-
+    const {isAdmin, isSuperAdmin} = useAuthState();
     const newAedServiceRef = useRef<NewAedHandle>(null);
     const {themeMode} = useThemeContext();
     const timeFilterRef = useRef<NewFilterHandle>(null);
@@ -98,7 +99,9 @@ const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
                 user: finalRes.user,
                 aedId: finalRes.aedId,
                 nonConformityId: finalRes.nonConformityId,
+                repairTypeId: finalRes.repairTypeId,
                 nonConformity: finalRes.nonConformity,
+                repairType: finalRes.repairType,
                 replacementParts: finalRes.replacementParts.map((rp: any) => {
                     return {
                         prevSerialNumber: rp.prevSerialNumber,
@@ -282,7 +285,7 @@ const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
                         <CardTopActions
                             firstAction={() => {
                             }}
-                            secondTitle={"Add "+ process}
+                            secondTitle={isSuperAdmin || isAdmin ? undefined :  "Add "+ process}
                             secondAction={() => {
                                 setSelectedAedServiceId('0');
                                 setOpenManageAedServiceModal(true);
@@ -313,7 +316,7 @@ const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
                                 editRow={handleEditService}
                                 showRowDetail={handleShowDetails}
                                 onRowClicked={handleShowDetails}
-                                deleteRow={handleDeleteRow}
+                                deleteRow={isSuperAdmin || isAdmin ? handleDeleteRow : undefined}
                             />
                         </div>
                     </>

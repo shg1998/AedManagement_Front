@@ -49,6 +49,12 @@ const AllRecalls = () => {
                 accessorFn: (row: any) => row.nonConformity?.title === null ? "" : row.nonConformity?.title,
             },
             {
+                accessorKey: "repairType",
+                header: "Repair Type",
+                enableSorting: false,
+                accessorFn: (row: any) => row?.repairType?.title === null ? "" : row.repairType?.title,
+            },
+            {
                 accessorKey: "cost",
                 header: "Cost",
                 enableSorting: false,

@@ -33,7 +33,9 @@ export type AedServiceType = {
     user?: any;
     aedId: string | null;
     nonConformityId: string;
+    repairTypeId?: string;
     nonConformity?: any;
+    repairType?: any;
     replacementParts?: ReplacementPartType[],
     attachments? : AttachmentType[]
 }
@@ -76,6 +78,7 @@ export const DEFAULT_AED_SERVICE_INFORMATION: AedServiceType = {
     userId: 0,
     aedId: '',
     nonConformityId: '',
+    repairTypeId: '',
     replacementParts: [],
     attachments: []
 }
@@ -115,6 +118,11 @@ export type UserType = {
 }
 
 export type NonConformityType = {
+    title?: string;
+    id?: string;
+}
+
+export type RepairTypeType = {
     title?: string;
     id?: string;
 }
