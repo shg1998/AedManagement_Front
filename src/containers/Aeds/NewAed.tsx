@@ -1,6 +1,6 @@
 import Container from "@mui/material/Container";
 import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
-import {InputLabel} from "@mui/material";
+import {Box, Collapse, InputLabel} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import clsx from "clsx";
@@ -12,11 +12,12 @@ import {useMutation} from "react-query";
 import {tError, tSuccess} from "../../utils/toast";
 import {styled} from "@mui/material/styles";
 import MySelect, {ItemType} from "../../components/MySelect/MySelect";
-import {provinceItems} from "../../utils/ProvinceUtils";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MyDateTimePicker from "../../components/DateTimePicker Jalali/DateTimePicker";
 import {removeCharsAfterZ} from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import Aed from "../../services/Aed";
 import {convertTimeToLocale} from "../../utils/time";
+import MapComponent from "../../components/map/MapComponent";
 
 
 const BatteryTypes: ItemType[] = [
@@ -32,11 +33,8 @@ const AddAedSchema = Yup.object().shape({
     serialNumber: Yup.string()
         .required("⛔ Serial Number is required!"),
 
-    province: Yup.string()
-        .required("⛔ Province is required!"),
-
-    city: Yup.string()
-        .required("⛔ City is required!"),
+    address: Yup.string()
+        .required("⛔ Address is required!"),
 
     place: Yup.string()
         .required("⛔ Place is required!"),
@@ -46,6 +44,10 @@ const AddAedSchema = Yup.object().shape({
         .test("is-valid-date", "⛔ Invalid date format.", (value: any) => {
             return value && !isNaN(Date.parse(value));
         }),
+    position: Yup.array()
+        .of(Yup.number())
+        .length(2, "⛔ Position must include latitude and longitude")
+        .required("⛔ Selecting a position on the map is required"),
 });
 
 
@@ -73,9 +75,11 @@ export type AedType = {
     serialNumber: string;
     province: string;
     city: string;
+    address: string;
     place: string;
     registerDateTime: string;
     aedBatteryType: string;
+    position?: [number, number] | null;
 }
 
 interface NewAedProps {
@@ -87,7 +91,7 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
     const classes = useStyles();
     const submitBtnRef = useRef<any>();
     const {postNewAedForm, editAedForm} = new Aed();
-
+    const [openMapSection, setOpenMapSection] = useState(false);
     const {mutate: addAed} = useMutation(postNewAedForm, {
         onSuccess: async (data) => {
             if (data?.isSuccess) {
@@ -143,7 +147,7 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                 <form className={classes.formContainer} onSubmit={formik.handleSubmit}>
                     <InputLabel htmlFor="serialNumber">
                         <Typography className={classes.inputLabel}>
-                            🔢 Serial Number
+                            🔢 Serial Number*
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -168,78 +172,8 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
 
                     <br/>
 
-                    <InputLabel htmlFor="province">
-                        <Typography className={classes.inputLabel}>
-                            🗺️ Province
-                        </Typography>
-                    </InputLabel>
-                    <MySelect
-                        label=""
-                        formik={formik}
-                        items={provinceItems}
-                        {...formik.getFieldProps("province")}
-                    />
-                    {formik.errors.province && formik.touched.province ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.province}
-                        </Typography>
-                    ) : null}
-
-                    <br/><br/>
-
-                    <InputLabel htmlFor="city">
-                        <Typography className={classes.inputLabel}>
-                            🏙️ City
-                        </Typography>
-                    </InputLabel>
-                    <StyledTextField
-                        margin="normal"
-                        fullWidth
-                        id="city"
-                        autoComplete="city"
-                        sx={{
-                            mb: 3,
-                        }}
-                        {...formik.getFieldProps("city")}
-                        className={clsx({
-                            [classes.errorBorder]:
-                            formik.errors.city && formik.touched.city,
-                        })}
-                    />
-                    {formik.errors.city && formik.touched.city ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.city}
-                        </Typography>
-                    ) : null}
-
-                    <br/>
-
-                    <InputLabel htmlFor="place">
-                        <Typography className={classes.inputLabel}>📍 Place</Typography>
-                    </InputLabel>
-                    <StyledTextField
-                        margin="normal"
-                        fullWidth
-                        id="place"
-                        autoComplete="place"
-                        sx={{
-                            mb: 3,
-                        }}
-                        {...formik.getFieldProps("place")}
-                        className={clsx({
-                            [classes.errorBorder]:
-                            formik.errors.place && formik.touched.place,
-                        })}
-                    />
-                    {formik.errors.place && formik.touched.place ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.place}
-                        </Typography>
-                    ) : null}
-                    <br/>
-
                     <InputLabel htmlFor="registerDateTime">
-                        <Typography className={classes.inputLabel}>📅 Register DateTime</Typography>
+                        <Typography className={classes.inputLabel}>📅 Register DateTime*</Typography>
                     </InputLabel>
                     <br/>
                     <MyDateTimePicker
@@ -278,6 +212,86 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                         </Typography>
                     ) : null}
 
+                    <br/>
+                    <br/>
+
+                    <InputLabel htmlFor="place">
+                        <Typography className={classes.inputLabel}>📍 Place Name*</Typography>
+                    </InputLabel>
+                    <StyledTextField
+                        margin="normal"
+                        fullWidth
+                        id="place"
+                        autoComplete="place"
+                        sx={{
+                            mb: 3,
+                        }}
+                        {...formik.getFieldProps("place")}
+                        className={clsx({
+                            [classes.errorBorder]:
+                            formik.errors.place && formik.touched.place,
+                        })}
+                    />
+                    {formik.errors.place && formik.touched.place ? (
+                        <Typography className={clsx(classes.errorText, "errorMessage")}>
+                            {formik.errors.place}
+                        </Typography>
+                    ) : null}
+
+                    <br/>
+
+                    <InputLabel htmlFor="address">
+                        <Typography className={classes.inputLabel}>
+                            🗺️ Location Address*
+                        </Typography>
+                    </InputLabel>
+                    <TextField
+                        fullWidth
+                        id="address"
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        sx={{mb: 3}}
+                        {...formik.getFieldProps("address")}
+                    />
+                    {formik.errors.address && formik.touched.address && (
+                        <Typography className={classes.errorText}>
+                            {formik.errors.address}
+                        </Typography>
+                    )}
+
+                    <Box sx={{mt: 2, mb: 2, borderTop: '1px solid #ccc', pt: 2}}>
+                        <Button
+                            variant="text"
+                            onClick={() => setOpenMapSection((prev) => !prev)}
+                            endIcon={
+                                <ExpandMoreIcon
+                                    sx={{
+                                        transform: openMapSection ? 'rotate(180deg)' : 'rotate(0deg)',
+                                        transition: 'transform 0.3s ease',
+                                    }}
+                                />
+                            }
+                            sx={{textTransform: 'none', fontWeight: 'bold', fontSize: '1.1rem'}}
+                        >
+                            📌 Location*
+                        </Button>
+
+                        <Collapse in={openMapSection} timeout="auto" unmountOnExit>
+                            <Box sx={{height: '100%', mt: 2}}>
+                                <MapComponent setAddr={(text) => {
+                                    if (data.id === '0' && data.address?.trim() === '')
+                                        formik.setFieldValue("address", text)
+                                }}
+                                              city={data.city}
+                                              setCity={(data: any) => formik.setFieldValue("city", data)}
+                                              provin={data.province}
+                                              setPosition={(data: any) => formik.setFieldValue("position", data)}
+                                              initialPosition={data.position}
+                                />
+                            </Box>
+                        </Collapse>
+                    </Box>
 
                     <Button
                         ref={submitBtnRef}

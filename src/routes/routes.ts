@@ -8,7 +8,8 @@ const routes = {
   selfTests: '/dashboard/selfTests',
   aedServices: '/dashboard/services',
   parts: '/dashboard/parts',
-  repairType: '/dashboard/repairType'
+  repairType: '/dashboard/repairType',
+  dashboard: '/dashboard'
 };
 
 export default routes;

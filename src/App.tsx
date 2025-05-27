@@ -24,6 +24,7 @@ const AllParts = lazy(() => import("./containers/Part/AllParts"));
 const AllRepairTypes = lazy(() => import("./containers/RepairType/AllRepairTypes"));
 const AllNonConformity = lazy(() => import("./containers/NonConformity/AllNonConformities"));
 const NotFound = lazy(() => import("./containers/NotFound/NotFound"));
+const DashDashPage = lazy(() => import("./containers/Dashboard/Dashboard"));
 
 
 const App = (): React.JSX.Element => {
@@ -120,6 +121,21 @@ const App = (): React.JSX.Element => {
                                                     element={<Dashboard component={<AllNonConformity/>}/>}
                                                     section_name="nonConformity"
                                                     module_name="nonConformity"
+                                                />
+                                            }
+                                        />
+                                    ) : <></>
+                                }
+
+                                {
+                                    isAdmin || isSuperAdmin ? (
+                                        <Route
+                                            path={routes.dashboard}
+                                            element={
+                                                <CustomRoute
+                                                    element={<Dashboard component={<DashDashPage/>}/>}
+                                                    section_name="DashDashPage"
+                                                    module_name="DashDashPage"
                                                 />
                                             }
                                         />

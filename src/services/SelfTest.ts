@@ -35,56 +35,7 @@ class SelfTest extends Api {
         }
     };
 
-    postNewAedForm = async (data: AedType): Promise<any> => {
-        try {
-            // @ts-ignore
-            delete data.id;
-            const finalData = {
-                serialNumber: data.serialNumber,
-                registerDateTime: data.registerDateTime,
-                aedBatteryType: data.aedBatteryType,
-                location: {
-                    province: data.province,
-                    city: data.city,
-                    place: data.place,
-                    long: 0,
-                    lat: 0
-                }
-            }
-            const result = await this.postJsonData(
-                this.urls.addAed,
-                finalData
-            );
-            return result.data;
-        } catch (e) {
-            return Promise.reject(e);
-        }
-    };
 
-    editAedForm = async (data: AedType): Promise<any> => {
-        try {
-            let dataForApi: any = {
-                id: data.id,
-                serialNumber: data.serialNumber,
-                registerDateTime: data.registerDateTime,
-                batteryType: data.aedBatteryType,
-                location: {
-                    province: data.province,
-                    city: data.city,
-                    place: data.place,
-                    long: 0,
-                    lat: 0
-                },
-            }
-            const result = await this.putJsonData(
-                `/${this.urls.editAed}`,
-                dataForApi
-            );
-            return result.data;
-        } catch (e) {
-            return Promise.reject(e);
-        }
-    };
 
 }
 

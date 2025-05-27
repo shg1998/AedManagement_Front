@@ -28,10 +28,12 @@ const DEFAULT_AED_INFORMATION: AedType = {
     id: '0',
     serialNumber: '',
     province: 'Tehran',
-    city: 'Tehran',
+    city: 'تهران',
+    address: '',
     place: '',
     registerDateTime: convertTimeToLocale2(Date()),
-    aedBatteryType: 'Chargeable'
+    aedBatteryType: 'Chargeable',
+    position: [35.6892, 51.389]
 }
 
 const testOptions = [
@@ -154,13 +156,13 @@ const AllAeds = () => {
                 enableSorting: false,
                 accessorFn: (row: any) => row.location?.province === null ? "" : row.location?.province,
             },
-            {
-                accessorKey: "location.city",
-                header: "City",
-                maxSize: 20,
-                enableSorting: false,
-                accessorFn: (row: any) => row.location?.city === null ? "" : row.location?.city,
-            },
+            // {
+            //     accessorKey: "location.city",
+            //     header: "City",
+            //     maxSize: 20,
+            //     enableSorting: false,
+            //     accessorFn: (row: any) => row.location?.city === null ? "" : row.location?.city,
+            // },
             {
                 accessorKey: "location.place",
                 header: "Place",
@@ -312,11 +314,13 @@ const AllAeds = () => {
         setSelectedAed({
             id: row.id,
             serialNumber: row.serialNumber,
-            city: row.location.city,
+            address: row.location.address,
             province: row.location.province,
             place: row.location.place,
             registerDateTime: row.registerDateTime,
             aedBatteryType: row.aedBatteryType,
+            city: row.location.city,
+            position: [row.location.lat, row.location.long]
         });
         setOpenManageAedModal(true);
     };
@@ -466,14 +470,17 @@ const AllAeds = () => {
                     selectedAed?.id === '0' ? "🖥️ Create Aed" : "✏️ Edit Aed"
                 }
                 open={openManageAedModal}
-                maxWidth={"sm"}
+                maxWidth={"md"}
                 handleClose={handleCloseManageModal}
                 handleAdd={handleAddAed}
                 buttonLabel={selectedAed?.id === '0' ? "Submit" : "Apply"}
             >
                 <NewAed
                     ref={newAedRef}
-                    data={selectedAed?.id === '0' ? DEFAULT_AED_INFORMATION : selectedAed!}
+                    data={selectedAed?.id === '0' ? {
+                        ...DEFAULT_AED_INFORMATION,
+                        province: !isSuperAdmin && !isAdmin ? (getItemSecure('province') ?? 'Tehran') : 'Tehran'
+                    } : selectedAed!}
                     closeModal={closeCreateEditModal}
                 />
             </LeftModal>

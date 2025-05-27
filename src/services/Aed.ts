@@ -46,10 +46,11 @@ class Aed extends Api {
                 aedBatteryType: data.aedBatteryType,
                 location: {
                     province: data.province,
+                    address: data.address,
                     city: data.city,
                     place: data.place,
-                    long: 0,
-                    lat: 0
+                    long: data.position?.[1],
+                    lat: data.position?.[0]
                 }
             }
             const result = await this.postJsonData(
@@ -68,14 +69,15 @@ class Aed extends Api {
                 id: data.id,
                 serialNumber: data.serialNumber,
                 registerDateTime: data.registerDateTime,
-                batteryType: data.aedBatteryType,
+                aedBatteryType: data.aedBatteryType,
                 location: {
                     province: data.province,
+                    address: data.address,
                     city: data.city,
                     place: data.place,
-                    long: 0,
-                    lat: 0
-                },
+                    long: data.position?.[1],
+                    lat: data.position?.[0]
+                }
             }
             const result = await this.putJsonData(
                 `/${this.urls.editAed}`,
