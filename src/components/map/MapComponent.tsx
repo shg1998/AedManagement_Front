@@ -33,6 +33,7 @@ const ChangeView: React.FC<{ center: [number, number] }> = ({center}) => {
     const map = useMap();
     useEffect(() => {
         map.setView(center, 13);
+
     }, [center, map]);
     return null;
 };
@@ -50,7 +51,6 @@ function ClickToAddMarker({
         click(e) {
             const {lat, lng} = e.latlng;
             setMarkerPosition([lat, lng]);
-            setMarkerLabel(`مختصات: ${lat.toFixed(5)}, ${lng.toFixed(5)}`);
             axios
                 .get('https://nominatim.openstreetmap.org/reverse', {
                     params: {

@@ -16,6 +16,7 @@ import {useAuthState} from "../../../context/AuthContext";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 
 const {
     aeds,
@@ -23,7 +24,8 @@ const {
     admins,
     nonConformity,
     parts,
-    repairType
+    repairType,
+    dashboard
 } = routes;
 
 /**
@@ -82,6 +84,21 @@ const ListItems: React.FC = () => {
                             style={{padding: "0"}}
                             className={isOpenSidebar ? openSideLinkWrapper : linkWrapper}
                         >
+                            {isAdmin || isSuperAdmin ?
+                                getListItem({
+                                    section: "undefined",
+                                    name: "dashboard",
+                                    Icon: SpaceDashboardIcon,
+                                    text: 'Dashboard',
+                                    selected: isOpenPageOfThisGroup(dashboard),
+                                    link: dashboard,
+                                    isNested: false,
+                                    props: {
+                                        icon: faListAlt,
+                                        size: "lg",
+                                    },
+                                }) : (<></>)}
+
                             {isSuperAdmin ?
                                 getListItem({
                                     section: "undefined",
