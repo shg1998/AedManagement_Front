@@ -15,6 +15,7 @@ import DateTimeFilter, {
 import {useLocation} from "react-router-dom";
 import SelfTest from "../../services/SelfTest";
 import {getJalaliDateTime} from "../../utils/time";
+import SelfTestDetails from "./SelfTestDetails";
 
 
 const AllSelfTests = () => {
@@ -37,6 +38,9 @@ const AllSelfTests = () => {
     const [openTimeFilterModal, setOpenTimeFilterModal] =
         useState<boolean>(false);
 
+    const [openDetailsModal, setOpenDetailsModal] =
+        useState<boolean>(false);
+    
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
     const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([{
         id: 'aedId', value: aedId
@@ -214,6 +218,13 @@ const AllSelfTests = () => {
         setPagination({pageIndex: 0, pageSize: pagination.pageSize});
     }, [columnFilters]);
 
+    const handleShowDetails = (row: any) => {
+        setOpenDetailsModal(true);
+    }
+
+    const handleCloseDetail = () => {
+        setOpenDetailsModal(false);
+    }
 
     return (
         <Paper className={`main-container-${themeMode}`}>
@@ -249,10 +260,11 @@ const AllSelfTests = () => {
                                 remoteFilter={setColumnFilters}
                                 columnFilters={columnFilters}
                                 totalCount={data.totalItems}
-                                hasRowAction={false}
+                                hasRowAction={true}
                                 disableRowSelection={true}
                                 columnVisibility={columnVisibility}
                                 setColumnVisibility={setColumnVisibility}
+                                showRowDetail={handleShowDetails}
                             />
                         </div>
                     </>
@@ -269,6 +281,15 @@ const AllSelfTests = () => {
                 buttonLabel={"Apply"}
             >
                 <DateTimeFilter ref={timeFilterRef} data={dateFilters}/>
+            </LeftModal>
+
+            <LeftModal
+                title={"🗒️ Details"}
+                open={openDetailsModal}
+                maxWidth={"lg"}
+                handleClose={handleCloseDetail}
+            >
+                <SelfTestDetails />
             </LeftModal>
         </Paper>
     );
