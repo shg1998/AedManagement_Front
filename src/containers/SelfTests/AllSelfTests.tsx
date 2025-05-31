@@ -16,6 +16,8 @@ import {useLocation} from "react-router-dom";
 import SelfTest from "../../services/SelfTest";
 import {getJalaliDateTime} from "../../utils/time";
 import SelfTestDetails from "./SelfTestDetails";
+import {internalTestConverter} from "../../utils/SelfTestUtils";
+import {AedSelfTestDetailsType} from "./constants";
 
 
 const AllSelfTests = () => {
@@ -40,7 +42,7 @@ const AllSelfTests = () => {
 
     const [openDetailsModal, setOpenDetailsModal] =
         useState<boolean>(false);
-    
+    const [selectedSelfTest, setSelectedSelfTest] = useState<AedSelfTestDetailsType>({});
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
     const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([{
         id: 'aedId', value: aedId
@@ -135,41 +137,6 @@ const AllSelfTests = () => {
         []
     );
 
-    const internalTestConverter = (value: number) => {
-        const val = +value;
-
-        if (val === 255) {
-            return '✅ Passed';
-        }
-
-        if (val < 0 || val > 254) {
-            return '⚠️ Invalid';
-        }
-
-        const bits = val.toString(2).padStart(8, '0').split('').reverse();
-
-        const failures = [
-            bits[0] === '0' && '🛑 SAE Board',
-            bits[1] === '0' && '🛑 High Voltage Board',
-            bits[2] === '0' && '🛑 MotherBoard Buttons',
-            bits[3] === '0' && '🛑 Battery',
-            bits[4] === '0' && '🛑 SAE & MotherBoard Communication',
-            bits[5] === '0' && '🛑 SAE & High Voltage Communication'
-        ].filter(Boolean);
-
-        if (failures.length === 0) {
-            return '✅ Passed';
-        }
-
-        return (
-            <pre style={{fontFamily: 'inherit', textAlign: 'start', margin: 0}}>
-                {'❌ Failed\n'}
-                {failures.map(line => `  ${line}`).join('\n')}
-        </pre>
-        );
-    };
-
-
     const handleCloseModalWithSavedDateTime = async () => {
         setOpenTimeFilterModal(false);
         let dates = timeFilterRef?.current?.setBoundaries();
@@ -219,6 +186,22 @@ const AllSelfTests = () => {
     }, [columnFilters]);
 
     const handleShowDetails = (row: any) => {
+        console.log(location?.state?.row)
+        setSelectedSelfTest({
+            algorithmVersion: row?.algorithmVersion,
+            batteryRemain: row?.batteryRemain,
+            highVoltageBoardVersion: row?.highVoltageBoardVersion,
+            internalTestResult: row?.internalTestResult,
+            motherBoardVersion: row?.motherBoardVersion,
+            saeBoardVersion: row?.saeBoardVersion,
+            sentTime: getJalaliDateTime(row?.sentTime),
+            shockCount: row?.shockCount,
+            serialNumber: location?.state?.row?.serialNumber,
+            lat: location?.state?.row?.location?.lat,
+            long: location?.state?.row?.location?.long,
+            place: location?.state?.row?.location?.place,
+            address: location?.state?.row?.location?.address
+        });
         setOpenDetailsModal(true);
     }
 
@@ -289,7 +272,7 @@ const AllSelfTests = () => {
                 maxWidth={"lg"}
                 handleClose={handleCloseDetail}
             >
-                <SelfTestDetails />
+                <SelfTestDetails data={selectedSelfTest}/>
             </LeftModal>
         </Paper>
     );

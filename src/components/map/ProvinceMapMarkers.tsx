@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import { Box } from "@mui/material";
-import L, { DivIcon } from "leaflet";
+import React, {useEffect, useState} from "react";
+import {MapContainer, TileLayer, Marker, Popup, useMap} from "react-leaflet";
+import {Box, Typography} from "@mui/material";
+import L, {DivIcon} from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { iranProvinces } from "../../utils/ProvinceUtils";
+import {iranProvinces} from "../../utils/ProvinceUtils";
 
 interface Location {
     lat: number;
@@ -68,24 +68,28 @@ const ProvinceMapMarkers: React.FC<ProvinceMapMarkersProps> = ({
     }, [provinceId]);
 
     return (
-        <Box sx={{ height: "60vh", width: "100%" }}>
+        <Box sx={{height: "60vh", width: "100%"}}>
             <MapContainer
                 center={center}
                 zoom={zoom}
-                style={{ height: "100%", width: "100%" }}
+                style={{height: "100%", width: "100%"}}
                 scrollWheelZoom={true}
             >
                 <TileLayer
                     attribution="&copy; OpenStreetMap contributors"
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <ChangeView center={center} zoom={zoom} />
-                {locations.map(({ lat, lon, label, status }, idx) => {
+                <ChangeView center={center} zoom={zoom}/>
+                {locations.map(({lat, lon, label, status}, idx) => {
                     const color = statusColors[status ?? "normal"] ?? statusColors.normal;
                     const icon = createSvgIcon(color);
                     return (
                         <Marker key={idx} position={[lat, lon]} icon={icon}>
-                            {label && <Popup>{label}</Popup>}
+                            {label && <Popup>
+                                <Typography sx={{direction: 'rtl !important'}}>
+                                    {label}
+                                </Typography>
+                            </Popup>}
                         </Marker>
                     );
                 })}

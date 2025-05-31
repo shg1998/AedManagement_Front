@@ -8,6 +8,11 @@ export type AedSelfTestDetailsType = {
     saeBoardVersion?: string;
     sentTime?: string;
     shockCount?: number;
+    serialNumber?: string;
+    lat?: number;
+    long?: number;
+    address?: string;
+    place?: string;
 }
 
 export type AedSelfTestDetailsPropsType = {
