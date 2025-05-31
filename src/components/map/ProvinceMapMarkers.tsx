@@ -5,7 +5,7 @@ import L, {DivIcon} from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {iranProvinces} from "../../utils/ProvinceUtils";
 
-interface Location {
+export interface Location {
     lat: number;
     lon: number;
     label?: string;

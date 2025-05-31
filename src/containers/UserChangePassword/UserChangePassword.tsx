@@ -17,36 +17,21 @@ import { styled } from "@mui/material/styles";
 import {AdminType, NewAdminHandle, NewUserProps} from "../Admins/NewAdmin";
 import MySelect from "../../components/MySelect/MySelect";
 import {provinceItems} from "../../utils/ProvinceUtils";
+import Account from "../../services/Account";
+import {deleteItemSecure, setItemSecure} from "../../utils/AESCrypto";
 
 
 const AddUserSchema = Yup.object().shape({
-    userName: Yup.string().required("⛔ Username is required!"),
-    fullName: Yup.string().required("⛔ FullName is required!"),
-    password: Yup.string()
+    prevPassword: Yup.string()
+        .max(20, "⛔ Password length is too long")
+        .required("⛔ Password is required"),
+    newPassword: Yup.string()
         .min(8, "⛔ Password must be at least 8 characters long.")
         .max(20, "⛔ Password length is too long")
         .required("⛔ Password is required"),
     passwordConfirm: Yup.string()
-        .oneOf([Yup.ref("password")], "⛔ Password and confirmation must match.")
+        .oneOf([Yup.ref("newPassword")], "⛔ Password and confirmation must match.")
         .required("⛔ Password Confirm is required."),
-    email: Yup.string()
-        .matches(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            "⛔ Email address is invalid."
-        )
-        .required("⛔ Email address is required"),
-
-});
-
-const EditUserSchema = Yup.object().shape({
-    userName: Yup.string().required("⛔ Username is required!"),
-    fullName: Yup.string().required("⛔ FullName is required!"),
-    email: Yup.string()
-        .matches(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            "⛔ Email address is invalid."
-        )
-        .required("⛔ Email address is required"),
 });
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -64,31 +49,35 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
 }));
 
-const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, ref) => {
+export interface NewChangeUserPasswordHandle {
+    sendRequest: () => void;
+}
+
+export interface NewChangeUserPasswordProps {
+    closeModal: () => void;
+}
+
+export type UserChangePasswordType = {
+    prevPassword: string;
+    newPassword: string;
+    passwordConfirm: string;
+}
+
+const UserChangePassword = forwardRef<NewChangeUserPasswordHandle, NewChangeUserPasswordProps>(({closeModal}, ref) => {
     const classes = useStyles();
     const submitBtnRef = useRef<any>();
-    const {postNewUserForm, editUserForm} = new Users();
+    const {changePassword} = new Account();
+    const [isVisiblePrevPassword, setIsVisiblePrevPassword] = useState(false);
     const [isVisiblePassword, setIsVisiblePassword] = useState(false);
     const [isVisibleConfirmPassword, setIsVisibleConfirmPassword] = useState(false);
 
-    const {mutate: addUser} = useMutation(postNewUserForm, {
+    const {mutate: passChange} = useMutation(changePassword, {
         onSuccess: async (data) => {
             if (data?.isSuccess) {
                 closeModal();
-                tSuccess(data?.data);
-            }
-        },
-        onError: async (error: any) => {
-            closeModal();
-            tError(error.response.data.Message);
-        },
-    });
-
-    const {mutate: editUser} = useMutation(editUserForm, {
-        onSuccess: async (data) => {
-            if (data?.isSuccess) {
-                closeModal();
-                tSuccess(data?.data);
+                tSuccess(data?.message);
+                deleteItemSecure('mainToken');
+                setItemSecure("mainToken", data.data.token);
             }
         },
         onError: async (error: any) => {
@@ -98,18 +87,20 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
     });
 
 
-    const formik = useFormik<AdminType>({
-        initialValues: data,
-        validationSchema: data.id === 0 ? AddUserSchema : EditUserSchema,
+
+    const formik = useFormik<UserChangePasswordType>({
+        initialValues: {
+            prevPassword: '',
+            newPassword: '',
+            passwordConfirm: ''
+        },
+        validationSchema: AddUserSchema,
         onSubmit: async (values): Promise<any> => {
-            if (values.id === 0) {
-                // @ts-ignore
-                delete values.id;
-                addUser(values);
-            } else
-                editUser(values);
-        },
+            passChange(values);
+        }
     });
+
+
 
     useImperativeHandle(ref, () => ({
         sendRequest,
@@ -123,128 +114,82 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
         e.preventDefault();
     };
 
+    const handleMouseDownPrevPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+    };
+
     const handleClickShowPassword = () =>
         setIsVisiblePassword(!isVisiblePassword);
 
+    const handleClickShowPrevPassword = () =>
+        setIsVisiblePrevPassword(!isVisiblePrevPassword);
+
+
     const handleClickShowConfirmPassword = () =>
         setIsVisibleConfirmPassword(!isVisibleConfirmPassword);
-
-    const handleIsActiveChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-        formik.setFieldValue("isActive", e.target.checked);
-    }
 
     return (
         <div className={classes.BgContainer}>
             <Container className={classes.mainContainer}>
                 <form className={classes.formContainer} onSubmit={formik.handleSubmit}>
-                    <InputLabel htmlFor="userName">
-                        <Typography className={classes.inputLabel}>
-                            🧑‍💻 Username
-                        </Typography>
-                    </InputLabel>
-                    <StyledTextField
-                        disabled={data.id !== 0}
-                        margin="normal"
-                        fullWidth
-                        id="userName"
-                        autoComplete="userName"
-                        sx={{
-                            mb: 3,
-                        }}
-                        {...formik.getFieldProps("userName")}
-                        className={clsx({
-                            [classes.errorBorder]:
-                            formik.errors.userName && formik.touched.userName,
-                        })}
-                    />
-                    {formik.errors.userName && formik.touched.userName ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.userName}
-                        </Typography>
-                    ) : null}
 
-
-                    <InputLabel htmlFor="fullName">
+                    <InputLabel htmlFor="prevPassword">
                         <Typography className={classes.inputLabel}>
-                            🧑 FullName
+                            🔐 Previous Password
                         </Typography>
                     </InputLabel>
                     <StyledTextField
                         margin="normal"
                         fullWidth
-                        id="fullName"
-                        autoComplete="fullName"
-                        sx={{
-                            mb: 3,
+                        type={isVisiblePrevPassword ? "text" : "password"}
+                        id="prevPassword"
+                        autoComplete="current-prevPassword"
+                        sx={{mb: 4, mt: 2}}
+                        {...formik.getFieldProps("prevPassword")}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end" sx={{marginRight: "12px"}}>
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPrevPassword}
+                                        onMouseDown={handleMouseDownPrevPassword}
+                                        edge="end"
+                                    >
+                                        {formik.values.prevPassword.trim().length !== 0 &&
+                                        isVisiblePrevPassword ? (
+                                            <Visibility/>
+                                        ) : (
+                                            <VisibilityOff/>
+                                        )}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
                         }}
-                        {...formik.getFieldProps("fullName")}
                         className={clsx({
                             [classes.errorBorder]:
-                            formik.errors.fullName && formik.touched.fullName,
+                            formik.errors.prevPassword && formik.touched.prevPassword,
                         })}
                     />
-                    {formik.errors.fullName && formik.touched.fullName ? (
+                    {formik.errors.prevPassword && formik.touched.prevPassword ? (
                         <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.fullName}
+                            {formik.errors.prevPassword}
                         </Typography>
                     ) : null}
 
-                    <InputLabel htmlFor="email">
+
+                    <InputLabel htmlFor="newPassword">
                         <Typography className={classes.inputLabel}>
-                            📧 Email Address
-                        </Typography>
-                    </InputLabel>
-                    <StyledTextField
-                        margin="normal"
-                        fullWidth
-                        id="email"
-                        autoComplete="email"
-                        sx={{
-                            mb: 3,
-                        }}
-                        {...formik.getFieldProps("email")}
-                        className={clsx({
-                            [classes.errorBorder]:
-                            formik.errors.email && formik.touched.email,
-                        })}
-                    />
-                    {formik.errors.email && formik.touched.email ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.email}
-                        </Typography>
-                    ) : null}
-
-                    <InputLabel htmlFor="province">
-                        <Typography className={classes.inputLabel}>🗺️ Province</Typography>
-                    </InputLabel>
-                    <br/>
-                    <MySelect
-                        label=""
-                        formik={formik}
-                        items={provinceItems}
-                        {...formik.getFieldProps("province")}
-                    />
-                    {formik.errors.province && formik.touched.province ? (
-                        <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.province}
-                        </Typography>
-                    ) : null}
-                    <br/>
-                    <br/>
-
-                    <InputLabel htmlFor="password">
-                        <Typography className={classes.inputLabel}>
-                            🔒 Password
+                            🔒 New Password
                         </Typography>
                     </InputLabel>
                     <StyledTextField
                         margin="normal"
                         fullWidth
                         type={isVisiblePassword ? "text" : "password"}
-                        id="password"
-                        autoComplete="current-password"
+                        id="newPassword"
+                        autoComplete="current-newPassword"
                         sx={{mb: 4, mt: 2}}
-                        {...formik.getFieldProps("password")}
+                        {...formik.getFieldProps("newPassword")}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end" sx={{marginRight: "12px"}}>
@@ -254,7 +199,7 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
                                         onMouseDown={handleMouseDownPassword}
                                         edge="end"
                                     >
-                                        {formik.values.password.trim().length !== 0 &&
+                                        {formik.values.newPassword.trim().length !== 0 &&
                                         isVisiblePassword ? (
                                             <Visibility/>
                                         ) : (
@@ -266,19 +211,19 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
                         }}
                         className={clsx({
                             [classes.errorBorder]:
-                            formik.errors.password && formik.touched.password,
+                            formik.errors.newPassword && formik.touched.newPassword,
                         })}
                     />
-                    {formik.errors.password && formik.touched.password ? (
+                    {formik.errors.newPassword && formik.touched.newPassword ? (
                         <Typography className={clsx(classes.errorText, "errorMessage")}>
-                            {formik.errors.password}
+                            {formik.errors.newPassword}
                         </Typography>
                     ) : null}
 
 
                     <InputLabel htmlFor="passwordConfirm">
                         <Typography className={classes.inputLabel}>
-                            ✅ Confirm Password
+                            🔑 Confirm Password
                         </Typography>
                     </InputLabel>
                     <StyledTextField
@@ -319,25 +264,6 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
                         </Typography>
                     ) : null}
 
-
-                    <FormControlLabel
-                        className={classes.rememberContainer}
-                        control={
-                            <Checkbox
-                                color="primary"
-                                name="isActive"
-                                value={formik.values.isActive}
-                                checked={formik.values.isActive}
-                                onChange={handleIsActiveChanged}
-                            />
-                        }
-                        label={
-                            <Typography className={classes.fontCustum}>
-                                Is Active?
-                            </Typography>
-                        }
-                    />
-
                     <Button
                         ref={submitBtnRef}
                         type="submit"
@@ -349,4 +275,4 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
         </div>
     );
 });
-export default NewUser;
+export default UserChangePassword;

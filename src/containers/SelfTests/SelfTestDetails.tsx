@@ -127,7 +127,7 @@ const SelfTestDetails: React.FC<AedSelfTestDetailsPropsType> = ({data}) => {
                     </Typography>
                 </StatusCard>
 
-                {data?.internalTestResult !== '0' && (
+                {data?.internalTestResult !== '255' && (
                     <StatusCard
                         title="Internal Self Test Result"
                         color="#e53935"
@@ -209,7 +209,7 @@ const SelfTestDetails: React.FC<AedSelfTestDetailsPropsType> = ({data}) => {
                         lat: data?.lat ?? 0,
                         lon: data?.long ?? 0,
                         label: `${data?.place}, ${data?.address}`,
-                        status: data?.internalTestResult === '0' ? 'success' : 'error'
+                        status: data?.internalTestResult === '255' ? 'success' : 'error'
                     }]}
                 />
             </Paper>
