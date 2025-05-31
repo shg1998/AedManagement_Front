@@ -33,7 +33,7 @@ const SelfTestDetails: React.FC<AedSelfTestDetailsPropsType> = ({data}) => {
                     mb: 4,
                     gap: 1.5,
                     p: 1,
-                    bgcolor: themeMode === 'dark' ? "#0d47a1" : "#e3f2fd", // آبی ملایم با توجه به تم
+                    bgcolor: themeMode === 'dark' ? "#0d47a1" : "#e3f2fd",
                     borderRadius: 2,
                     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                     maxWidth: 320,
@@ -54,7 +54,6 @@ const SelfTestDetails: React.FC<AedSelfTestDetailsPropsType> = ({data}) => {
                 </Typography>
             </Box>
 
-            {/* کارت‌ها */}
             <Grid container spacing={4} mb={5}>
                 <StatusCard
                     title="Device Info"
@@ -69,7 +68,7 @@ const SelfTestDetails: React.FC<AedSelfTestDetailsPropsType> = ({data}) => {
                         Serial Number: <strong>{data?.serialNumber}</strong>
                     </Typography>
                     <Typography variant="body1" sx={{color: textColor}}>
-                        Status: <strong>{data?.internalTestResult === '0' ? "Passed ✅" : "Failed ⛔"}</strong>
+                        Status: <strong>{data?.internalTestResult === '255' ? "Passed ✅" : "Failed ⛔"}</strong>
                     </Typography>
                 </StatusCard>
 

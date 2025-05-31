@@ -99,6 +99,20 @@ const ListItems: React.FC = () => {
                                     },
                                 }) : (<></>)}
 
+                            {getListItem({
+                                section: "undefined",
+                                name: "aeds",
+                                Icon: DvrIcon,
+                                text: 'AEDs',
+                                selected: isOpenPageOfThisGroup(aeds),
+                                link: aeds,
+                                isNested: false,
+                                props: {
+                                    icon: faListAlt,
+                                    size: "lg",
+                                },
+                            })}
+                            
                             {isSuperAdmin ?
                                 getListItem({
                                     section: "undefined",
@@ -173,20 +187,6 @@ const ListItems: React.FC = () => {
                                         size: "lg",
                                     },
                                 }) : (<></>)}
-
-                            {getListItem({
-                                section: "undefined",
-                                name: "aeds",
-                                Icon: DvrIcon,
-                                text: 'AEDs',
-                                selected: isOpenPageOfThisGroup(aeds),
-                                link: aeds,
-                                isNested: false,
-                                props: {
-                                    icon: faListAlt,
-                                    size: "lg",
-                                },
-                            })}
                         </List>
                         <Divider className={divider}/>
                     </>
