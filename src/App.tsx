@@ -56,11 +56,26 @@ const App = (): React.JSX.Element => {
                                     <Route path="*" element={<Navigate replace to="/login"/>}/>
                                 </>
                             )}
-                            <Route path="/" element={<Navigate replace to="/dashboard/aeds"/>}/>
-                            <Route
-                                path="/login"
-                                element={<Navigate replace to="/dashboard/aeds"/>}
-                            />
+                            {
+                                isSuperAdmin || isAdmin ? (
+                                    <>
+                                        <Route path="/" element={<Navigate replace to="/dashboard"/>}/>
+                                        <Route
+                                            path="/login"
+                                            element={<Navigate replace to="/dashboard"/>}
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        <Route path="/" element={<Navigate replace to="/dashboard/aeds"/>}/>
+                                        <Route
+                                            path="/login"
+                                            element={<Navigate replace to="/dashboard/aeds"/>}
+                                        />
+                                    </>
+                                )
+                            }
+
                             {/*Private Routes */}
                             <Route element={<PrivateRoutes/>}>
 
@@ -187,7 +202,7 @@ const App = (): React.JSX.Element => {
                                     ) : <></>
                                 }
 
-                                <Route path="*" element={<NotFound />} />
+                                <Route path="*" element={<NotFound/>}/>
 
                             </Route>
                         </Routes>

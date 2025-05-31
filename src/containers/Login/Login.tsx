@@ -109,7 +109,10 @@ const Login = () => {
                 if (location?.state?.from) {
                     navigate(location.state.from);
                 } else {
-                    navigate(`${routes.aeds}`);
+                    if (data.data.userRoleName === "User")
+                        navigate(`${routes.aeds}`);
+                    else
+                        navigate(`${routes.dashboard}`);
                 }
             }
         },

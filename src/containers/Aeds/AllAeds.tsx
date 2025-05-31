@@ -134,7 +134,6 @@ const AllAeds = () => {
                     <Select
                         sx={{
                             width: '100%',
-                            height: 36,
                             fontSize: '0.875rem',
                             padding: '0 8px',
                         }}
@@ -237,8 +236,11 @@ const AllAeds = () => {
                         }}
                         sx={{
                             width: '100%',
-                            fontSize: "0.875rem",
-                            height: 36,
+                            fontSize: '0.875rem',
+                            '& .MuiSelect-select': {
+                                paddingTop: 1.3,
+                                paddingBottom: 1.1,
+                            },
                         }}
                     >
                         <MenuItem value="all">
