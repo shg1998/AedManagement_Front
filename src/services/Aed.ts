@@ -7,6 +7,7 @@ class Aed extends Api {
         addAed: "Aed/create-aed",
         editAed: "Aed/edit-aed",
         deleteAed: "Aed/delete-aed",
+        detailsAed: "Aed/get-details",
     };
 
     getAll = async (
@@ -35,6 +36,21 @@ class Aed extends Api {
             return Promise.reject(e)
         }
     };
+
+    fetchDetails = async (id?: string): Promise<any> => {
+        try {
+            const result = await this.getData(this.urls.detailsAed + "/" + id, {});
+            if (!result)
+                return {
+                    data: {}
+                }
+            return result.data.data;
+        }
+        catch (e){
+            console.log(e)
+            return Promise.reject(e)
+        }
+    }
 
     postNewAedForm = async (data: AedType): Promise<any> => {
         try {

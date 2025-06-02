@@ -23,6 +23,7 @@ import ListItemText from "@mui/material/ListItemText";
 import {useAuthState} from "../../context/AuthContext";
 import {getItemSecure} from "../../utils/AESCrypto";
 import {tError, tSuccess} from "../../utils/toast";
+import AedDetails from "./AedDetails";
 
 const DEFAULT_AED_INFORMATION: AedType = {
     id: '0',
@@ -65,6 +66,9 @@ const AllAeds = () => {
         useState<boolean>(false);
 
     const [openManageAedModal, setOpenManageAedModal] =
+        useState<boolean>(false);
+
+    const [openDetailsAedModal, setOpenDetailsAedModal] =
         useState<boolean>(false);
 
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
@@ -327,6 +331,10 @@ const AllAeds = () => {
         setOpenManageAedModal(true);
     };
 
+    const handleCloseDetailsModal = () => {
+        setOpenDetailsAedModal(false);
+    }
+
     function toODataPath(input: string): string {
         return input
             .split('.')
@@ -349,6 +357,11 @@ const AllAeds = () => {
         }).catch(err => {
             tError(err.response.data.Message);
         })
+    }
+
+    const handleShowDetails = (row: any) => {
+        setSelectedAed(row);
+        setOpenDetailsAedModal(true);
     }
 
     useEffect(() => {
@@ -460,6 +473,8 @@ const AllAeds = () => {
                                 rowSelfTests={handleRowSelfTests}
                                 rowServices={handleRowServices}
                                 deleteRow={isSuperAdmin || isAdmin ? handleDelete : undefined}
+                                showRowDetail={handleShowDetails}
+                                onRowClicked={handleShowDetails}
                             />
                         </div>
                     </>
@@ -496,6 +511,17 @@ const AllAeds = () => {
                 buttonLabel={"Apply"}
             >
                 <DateTimeFilter ref={timeFilterRef} data={dateFilters}/>
+            </LeftModal>
+
+            <LeftModal
+                title={
+                    "👀 Aed Details"
+                }
+                open={openDetailsAedModal}
+                maxWidth={"xl"}
+                handleClose={handleCloseDetailsModal}
+            >
+               <AedDetails aedId={selectedAed?.id} />
             </LeftModal>
         </Paper>
     );

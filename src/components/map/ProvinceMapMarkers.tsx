@@ -10,12 +10,14 @@ export interface Location {
     lon: number;
     label?: string;
     status?: "success" | "warning" | "error" | "normal";
+    id?: string;
 }
 
 interface ProvinceMapMarkersProps {
     provinceId?: string;
     locations: Location[];
     zoom?: number;
+    onMarkerClick?: (location: Location) => void;
 }
 
 const ChangeView: React.FC<{ center: [number, number]; zoom: number }> = ({
@@ -57,6 +59,7 @@ const ProvinceMapMarkers: React.FC<ProvinceMapMarkersProps> = ({
                                                                    provinceId = "tehran",
                                                                    locations,
                                                                    zoom = 10,
+                                                                   onMarkerClick
                                                                }) => {
     const [center, setCenter] = useState<[number, number]>([35.6892, 51.389]);
 
@@ -80,19 +83,32 @@ const ProvinceMapMarkers: React.FC<ProvinceMapMarkersProps> = ({
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <ChangeView center={center} zoom={zoom}/>
-                {locations.map(({lat, lon, label, status}, idx) => {
+                {locations.map((location, idx) => {
+                    const {lat, lon, label, status} = location;
                     const color = statusColors[status ?? "normal"] ?? statusColors.normal;
                     const icon = createSvgIcon(color);
                     return (
-                        <Marker key={idx} position={[lat, lon]} icon={icon}>
-                            {label && <Popup>
-                                <Typography sx={{direction: 'rtl !important'}}>
-                                    {label}
-                                </Typography>
-                            </Popup>}
+                        <Marker
+                            key={idx}
+                            position={[lat, lon]}
+                            icon={icon}
+                            eventHandlers={{
+                                click: () => {
+                                    onMarkerClick?.(location);
+                                }
+                            }}
+                        >
+                            {label && (
+                                <Popup>
+                                    <Typography sx={{direction: 'rtl !important'}}>
+                                        {label}
+                                    </Typography>
+                                </Popup>
+                            )}
                         </Marker>
                     );
                 })}
+
             </MapContainer>
         </Box>
     );
