@@ -131,3 +131,16 @@ export  function truncateText(text: string, maxLength: number) {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + "…";
 }
+
+export const getStatus = (stat: string): string | undefined => {
+  switch (stat) {
+    case 'Pass':
+      return 'success';
+    case 'Fail':
+      return 'error';
+    case 'Disconnected':
+      return 'warning';
+    case 'NoWifi':
+      return 'noWifi';
+  }
+}

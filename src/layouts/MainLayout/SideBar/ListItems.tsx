@@ -84,7 +84,7 @@ const ListItems: React.FC = () => {
                             style={{padding: "0"}}
                             className={isOpenSidebar ? openSideLinkWrapper : linkWrapper}
                         >
-                            {isAdmin || isSuperAdmin ?
+                            {
                                 getListItem({
                                     section: "undefined",
                                     name: "dashboard",
@@ -97,7 +97,8 @@ const ListItems: React.FC = () => {
                                         icon: faListAlt,
                                         size: "lg",
                                     },
-                                }) : (<></>)}
+                                })
+                            }
 
                             {getListItem({
                                 section: "undefined",
@@ -112,7 +113,7 @@ const ListItems: React.FC = () => {
                                     size: "lg",
                                 },
                             })}
-                            
+
                             {isSuperAdmin ?
                                 getListItem({
                                     section: "undefined",
@@ -143,50 +144,49 @@ const ListItems: React.FC = () => {
                                     },
                                 }) : (<></>)}
 
-                            {isAdmin || isSuperAdmin ?
+                            {(isAdmin || isSuperAdmin) &&
                                 getListItem({
-                                    section: "undefined",
-                                    name: "nonConformity",
-                                    Icon: ErrorOutlineIcon,
-                                    text: 'NonConformity',
-                                    selected: isOpenPageOfThisGroup(nonConformity),
-                                    link: nonConformity,
-                                    isNested: false,
-                                    props: {
+                                    link: "", props: {
                                         icon: faListAlt,
                                         size: "lg",
                                     },
-                                }) : (<></>)}
-
-                            {isAdmin || isSuperAdmin ?
-                                getListItem({
                                     section: "undefined",
-                                    name: "parts",
-                                    Icon: WidgetsIcon,
-                                    text: 'Parts',
-                                    selected: isOpenPageOfThisGroup(parts),
-                                    link: parts,
-                                    isNested: false,
-                                    props: {
-                                        icon: faListAlt,
-                                        size: "lg",
-                                    },
-                                }) : (<></>)}
-
-                            {isAdmin || isSuperAdmin ?
-                                getListItem({
-                                    section: "undefined",
-                                    name: "repairTypes",
+                                    name: "assets",
                                     Icon: HomeRepairServiceIcon,
-                                    text: 'Repair Types',
-                                    selected: isOpenPageOfThisGroup(repairType),
-                                    link: repairType,
+                                    text: "Assets",
+                                    selected: [nonConformity, repairType, parts].includes(pageLocation.pathname),
                                     isNested: false,
-                                    props: {
-                                        icon: faListAlt,
-                                        size: "lg",
-                                    },
-                                }) : (<></>)}
+                                    children: [
+                                        {
+                                            section: "undefined",
+                                            name: "nonConformity",
+                                            Icon: ErrorOutlineIcon,
+                                            text: "NonConformity",
+                                            selected: pageLocation.pathname === nonConformity,
+                                            link: nonConformity,
+                                            isNested: true,
+                                        },
+                                        {
+                                            section: "undefined",
+                                            name: "repairTypes",
+                                            Icon: HomeRepairServiceIcon,
+                                            text: "Repair Types",
+                                            selected: pageLocation.pathname === repairType,
+                                            link: repairType,
+                                            isNested: true,
+                                        },
+                                        {
+                                            section: "undefined",
+                                            name: "parts",
+                                            Icon: WidgetsIcon,
+                                            text: "Parts",
+                                            selected: pageLocation.pathname === parts,
+                                            link: parts,
+                                            isNested: true,
+                                        },
+                                    ]
+                                })}
+
                         </List>
                         <Divider className={divider}/>
                     </>

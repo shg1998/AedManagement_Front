@@ -9,7 +9,7 @@ import { useTheme } from "@mui/material/styles";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { PropsWithChildren, ReactNode } from "react";
 
-type Variant = "success" | "normal" | "warning" | "error";
+type Variant = "success" | "normal" | "warning" | "error" | "noWifi";
 
 interface CardProps {
     header?: string;
@@ -25,6 +25,8 @@ const lightPalette: Record<Variant, { bg: string; border: string; main: string }
     normal: { bg: "#E3F2FD", border: "rgba(33, 150, 243, 0.25)", main: "#1565C0" },
     warning: { bg: "#FFF3E0", border: "rgba(255, 152, 0, 0.25)", main: "#F57C00" },
     error: { bg: "#FFEBEE", border: "rgba(239, 83, 80, 0.25)", main: "#D32F2F" },
+    noWifi: { bg: "#D1C4E9", border: "rgba(81, 45, 168, 0.25)", main: "#512DA8" },
+
 };
 
 const darkPalette: Record<Variant, { bg: string; border: string; main: string }> = {
@@ -32,6 +34,7 @@ const darkPalette: Record<Variant, { bg: string; border: string; main: string }>
     normal: { bg: "#263238", border: "rgba(38, 198, 218, 0.4)", main: "#00BCD4" },
     warning: { bg: "#3E2723", border: "rgba(239, 83, 80, 0.4)", main: "#EF5350" },
     error: { bg: "#4A2424", border: "rgba(211, 47, 47, 0.4)", main: "#EF5350" },
+    noWifi: { bg: "#512DA8", border: "rgba(209, 196, 233, 0.4)", main: "#B39DDB" },
 };
 
 const BasicCard: React.FC<PropsWithChildren<CardProps>> = ({

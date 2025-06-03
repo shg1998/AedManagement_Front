@@ -109,10 +109,7 @@ const Login = () => {
                 if (location?.state?.from) {
                     navigate(location.state.from);
                 } else {
-                    if (data.data.userRoleName === "User")
-                        navigate(`${routes.aeds}`);
-                    else
-                        navigate(`${routes.dashboard}`);
+                    navigate(`${routes.dashboard}`);
                 }
             }
         },
@@ -127,9 +124,9 @@ const Login = () => {
     });
 
     const LoginSchema = Yup.object().shape({
-        username: Yup.string().required("وارد کردن نام کاربری ضروری است"),
+        username: Yup.string().required("Username is required!"),
         password: Yup.string()
-            .required("وارد کردن کلمه عبور ضروری است"),
+            .required("Password is required!"),
     });
 
     const formik = useFormik<LoginFormValues>({

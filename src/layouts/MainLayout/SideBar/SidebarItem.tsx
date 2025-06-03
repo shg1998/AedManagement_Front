@@ -12,6 +12,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import ArrowLeftSharpIcon from "@mui/icons-material/ArrowLeftSharp";
 import {useThemeContext} from "../../../ThemeContext";
+import {ArrowRightSharp} from "@mui/icons-material";
 
 interface Props {
     item: ListItemInterface;
@@ -105,13 +106,13 @@ const SidebarItem = ({item, sidebarOpen, isChild, onItemClick}: Props) => {
                     {(sidebarOpen || isChild) && (
                         <>
                             {item.selected && isChild && (
-                                <ArrowLeftSharpIcon
+                                <ArrowRightSharp
                                     className={
                                         item.selected || isHovered
                                             ? selectedMenuItemIcon
                                             : menuItemIcon
                                     }
-                                    style={{fontSize: "1.4em" /*transition: " color 0.9s"*/}}
+                                    style={{fontSize: "1.4em" }}
                                 />
                             )}
                             <Typography
@@ -144,17 +145,6 @@ const SidebarItem = ({item, sidebarOpen, isChild, onItemClick}: Props) => {
     if (!isChild && !sidebarOpen) {
         return (
             <Tooltip title={item.text}
-                     PopperProps={{
-                         sx: {
-                             // "& .MuiTooltip-tooltip": {
-                             //     backgroundColor: theme.palette.background.paper,
-                             //     color: theme.palette.text.primary,
-                             //     maxWidth: 220,
-                             //     fontSize: theme.typography.pxToRem(13),
-                             //     border: `1px solid ${theme.palette.action.disabledBackground}`,
-                             // }
-                         }
-                     }}
                      placement="bottom-end"
                      TransitionComponent={Zoom}
                      TransitionProps={{timeout: 600}}

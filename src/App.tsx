@@ -11,7 +11,6 @@ import NavigationScroll from "./layouts/MainLayout/NavigationScroll";
 import CustomRoute from "./components/CustomRoute/CustomRoute";
 import {styled} from "@mui/system";
 import {useThemeContext} from "./ThemeContext";
-import {getItemSecure} from "./utils/AESCrypto";
 
 const Dashboard = lazy(() => import("./layouts/MainLayout"));
 const Login = lazy(() => import("./containers/Login/Login"));
@@ -142,20 +141,17 @@ const App = (): React.JSX.Element => {
                                     ) : <></>
                                 }
 
-                                {
-                                    isAdmin || isSuperAdmin ? (
-                                        <Route
-                                            path={routes.dashboard}
-                                            element={
-                                                <CustomRoute
-                                                    element={<Dashboard component={<DashDashPage/>}/>}
-                                                    section_name="DashDashPage"
-                                                    module_name="DashDashPage"
-                                                />
-                                            }
+
+                                <Route
+                                    path={routes.dashboard}
+                                    element={
+                                        <CustomRoute
+                                            element={<Dashboard component={<DashDashPage/>}/>}
+                                            section_name="DashDashPage"
+                                            module_name="DashDashPage"
                                         />
-                                    ) : <></>
-                                }
+                                    }
+                                />
 
                                 {
                                     isAdmin || isSuperAdmin ? (

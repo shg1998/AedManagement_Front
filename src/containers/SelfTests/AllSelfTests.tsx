@@ -15,7 +15,6 @@ import DateTimeFilter, {
 import {useLocation} from "react-router-dom";
 import SelfTest from "../../services/SelfTest";
 import {getJalaliDateTime} from "../../utils/time";
-import SelfTestDetails from "./SelfTestDetails";
 import {internalTestConverter} from "../../utils/SelfTestUtils";
 import {AedSelfTestDetailsType} from "./constants";
 
@@ -26,23 +25,19 @@ const AllSelfTests = () => {
         getAll,
     } = new SelfTest();
 
-    const {themeMode, theme} = useThemeContext();
+    const {themeMode} = useThemeContext();
     const timeFilterRef = useRef<NewFilterHandle>(null);
     const tableInstanceRef = useRef(null);
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const aedId = searchParams.get('id');
-    const [refetchTableData, setRefetchTableData] = useState<boolean>(true);
+    const [refetchTableData] = useState<boolean>(true);
     const [dateFilters, setDateFilters] = useState<DateTimeFilterType | undefined>({
         from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 6 years
         to: new Date(Date.now()).toISOString()
     });
     const [openTimeFilterModal, setOpenTimeFilterModal] =
         useState<boolean>(false);
-
-    const [openDetailsModal, setOpenDetailsModal] =
-        useState<boolean>(false);
-    const [selectedSelfTest, setSelectedSelfTest] = useState<AedSelfTestDetailsType>({});
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
     const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([{
         id: 'aedId', value: aedId
@@ -185,29 +180,6 @@ const AllSelfTests = () => {
         setPagination({pageIndex: 0, pageSize: pagination.pageSize});
     }, [columnFilters]);
 
-    const handleShowDetails = (row: any) => {
-        console.log(location?.state?.row)
-        setSelectedSelfTest({
-            algorithmVersion: row?.algorithmVersion,
-            batteryRemain: row?.batteryRemain,
-            highVoltageBoardVersion: row?.highVoltageBoardVersion,
-            internalTestResult: row?.internalTestResult,
-            motherBoardVersion: row?.motherBoardVersion,
-            saeBoardVersion: row?.saeBoardVersion,
-            sentTime: getJalaliDateTime(row?.sentTime),
-            shockCount: row?.shockCount,
-            serialNumber: location?.state?.row?.serialNumber,
-            lat: location?.state?.row?.location?.lat,
-            long: location?.state?.row?.location?.long,
-            place: location?.state?.row?.location?.place,
-            address: location?.state?.row?.location?.address
-        });
-        setOpenDetailsModal(true);
-    }
-
-    const handleCloseDetail = () => {
-        setOpenDetailsModal(false);
-    }
 
     return (
         <Paper className={`main-container-${themeMode}`}>
@@ -243,11 +215,10 @@ const AllSelfTests = () => {
                                 remoteFilter={setColumnFilters}
                                 columnFilters={columnFilters}
                                 totalCount={data.totalItems}
-                                hasRowAction={true}
+                                hasRowAction={false}
                                 disableRowSelection={true}
                                 columnVisibility={columnVisibility}
                                 setColumnVisibility={setColumnVisibility}
-                                showRowDetail={handleShowDetails}
                             />
                         </div>
                     </>
@@ -264,15 +235,6 @@ const AllSelfTests = () => {
                 buttonLabel={"Apply"}
             >
                 <DateTimeFilter ref={timeFilterRef} data={dateFilters}/>
-            </LeftModal>
-
-            <LeftModal
-                title={"🗒️ Details"}
-                open={openDetailsModal}
-                maxWidth={"lg"}
-                handleClose={handleCloseDetail}
-            >
-                <SelfTestDetails data={selectedSelfTest}/>
             </LeftModal>
         </Paper>
     );

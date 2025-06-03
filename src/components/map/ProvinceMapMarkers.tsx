@@ -9,7 +9,7 @@ export interface Location {
     lat: number;
     lon: number;
     label?: string;
-    status?: "success" | "warning" | "error" | "normal";
+    status?: "success" | "warning" | "error" | "normal" | "noWifi" | any;
     id?: string;
 }
 
@@ -49,10 +49,11 @@ const createSvgIcon = (color: string): DivIcon => {
 
 
 const statusColors: Record<string, string> = {
-    success: "#4CAF50", // سبز
-    warning: "#FF9800", // نارنجی
-    error: "#F44336",   // قرمز
-    normal: "#2196F3",  // آبی پیش‌فرض
+    success: "#4CAF50",
+    warning: "#FF9800",
+    error: "#F44336",
+    normal: "#2196F3",
+    noWifi: "#6340af",
 };
 
 const ProvinceMapMarkers: React.FC<ProvinceMapMarkersProps> = ({
@@ -83,7 +84,7 @@ const ProvinceMapMarkers: React.FC<ProvinceMapMarkersProps> = ({
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <ChangeView center={center} zoom={zoom}/>
-                {locations.map((location, idx) => {
+                {locations?.map((location, idx) => {
                     const {lat, lon, label, status} = location;
                     const color = statusColors[status ?? "normal"] ?? statusColors.normal;
                     const icon = createSvgIcon(color);
