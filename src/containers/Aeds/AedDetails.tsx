@@ -15,7 +15,7 @@ import MapIcon from "@mui/icons-material/Map";
 import ImageIcon from '@mui/icons-material/Image';
 import ProvinceMapMarkers from "../../components/map/ProvinceMapMarkers";
 import {StatusCard} from '../SelfTests/SelfTestDetails';
-import {getJalaliDateTime} from "../../utils/time";
+import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/time";
 import AedImage from "../../assets/images/aedImage.png";
 import {getStatus} from "../../utils/generalUtils";
 
@@ -78,6 +78,20 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
         }
     );
 
+    const generateInternalTestResult = (status: string): string => {
+        switch (status) {
+            case 'Pass':
+                return "Passed ✅";
+            case 'Fail':
+                return "Failed ⛔";
+            case 'NoWifi':
+                return "No Wifi ⚠️";
+            case 'Disconnected':
+                return "Disconnected 📴";
+        }
+        return '';
+    }
+
     return (
         <div>
             {
@@ -136,7 +150,7 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                                     </Typography>
                                     <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
                                         Self Test
-                                        Status: <strong>{data?.lastSelfTest !== null ? (data?.lastSelfTest?.internalTestResult === '255' ? "Passed ✅" : "Failed ⛔") : '-'}</strong>
+                                        Status: <strong>{generateInternalTestResult(data?.internalTestResult)}</strong>
                                     </Typography>
 
                                 </StatusCard>
@@ -180,15 +194,15 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                                     <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
                                         Register Date&Time: <strong>{getJalaliDateTime(data?.registerDateTime)}</strong>
                                     </Typography>
-                                    <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
-                                        Last Pm
-                                        Date&Time: <strong>{data?.lastPmDateTime === '0001-01-01T00:00:00' ? '-' : data?.lastPmDateTime}</strong>
-                                    </Typography>
+                                    {/*<Typography variant="body1" sx={{color: themeColors.textPrimary}}>*/}
+                                    {/*    Last Pm*/}
+                                    {/*    Date&Time: <strong>{data?.lastPmDateTime === '0001-01-01T00:00:00' ? '-' : data?.lastPmDateTime}</strong>*/}
+                                    {/*</Typography>*/}
                                     {
                                         data?.lastSelfTest !== null && (
                                             <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
                                                 Last Self Test
-                                                Time: <strong>{getJalaliDateTime(data?.lastSelfTest?.sentTime)}</strong>
+                                                Time: <strong>{getJalaliDateTime2(data?.lastSelfTest?.sentTime)}</strong>
                                             </Typography>
                                         )
                                     }
@@ -223,7 +237,7 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                                     )
                                 }
 
-                                {(data?.lastSelfTest !== null && data?.lastSelfTest?.internalTestResult !== '255') && (
+                                {(data?.internalTestResult === 'Fail') && (
                                     <StatusCard
                                         title="Internal Self Test Result"
                                         color={themeColors.error}
@@ -234,7 +248,8 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                                         themeMode={themeMode}
                                     >
                                         <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
-                                            {internalTestConverter(parseInt(data?.internalTestResult!))}
+                                            {data?.lastSelfTest?.internalTestResult === null ? "" : (data?.lastSelfTest?.internalTestResult === "255" ? internalTestConverter(parseInt("FF", 16))
+                                                : internalTestConverter(parseInt(data?.lastSelfTest?.internalTestResult, 16)))}
                                         </Typography>
                                     </StatusCard>
                                 )}

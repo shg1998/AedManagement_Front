@@ -12,7 +12,7 @@ class SelfTest extends Api {
         limit?: number, skip?: number, filter?: string
     ): Promise<any> => {
         try {
-            let queryParams = `top=${limit}&skip=${skip}`;
+            let queryParams = `top=${limit}&skip=${skip} &orderby=SentTime desc`;
             if (filter) {
                 queryParams += `&filter=${filter}`;
             }

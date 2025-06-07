@@ -14,7 +14,7 @@ import DateTimeFilter, {
 } from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import {useLocation} from "react-router-dom";
 import SelfTest from "../../services/SelfTest";
-import {getJalaliDateTime} from "../../utils/time";
+import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/time";
 import {internalTestConverter} from "../../utils/SelfTestUtils";
 import {AedSelfTestDetailsType} from "./constants";
 
@@ -76,7 +76,7 @@ const AllSelfTests = () => {
                 maxSize: 20,
                 enableSorting: false,
                 enableColumnFilter: false,
-                accessorFn: (row: any) => row.sentTime === null ? "" : getJalaliDateTime(row.sentTime),
+                accessorFn: (row: any) => row.sentTime === null ? "" : getJalaliDateTime2(row.sentTime),
             },
             {
                 accessorKey: "motherBoardVersion",
@@ -126,7 +126,7 @@ const AllSelfTests = () => {
                 maxSize: 100,
                 enableSorting: false,
                 enableColumnFilter: false,
-                accessorFn: (row: any) => row.internalTestResult === null ? "" : internalTestConverter(parseInt(row.internalTestResult)),
+                accessorFn: (row: any) => row.internalTestResult === null ? "" : (row.internalTestResult === "255" ? internalTestConverter(parseInt("FF", 16)) : internalTestConverter(parseInt(row.internalTestResult, 16))),
             },
         ],
         []

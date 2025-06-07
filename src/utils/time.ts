@@ -160,7 +160,7 @@ export const getJalaliDateTime2 = (
         if (typeof localeTime === "string") {
             return moment(localeTime, "YYYY/MM/DD  HH:mm:ss")
                 .locale("fa")
-                .format(`HH:mm:ss  YYYY${separator}MM${separator}DD`);
+                .format(`YYYY${separator}MM${separator}DD HH:mm:ss`);
         }
         try {
             const jalali = jalaali.toJalaali(localeTime);

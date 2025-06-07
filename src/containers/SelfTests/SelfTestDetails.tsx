@@ -216,7 +216,7 @@ const SelfTestDetails: React.FC<AedSelfTestDetailsPropsType> = ({data}) => {
     );
 };
 
-export interface StatusCardProps {
+interface StatusCardProps {
     title: string;
     color: string;
     children: ReactNode;
