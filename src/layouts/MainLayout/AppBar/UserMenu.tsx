@@ -18,7 +18,6 @@ import LeftModal from "../../../components/Modal/LeftModal";
 import UserChangePassword, {
     NewChangeUserPasswordHandle
 } from "../../../containers/UserChangePassword/UserChangePassword";
-import {NewAdminHandle} from "../../../containers/Admins/NewAdmin";
 
 interface UserMenuProps {
     anchorElUser: null | HTMLElement;

@@ -6,13 +6,14 @@ import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import IconButton from "@mui/material/IconButton";
 import logoImage from "../../assets/images/logo-white.png";
-import {ButtonBase} from "@mui/material";
+import {ButtonBase, Typography} from "@mui/material";
 import SideBar from "./SideBar/SideBar";
 import UserMenu from "./AppBar/UserMenu";
 import {getBaseUrl} from "../../config";
 import {useCurrentUserState} from "../../context/CurrentUserContext";
 import {makeStyles} from "@mui/styles";
 import {useThemeContext} from "../../ThemeContext";
+import AedImage from "../../assets/images/aed.png";
 
 const Main = styled("main", {shouldForwardProp: (prop) => prop !== "open"})<{
     open?: boolean;
@@ -141,6 +142,26 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({component}) => {
                             />
                         </ButtonBase>
                     </Box>
+
+                    <Box component="span" sx={{margin: 'auto', display: 'inline-block', mr: '42%'}}>
+                        <Typography sx={{fontSize: '28px !important'}} fontWeight={'bolder'}>
+                            <>
+                                <img
+                                    src={AedImage}
+                                    alt="AED"
+                                    style={{
+                                        width: '3.5rem',
+                                        height: '3.5rem',
+                                        verticalAlign: 'middle',
+                                        marginRight: '0.2em',
+                                        marginTop: '-0.6em',
+                                    }}
+                                />
+                                AED Alert
+                            </>
+                        </Typography>
+                    </Box>
+
                     <div>
                         <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
                             <Avatar
@@ -165,7 +186,8 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({component}) => {
                 <div style={{overflowX: 'hidden', height: '100vh'}}>{component}</div>
             </Main>
         </Box>
-    );
+    )
+        ;
 };
 
 export default Dashboard;

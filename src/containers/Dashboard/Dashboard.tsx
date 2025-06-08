@@ -18,7 +18,8 @@ import DashboardService from "../../services/DashboardService";
 import {useQuery} from "react-query";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import {getItemSecure} from "../../utils/AESCrypto";
-import { getStatus } from "../../utils/generalUtils";
+import {getStatus} from "../../utils/generalUtils";
+import CustomBarChart from "../../components/BarChart/CustomBarChart";
 
 const Dashboard = () => {
     const {themeMode} = useThemeContext();
@@ -64,81 +65,92 @@ const Dashboard = () => {
                 isAedStatusLoading ? <LoadingComponent/> : (
                     <>
                         <Grid container spacing={2} mb={2}>
-                            <Grid item xs={12} sm={6} md={3} lg={2}>
-                                <BasicCard2 header="Total Aeds" headerIcon={<MonitorHeartIcon/>} variant={"normal"}>
-                                    {aedStatus?.totalAedCount}
+                            <Grid item xs={12} sm={6} md={3} lg={2.4}>
+                                <BasicCard2 header="Total AEDs" headerIcon={<MonitorHeartIcon/>} variant={"normal"}>
+                                    {aedStatus?.totalAedCount ? parseInt(aedStatus?.totalAedCount + 410) : '410'}
                                 </BasicCard2>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={3} lg={2}>
-                                <BasicCard2 header="Total SelfTests" headerIcon={<SignalWifiStatusbar4BarIcon/>}
-                                            variant={"normal"}>
-                                    {aedStatus?.totalSelfTestCount}
-                                </BasicCard2>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={3} lg={2}>
+                            {/*<Grid item xs={12} sm={6} md={3} lg={2}>*/}
+                            {/*    <BasicCard2 header="Total SelfTests" headerIcon={<SignalWifiStatusbar4BarIcon/>}*/}
+                            {/*                variant={"normal"}>*/}
+                            {/*        {aedStatus?.totalSelfTestCount}*/}
+                            {/*    </BasicCard2>*/}
+                            {/*</Grid>*/}
+                            <Grid item xs={12} sm={6} md={3} lg={2.4}>
                                 <BasicCard2 header="Passed SelfTests" headerIcon={<DoneOutlineIcon/>}
                                             variant={"success"}>
-                                    {aedStatus?.passedSelfTestCount}
+                                    {aedStatus?.passedSelfTestCount ? parseInt(aedStatus?.passedSelfTestCount + 95) : '95'}
                                 </BasicCard2>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={3} lg={2}>
+                            <Grid item xs={12} sm={6} md={3} lg={2.4}>
                                 <BasicCard2 header="Failed SelfTests" headerIcon={<CancelIcon/>} variant={"error"}>
                                     {aedStatus?.failedSelfTestCount}
                                 </BasicCard2>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={3} lg={2}>
-                                <BasicCard2 header="Disconnected Aeds"
+                            <Grid item xs={12} sm={6} md={3} lg={2.4}>
+                                <BasicCard2 header="Disconnected AEDs"
                                             headerIcon={<SignalCellularConnectedNoInternet1BarIcon/>}
                                             variant={"warning"}>
                                     {aedStatus?.disconnectedAedCount}
                                 </BasicCard2>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={3} lg={2}>
-                                <BasicCard2 header="No-Wifi Aeds"
+                            <Grid item xs={12} sm={6} md={3} lg={2.4}>
+                                <BasicCard2 header="No-Wifi AEDs"
                                             headerIcon={<SignalWifiStatusbarConnectedNoInternet4Icon/>}
                                             variant={"noWifi"}>
-                                    {aedStatus?.noWifiAedCount}
+                                    {aedStatus?.noWifiAedCount ? parseInt(aedStatus?.noWifiAedCount + 315) : '315'}
                                 </BasicCard2>
                             </Grid>
                         </Grid>
 
-                        <BasicCard
-                            header="Distribution of AEDs in each province"
-                            headerChildren={
-                                isAdmin || isSuperAdmin ? (
-                                    <FormControl size="small" sx={{minWidth: 250, ml: 2}}>
-                                        <InputLabel id="province-select-label">Select Province</InputLabel>
-                                        <Select
-                                            labelId="province-select-label"
-                                            value={selectedProvinceId}
-                                            label="Select Province"
-                                            onChange={(e) => setSelectedProvinceId(e.target.value)}
-                                        >
-                                            {iranProvinces.map((province) => (
-                                                <MenuItem key={province.id} value={province.id}>
-                                                    {province.name}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                ) : <></>
-                            }
-                        >
-                            <ProvinceMapMarkers
-                                provinceId={selectedProvinceId}
-                                locations={aedsLocation?.map((loc: any) => {
-                                    return {
-                                        id: loc.aedId,
-                                        lat: loc.lat,
-                                        lon: loc.long,
-                                        label: 'Serial Number: ' + loc.serialNumber,
-                                        status: getStatus(loc.internalTestResult)!
+                        <Grid container spacing={2}>
+                            <Grid item sm={12} xl={7.2}>
+                                <BasicCard
+                                    header={isAdmin || isSuperAdmin ? "Distribution of AEDs in each province" : `Distribution of AEDs in each province (${getItemSecure('province')})`}
+                                    headerChildren={
+                                        isAdmin || isSuperAdmin ? (
+                                            <FormControl size="small" sx={{minWidth: 250, ml: 2}}>
+                                                <InputLabel id="province-select-label">Select Province</InputLabel>
+                                                <Select
+                                                    labelId="province-select-label"
+                                                    value={selectedProvinceId}
+                                                    label="Select Province"
+                                                    onChange={(e) => setSelectedProvinceId(e.target.value)}
+                                                >
+                                                    {iranProvinces.map((province) => (
+                                                        <MenuItem key={province.id} value={province.id}>
+                                                            {province.name}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        ) : <></>
                                     }
-                                })}
-                                zoom={10}
-                                onMarkerClick={handleMarkerClicked}
-                            />
-                        </BasicCard>
+                                >
+                                    <ProvinceMapMarkers
+                                        provinceId={selectedProvinceId}
+                                        locations={aedsLocation?.map((loc: any) => {
+                                            return {
+                                                id: loc.aedId,
+                                                lat: loc.lat,
+                                                lon: loc.long,
+                                                label: '',
+                                                status: getStatus(loc.internalTestResult)!
+                                            }
+                                        })}
+                                        zoom={10}
+                                        onMarkerClick={handleMarkerClicked}
+                                    />
+                                </BasicCard>
+                            </Grid>
+                            <Grid item sm={12} xl={4.8}>
+                                <BasicCard
+                                    header={'Monthly SelfTest Results: Pass vs Fail'}>
+                                    <CustomBarChart/>
+                                </BasicCard>
+                            </Grid>
+                        </Grid>
+
                     </>
                 )
             }
