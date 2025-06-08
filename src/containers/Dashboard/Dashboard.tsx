@@ -129,7 +129,7 @@ const Dashboard = () => {
                                 >
                                     <ProvinceMapMarkers
                                         provinceId={selectedProvinceId}
-                                        locations={aedsLocation?.map((loc: any) => {
+                                        locations={aedsLocation && aedsLocation?.map((loc: any) => {
                                             return {
                                                 id: loc.aedId,
                                                 lat: loc.lat,
