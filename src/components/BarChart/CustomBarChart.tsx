@@ -12,18 +12,18 @@ interface DataPoint {
 }
 
 const data: DataPoint[] = [
-    { name: 'Shahrivar', pass: 3, fail: 0, trend: 3 },
-    { name: 'Mehr', pass: 4, fail: 0, trend: 4 },
-    { name: 'Aban', pass: 5, fail: 0, trend: 5 },
+    { name: 'Shahrivar', pass: 3, fail: 1, trend: 4 },
+    { name: 'Mehr', pass: 4, fail: 1, trend: 5 },
+    { name: 'Aban', pass: 5, fail: 2, trend: 7 },
     { name: 'Azar', pass: 5, fail: 0, trend: 5 },
-    { name: 'Dey', pass:  7, fail: 0, trend: 7 },
-    { name: 'Bahman', pass: 10, fail: 0, trend: 10 },
-    { name: 'Esfand', pass: 13, fail: 0, trend: 13 },
-    { name: 'Farvardin', pass: 17, fail: 0, trend: 17 },
-    { name: 'Ordibehesht', pass: 19, fail: 0, trend: 19 },
-    { name: 'Khordad', pass: 22, fail: 1, trend: 23 },
-    { name: 'Tir', pass: 0, fail: 0, trend: 0 },
-    { name: 'Mordad', pass: 0, fail: 0, trend: 0 },
+    { name: 'Dey', pass:  7, fail: 1, trend: 8 },
+    { name: 'Bahman', pass: 10, fail: 2, trend: 12 },
+    { name: 'Esfand', pass: 13, fail: 1, trend: 14 },
+    { name: 'Farvardin', pass: 17, fail: 3, trend: 20 },
+    { name: 'Ordibehesht', pass: 19, fail: 3, trend: 22 },
+    { name: 'Khordad', pass: 22, fail: 2, trend: 24 },
+    // { name: 'Tir', pass: 0, fail: 0, trend: 0 },
+    // { name: 'Mordad', pass: 0, fail: 0, trend: 0 },
 ];
 
 const CustomBarChart: React.FC = () => {
@@ -182,7 +182,7 @@ const CustomBarChart: React.FC = () => {
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <Paper sx={{ width: '70vh', height: 595, padding: 2, backgroundColor: chartColors.paperBackgroundColor }}>
+            <Paper sx={{ width: 'inherit', height: 595, padding: 2, backgroundColor: chartColors.paperBackgroundColor }}>
                 <HighchartsReact highcharts={Highcharts} options={options} />
             </Paper>
         </Box>
