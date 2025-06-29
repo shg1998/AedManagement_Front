@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import {AedSelfTestDetailsPropsType} from "./constants";
 import {Box, Grid, Paper, Typography, Stack, GridProps, Divider} from '@mui/material';
-import {internalTestConverter} from "../../utils/SelfTestUtils";
+import {internalTestConverter} from "../../utils/SelfTestUtils/SelfTestUtils";
 import ProvinceMapMarkers from "../../components/map/ProvinceMapMarkers";
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';

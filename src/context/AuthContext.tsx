@@ -1,5 +1,5 @@
 import React from "react";
-import {getItemSecure} from "../utils/AESCrypto";
+import {getItemSecure} from "../utils/AESCrypto/AESCrypto";
 
 interface AuthContextType {
     isAuthenticated: boolean;

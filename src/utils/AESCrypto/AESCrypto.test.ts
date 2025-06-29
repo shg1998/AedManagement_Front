@@ -1,10 +1,6 @@
-import {
-    setItemSecure,
-    getItemSecure,
-    deleteItemSecure,
-} from './AESCrypto';
-import CryptoJS from "crypto-js";
+
 import 'jest-localstorage-mock';
+import {deleteItemSecure, getItemSecure, setItemSecure} from "./AESCrypto";
 
 
 const SECRET = 'vzCDrMA7xLS8Xzyk';

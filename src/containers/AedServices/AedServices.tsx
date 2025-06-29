@@ -24,7 +24,7 @@ import {
 import NewAedService from "./NewAedService";
 import {useQuery} from "react-query";
 import AedServiceDetails from "./AedServiceDetails";
-import {tSuccess} from "../../utils/toast";
+import {tSuccess} from "../../utils/ToastUtils/toast";
 import {useAuthState} from "../../context/AuthContext";
 
 const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {

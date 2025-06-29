@@ -1,4 +1,4 @@
-import { convertTimeToLocale } from "../../utils/time";
+import { convertTimeToLocale } from "../../utils/TimeUtils/time";
 export function getUTCOfLast24Hours(): string {
   const convertedToUnix = new Date(
     new Date().getTime() - 1 * 24 * 60 * 60 * 1000

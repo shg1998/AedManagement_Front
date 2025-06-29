@@ -3,7 +3,7 @@ import {MapContainer, TileLayer, Marker, Popup, useMap} from "react-leaflet";
 import {Box, Typography} from "@mui/material";
 import L, {DivIcon} from "leaflet";
 import "leaflet/dist/leaflet.css";
-import {iranProvinces} from "../../utils/ProvinceUtils";
+import {iranProvinces} from "../../utils/ProvinceUtils/ProvinceUtils";
 
 export interface Location {
     lat: number;

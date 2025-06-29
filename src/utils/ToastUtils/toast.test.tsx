@@ -1,4 +1,4 @@
-import {supportsVibrate } from './toast';
+import { supportsVibrate } from "./toast";
 
 jest.mock('react-toastify', () => ({
     toast: jest.fn(),

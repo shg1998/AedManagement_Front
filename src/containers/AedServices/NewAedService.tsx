@@ -12,7 +12,7 @@ import MySelect from "../../components/MySelect/MySelect";
 import Autocomplete from "@mui/material/Autocomplete";
 import MyDateTimePicker from "../../components/DateTimePicker Jalali/DateTimePicker";
 import {removeCharsAfterZ} from "../../components/CustomDateTimeFilter/DateTimeFilter";
-import {tError, tSuccess} from "../../utils/toast";
+import {tError, tSuccess} from "../../utils/ToastUtils/toast";
 import AedService from "../../services/AedService";
 import NonConformity from "../../services/NonConformity";
 import Part from "../../services/Part";
@@ -26,7 +26,7 @@ import {
     PartType, RepairTypeType,
 } from "./constants";
 import {useLocation} from "react-router-dom";
-import {truncateText} from "../../utils/generalUtils";
+import {truncateText} from "../../utils/General/generalUtils";
 import Attachment from "../../services/Attachment";
 import RepairType from "../../services/RepairType";
 

@@ -12,7 +12,7 @@ import LeftModal from "../../components/Modal/LeftModal";
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import {DEFAULT_REPAIR_TYPE_INFORMATION, NewRepairTypeHandle, RepairTypeType} from "./constants";
 import NewRepairType from "./NewRepairType";
-import {tSuccess} from "../../utils/toast";
+import {tSuccess} from "../../utils/ToastUtils/toast";
 
 
 

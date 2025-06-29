@@ -10,14 +10,14 @@ import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import {internalTestConverter} from "../../utils/SelfTestUtils";
+import {internalTestConverter} from "../../utils/SelfTestUtils/SelfTestUtils";
 import MapIcon from "@mui/icons-material/Map";
 import ImageIcon from '@mui/icons-material/Image';
 import ProvinceMapMarkers from "../../components/map/ProvinceMapMarkers";
 import {StatusCard} from '../SelfTests/SelfTestDetails';
-import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/time";
+import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/TimeUtils/time";
 import AedImage from "../../assets/images/aedImage.png";
-import {getStatus} from "../../utils/generalUtils";
+import {getStatus} from "../../utils/General/generalUtils";
 
 type AedDetailsProps = {
     aedId?: string;

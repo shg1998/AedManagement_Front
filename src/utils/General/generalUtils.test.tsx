@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { convertObjectToIdList, getBoldContent, showScore } from './generalUtils';
-import CVSSScore from '../components/CVSSScore/CVSSScore';
+import CVSSScore from '../../components/CVSSScore/CVSSScore';
 
 // Mock the CVSSScore component
-jest.mock('../components/CVSSScore/CVSSScore', () => {
+jest.mock('../../components/CVSSScore/CVSSScore', () => {
     return function MockCVSSScore(props:any) {
         return <div data-testid="cvss-score">{props.score}</div>;
     };

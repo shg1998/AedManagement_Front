@@ -9,7 +9,7 @@ import {
 
 } from "../../../context/CurrentUserContext";
 import {useQueryClient} from "react-query";
-import {tSuccess} from "../../../utils/toast";
+import {tSuccess} from "../../../utils/ToastUtils/toast";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import IconButton from "@mui/material/IconButton";

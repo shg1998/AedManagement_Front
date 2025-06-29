@@ -34,7 +34,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { useContextMenu } from "react-contexify";
 import IdentitiesContextMenu from "../IdentitiesContextMenu/IdentitiesContextMenu";
-import { tError, tSuccess } from "../../utils/toast";
+import { tError, tSuccess } from "../../utils/ToastUtils/toast";
 import { ReactComponent as Warning } from "../../assets/images/publicIcons/redWarning.svg";
 import MyMenu from "../MyMenu/MyMenu";
 import { useThemeContext } from "../../ThemeContext";
@@ -42,7 +42,7 @@ import {
   deleteItemSecure,
   getItemSecure,
   setItemSecure,
-} from "../../utils/AESCrypto";
+} from "../../utils/AESCrypto/AESCrypto";
 import { useLocation } from "react-router-dom";
 
 

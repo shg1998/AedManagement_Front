@@ -11,14 +11,14 @@ import * as Yup from "yup";
 import Button from "@mui/material/Button";
 import {useMutation} from "react-query";
 import Users from "../../services/Users";
-import {tError, tSuccess} from "../../utils/toast";
+import {tError, tSuccess} from "../../utils/ToastUtils/toast";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { styled } from "@mui/material/styles";
 import {AdminType, NewAdminHandle, NewUserProps} from "../Admins/NewAdmin";
 import MySelect from "../../components/MySelect/MySelect";
-import {provinceItems} from "../../utils/ProvinceUtils";
+import {provinceItems} from "../../utils/ProvinceUtils/ProvinceUtils";
 import Account from "../../services/Account";
-import {deleteItemSecure, setItemSecure} from "../../utils/AESCrypto";
+import {deleteItemSecure, setItemSecure} from "../../utils/AESCrypto/AESCrypto";
 
 
 const AddUserSchema = Yup.object().shape({

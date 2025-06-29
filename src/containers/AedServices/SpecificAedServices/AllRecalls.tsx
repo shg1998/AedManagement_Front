@@ -1,9 +1,9 @@
 import React, {useMemo} from "react";
 import {MenuItem} from "@mui/material";
 import {MRT_ColumnDef} from "material-react-table";
-import {getJalaliDateTime} from "../../../utils/time";
+import {getJalaliDateTime} from "../../../utils/TimeUtils/time";
 import Select from "@mui/material/Select";
-import {truncateText} from "../../../utils/generalUtils";
+import {truncateText} from "../../../utils/General/generalUtils";
 import AedServices from "../AedServices";
 
 const AllRecalls = () => {

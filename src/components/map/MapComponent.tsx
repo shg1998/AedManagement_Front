@@ -20,7 +20,7 @@ import {
 import L from 'leaflet';
 import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
-import {iranProvinces} from "../../utils/ProvinceUtils";
+import {iranProvinces} from "../../utils/ProvinceUtils/ProvinceUtils";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({

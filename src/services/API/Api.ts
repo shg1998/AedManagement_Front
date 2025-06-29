@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from "axios";
 import {getBaseUrl} from "../../config";
-import {getItemSecure, deleteItemSecure} from "../../utils/AESCrypto";
-import {tError} from "../../utils/toast";
+import {getItemSecure, deleteItemSecure} from "../../utils/AESCrypto/AESCrypto";
+import {tError} from "../../utils/ToastUtils/toast";
 
 export interface DefaultAxiosConfigInterface {
     Authorization?: string;

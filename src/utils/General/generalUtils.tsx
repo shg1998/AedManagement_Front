@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
-import CVSSScore from "../components/CVSSScore/CVSSScore";
+import CVSSScore from "../../components/CVSSScore/CVSSScore";
 import { isEqual } from "lodash";
-import EventSeverity from "../components/EventSeverity/EventSeverity";
+import EventSeverity from "../../components/EventSeverity/EventSeverity";
 import axios from "axios";
 export const convertObjectToIdList = (data: any[]) => {
   if (data?.length > 0) {

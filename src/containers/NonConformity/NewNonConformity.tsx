@@ -9,7 +9,7 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import Button from "@mui/material/Button";
 import {useMutation} from "react-query";
-import {tError, tSuccess} from "../../utils/toast";
+import {tError, tSuccess} from "../../utils/ToastUtils/toast";
 import {styled} from "@mui/material/styles";
 import NonConformity from "../../services/NonConformity";
 import {NewNonConformityHandle, NonConformityType} from "./constants";

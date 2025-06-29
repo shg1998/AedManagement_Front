@@ -16,13 +16,13 @@ import routes from "../../routes/routes";
 import {
     getCookie,
 
-} from "../../utils/CookieHandler";
+} from "../../utils/CookieHandlers/CookieHandler";
 import {useAuthDispatch} from "../../context/AuthContext";
-import {setItemSecure} from "../../utils/AESCrypto";
+import {setItemSecure} from "../../utils/AESCrypto/AESCrypto";
 import LoginTemplate from "./LoginTemplate";
 import {useThemeContext} from "../../ThemeContext";
 import ReactLoading from "react-loading";
-import {tError} from "../../utils/toast";
+import {tError} from "../../utils/ToastUtils/toast";
 
 const useStyles = makeStyles((theme: Theme) => ({
     title: {

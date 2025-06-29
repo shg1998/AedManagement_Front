@@ -1,7 +1,7 @@
 import React, {useMemo} from "react";
 import {MenuItem} from "@mui/material";
 import {MRT_ColumnDef} from "material-react-table";
-import {getJalaliDateTime} from "../../../utils/time";
+import {getJalaliDateTime} from "../../../utils/TimeUtils/time";
 import Select from "@mui/material/Select";
 import AedServices from "../AedServices";
 

@@ -3,7 +3,7 @@ import {Grid, Paper, Select, MenuItem, FormControl, InputLabel} from "@mui/mater
 import {useThemeContext} from "../../ThemeContext";
 import BasicCard2 from "../../components/Card/BasicCard2";
 import ProvinceMapMarkers, {Location} from "../../components/map/ProvinceMapMarkers";
-import {iranProvinces} from "../../utils/ProvinceUtils";
+import {iranProvinces} from "../../utils/ProvinceUtils/ProvinceUtils";
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import SignalWifiStatusbar4BarIcon from '@mui/icons-material/SignalWifiStatusbar4Bar';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -17,8 +17,8 @@ import {useAuthState} from "../../context/AuthContext";
 import DashboardService from "../../services/DashboardService";
 import {useQuery} from "react-query";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
-import {getItemSecure} from "../../utils/AESCrypto";
-import {getStatus} from "../../utils/generalUtils";
+import {getItemSecure} from "../../utils/AESCrypto/AESCrypto";
+import {getStatus} from "../../utils/General/generalUtils";
 import CustomBarChart from "../../components/BarChart/CustomBarChart";
 
 const Dashboard = () => {

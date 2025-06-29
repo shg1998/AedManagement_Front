@@ -14,8 +14,8 @@ import DateTimeFilter, {
 } from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import {useLocation} from "react-router-dom";
 import SelfTest from "../../services/SelfTest";
-import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/time";
-import {internalTestConverter} from "../../utils/SelfTestUtils";
+import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/TimeUtils/time";
+import {internalTestConverter} from "../../utils/SelfTestUtils/SelfTestUtils";
 import {AedSelfTestDetailsType} from "./constants";
 
 

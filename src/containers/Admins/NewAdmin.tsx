@@ -1,5 +1,5 @@
 import Container from "@mui/material/Container";
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import {useStyles} from "../../assets/scss/timeFilterStyle";
 import {Checkbox, IconButton, InputAdornment, InputLabel} from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -11,12 +11,9 @@ import * as Yup from "yup";
 import Button from "@mui/material/Button";
 import {useMutation} from "react-query";
 import Users from "../../services/Users";
-import {tError, tSuccess, tWarn} from "../../utils/toast";
+import {tError, tSuccess} from "../../utils/ToastUtils/toast";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import {MessageTypes} from "../../utils/messageTypes";
 import {styled} from "@mui/material/styles";
-import MySelect from "../../components/MySelect/MySelect";
-import {provinceItems} from "../../utils/ProvinceUtils";
 
 export const DEFAULT_USER_INFORMATION: AdminType = {
     id: 0,

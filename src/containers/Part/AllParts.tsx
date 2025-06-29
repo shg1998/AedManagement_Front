@@ -12,7 +12,7 @@ import LeftModal from "../../components/Modal/LeftModal";
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import {DEFAULT_PART_INFORMATION, NewPartHandle, PartType} from "./constants";
 import NewPart from "./NewPart";
-import {tSuccess} from "../../utils/toast";
+import {tSuccess} from "../../utils/ToastUtils/toast";
 
 
 

@@ -12,7 +12,7 @@ import LeftModal from "../../components/Modal/LeftModal";
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import {DEFAULT_NON_CONFORMITY_INFORMATION, NewNonConformityHandle, NonConformityType} from "./constants";
 import NewNonConformity from "./NewNonConformity";
-import {tSuccess} from "../../utils/toast";
+import {tSuccess} from "../../utils/ToastUtils/toast";
 
 
 

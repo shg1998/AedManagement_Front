@@ -1,4 +1,4 @@
-import {ItemType} from "../components/MySelect/MySelect";
+import {ItemType} from "../../components/MySelect/MySelect";
 
 
 export const provinceItems: ItemType[] = [

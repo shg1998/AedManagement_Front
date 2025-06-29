@@ -4,7 +4,7 @@ import {DateTimeInput, DateInput} from "react-hichestan-datetimepicker";
 import Typography from "@mui/material/Typography";
 import {makeStyles} from "@mui/styles";
 import {InputLabel, Theme} from "@mui/material";
-import {convertTimeToLocale} from "../../utils/time";
+import {convertTimeToLocale} from "../../utils/TimeUtils/time";
 import {useThemeContext} from "../../ThemeContext";
 
 const useStyles = makeStyles((theme: Theme) => ({
