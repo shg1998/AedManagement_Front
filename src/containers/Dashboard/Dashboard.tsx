@@ -67,7 +67,7 @@ const Dashboard = () => {
                         <Grid container spacing={2} mb={2}>
                             <Grid item xs={12} sm={6} md={3} lg={2.4}>
                                 <BasicCard2 header="Total AEDs" headerIcon={<MonitorHeartIcon/>} variant={"normal"}>
-                                    {aedStatus?.totalAedCount ? parseInt(aedStatus?.totalAedCount + 410) : '410'}
+                                    {aedStatus?.totalAedCount}
                                 </BasicCard2>
                             </Grid>
                             {/*<Grid item xs={12} sm={6} md={3} lg={2}>*/}
@@ -79,7 +79,7 @@ const Dashboard = () => {
                             <Grid item xs={12} sm={6} md={3} lg={2.4}>
                                 <BasicCard2 header="Passed SelfTests" headerIcon={<DoneOutlineIcon/>}
                                             variant={"success"}>
-                                    {aedStatus?.passedSelfTestCount ? parseInt(aedStatus?.passedSelfTestCount + 95) : '95'}
+                                    {aedStatus?.passedSelfTestCount}
                                 </BasicCard2>
                             </Grid>
                             <Grid item xs={12} sm={6} md={3} lg={2.4}>
@@ -98,7 +98,7 @@ const Dashboard = () => {
                                 <BasicCard2 header="No-Wifi AEDs"
                                             headerIcon={<SignalWifiStatusbarConnectedNoInternet4Icon/>}
                                             variant={"noWifi"}>
-                                    {aedStatus?.noWifiAedCount ? parseInt(aedStatus?.noWifiAedCount + 315) : '315'}
+                                    {aedStatus?.noWifiAedCount}
                                 </BasicCard2>
                             </Grid>
                         </Grid>
