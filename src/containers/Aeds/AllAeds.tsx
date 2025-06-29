@@ -87,6 +87,8 @@ const AllAeds = () => {
         query
     );
 
+
+
     const columns = useMemo<MRT_ColumnDef<any>[]>(
         () => [
             {
