@@ -40,7 +40,7 @@ const Dashboard = () => {
         }
     );
 
-    const {data: aedsLocation, isLoading: isAedsLocationLoading} = useQuery(
+    const { data: aedsLocations = [], isLoading: isAedsLocationLoading } = useQuery(
         ['aedsLocation', selectedProvinceId],
         () => getAedSelfTestLocation(selectedProvinceId),
         {
@@ -48,7 +48,6 @@ const Dashboard = () => {
             staleTime: 60 * 1000,
         }
     );
-
 
     const handleCloseDetailsModal = () => {
         setOpenDetailsAedModal(false);
@@ -127,20 +126,34 @@ const Dashboard = () => {
                                         ) : <></>
                                     }
                                 >
-                                    <ProvinceMapMarkers
-                                        provinceId={selectedProvinceId}
-                                        locations={aedsLocation && aedsLocation?.map((loc: any) => {
-                                            return {
-                                                id: loc.aedId,
-                                                lat: loc.lat,
-                                                lon: loc.long,
-                                                label: '',
-                                                status: getStatus(loc.internalTestResult)!
-                                            }
-                                        })}
-                                        zoom={10}
-                                        onMarkerClick={handleMarkerClicked}
-                                    />
+
+                                    {
+                                        isAedsLocationLoading ? <LoadingComponent/> : (
+                                            <ProvinceMapMarkers
+                                                provinceId={selectedProvinceId}
+                                                locations={aedsLocations?.data === undefined ? aedsLocations?.map((loc: any) => {
+                                                    return {
+                                                        id: loc.aedId,
+                                                        lat: loc.lat,
+                                                        lon: loc.long,
+                                                        label: '',
+                                                        status: getStatus(loc.internalTestResult)!
+                                                    }
+                                                }) : aedsLocations?.data?.map((loc: any) => {
+                                                    return {
+                                                        id: loc.aedId,
+                                                        lat: loc.lat,
+                                                        lon: loc.long,
+                                                        label: '',
+                                                        status: getStatus(loc.internalTestResult)!
+                                                    }
+                                                })}
+                                                zoom={10}
+                                                onMarkerClick={handleMarkerClicked}
+                                            />
+                                        )
+                                    }
+
                                 </BasicCard>
                             </Grid>
                             <Grid item sm={12} xl={4.8}>

@@ -22,8 +22,6 @@ const data: DataPoint[] = [
     { name: 'Farvardin', pass: 17, fail: 3, trend: 20 },
     { name: 'Ordibehesht', pass: 19, fail: 3, trend: 22 },
     { name: 'Khordad', pass: 22, fail: 2, trend: 24 },
-    // { name: 'Tir', pass: 0, fail: 0, trend: 0 },
-    // { name: 'Mordad', pass: 0, fail: 0, trend: 0 },
 ];
 
 const CustomBarChart: React.FC = () => {
