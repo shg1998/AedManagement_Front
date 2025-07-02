@@ -74,7 +74,7 @@ jobs:
           else
             # --- تغییر در این خط: کامیت کردن با پیام سفارشی یا پیام آخرین پوش ---
             COMMIT_MSG="${{ github.event.inputs.commit_message || github.event.head_commit.message || 'Automated sync from GitHub Actions' }}"
-            git commit -m "$COMMIT_MSG [skip ci]" 
+            git commit -m "$COMMIT_MSG" 
             # ------------------------------------------------------------------
           
             echo "Pushing changes to Recase repository..."
