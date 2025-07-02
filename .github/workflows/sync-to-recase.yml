@@ -6,6 +6,13 @@ on:
       - develop # این Workflow وقتی روی برنچ 'develop' پوش می‌کنید، اجرا می‌شود.
       # اگر برنچ اصلی شما نام دیگری دارد (مثلاً master)، آن را اینجا تغییر دهید.
 
+  workflow_dispatch: # اضافه کردن این بخش برای اجرای دستی Workflow
+    inputs:
+      commit_message:
+        description: 'Custom commit message for Recase Git (optional)' # توضیحات برای ورودی
+        required: false # این ورودی اختیاری است
+        type: string # نوع ورودی رشته است
+
 jobs:
   sync:
     runs-on: ubuntu-latest # سیستم عاملی که Workflow روی آن اجرا می‌شود
@@ -65,10 +72,10 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes detected in Recase repository. Skipping commit and push."
           else
-            echo "Committing changes..."
-            # کامیت کردن تغییرات
-            # [skip ci] باعث می‌شود که اگر در git.recase.ir هم Workflow ای تعریف شده باشد، اجرا نشود.
-            git commit -m "Automated sync from GitHub Actions [skip ci]" 
+            # --- تغییر در این خط: کامیت کردن با پیام سفارشی یا پیام آخرین پوش ---
+            COMMIT_MSG="${{ github.event.inputs.commit_message || github.event.head_commit.message || 'Automated sync from GitHub Actions' }}"
+            git commit -m "$COMMIT_MSG [skip ci]" 
+            # ------------------------------------------------------------------
           
             echo "Pushing changes to Recase repository..."
             # پوش کردن تغییرات به برنچ مقصد
