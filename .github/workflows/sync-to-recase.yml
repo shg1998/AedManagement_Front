@@ -21,50 +21,21 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Set up GIT_ASKPASS script (with debug) # تنظیم اسکریپت GIT_ASKPASS برای احراز هویت و دیباگ
-        run: |
-          ASKPASS_SCRIPT="$HOME/git-askpass-recase.sh"
-          
-          # ایجاد محتوای اسکریپت:
-          # این اسکریپت، نام کاربری یا رمز عبور را بر اساس متنی که Git از آن می‌خواهد، چاپ می‌کند.
-          # GitHub Secrets به صورت امن در زمان اجرا جایگزین می‌شوند.
-          # اضافه کردن خطوط دیباگ برای چاپ پرامپت دریافتی
-          echo '#!/bin/bash' > "$ASKPASS_SCRIPT"
-          echo 'read -r prompt' >> "$ASKPASS_SCRIPT"
-          echo "DEBUG_ASKPASS: Received prompt: \"$prompt\"" >&2 # چاپ پرامپت به stderr برای لاگ‌ها
-          
-          # تطابق پرامپت با استفاده از grep برای انعطاف‌پذیری بیشتر
-          echo 'if echo "$prompt" | grep -q "Username for"; then' >> "$ASKPASS_SCRIPT"
-          echo '  echo "${{ secrets.RECASE_USERNAME }}"' >> "$ASKPASS_SCRIPT"
-          echo 'elif echo "$prompt" | grep -q "Password for"; then' >> "$ASKPASS_SCRIPT"
-          echo '  echo "${{ secrets.RECASE_PASSWORD }}"' >> "$ASKPASS_SCRIPT"
-          echo 'else' >> "$ASKPASS_SCRIPT"
-          echo '  echo "DEBUG_ASKPASS: Unexpected prompt: \"$prompt\" - Exiting with error." >&2' >> "$ASKPASS_SCRIPT"
-          echo '  exit 1' >> "$ASKPASS_SCRIPT" # اگر پرامپت ناشناخته بود، خطا بده
-          echo 'fi' >> "$ASKPASS_SCRIPT"
-          
-          # قابل اجرا کردن اسکریپت
-          chmod +x "$ASKPASS_SCRIPT"
-          
-          # تنظیم متغیر محیطی GIT_ASKPASS برای Git
-          echo "GIT_ASKPASS=$ASKPASS_SCRIPT" >> $GITHUB_ENV
-          
-          echo "GIT_ASKPASS script configured. Check logs for DEBUG_ASKPASS output."
-
       - name: Clone and Sync to Recase Git # کلون کردن ریپازیتوری مقصد و اعمال تغییرات
         run: |
           # نام پوشه‌ای که ریپازیتوری مقصد در آن کلون می‌شود
           RECASE_REPO_DIR="recase-front-clone"
           
-          # آدرس کامل ریپازیتوری مقصد (بدون نام کاربری و رمز عبور در URL)
-          # از HTTPS استفاده می‌کنیم، زیرا لاگ‌ها نشان می‌دهند Git به آن پروتکل تغییر مسیر می‌دهد.
-          RECASE_REPO_URL="https://git.recase.ir/aed_group/aed_management_front.git" 
+          # آدرس کامل ریپازیتوری مقصد با استفاده از GitLab Personal Access Token (PAT)
+          # فرمت: https://oauth2:<YOUR_PAT>@your-gitlab-domain/group/repo.git
+          # GitHub Secrets به صورت امن در زمان اجرا جایگزین می‌شوند.
+          RECASE_REPO_URL="https://oauth2:${{ secrets.GITLAB_ACCESS_TOKEN }}@git.recase.ir/aed_group/aed_management_front.git" 
           
           # برنچ مقصد در ریپازیتوری git.recase.ir
           TARGET_BRANCH="main" # برنچ مقصد در git.recase.ir که تغییرات روی آن پوش می‌شوند.
 
           echo "Cloning Recase repository..."
-          # کلون کردن ریپازیتوری مقصد. Git به صورت خودکار از اسکریپت GIT_ASKPASS استفاده می‌کند.
+          # کلون کردن ریپازیتوری مقصد. Git به صورت خودکار از PAT استفاده می‌کند.
           git clone --depth 1 --branch $TARGET_BRANCH "$RECASE_REPO_URL" "$RECASE_REPO_DIR"
 
           echo "Copying files from current repo to Recase repo..."
