@@ -21,21 +21,24 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Set up .netrc for authentication # تنظیم فایل .netrc برای احراز هویت
+      - name: Set up Git Credentials # تنظیم اعتبارنامه‌های Git با استفاده از credential.helper
         run: |
-          # ایجاد فایل .netrc در دایرکتوری اصلی کاربر
-          # از echo -n استفاده می‌کنیم تا مطمئن شویم هیچ کاراکتر newline اضافی اضافه نمی‌شود.
-          # machine: آدرس دامنه سرور Git شما
-          # login: نام کاربری شما (از Secret)
-          # password: رمز عبور شما (از Secret)
-          echo -n "machine git.recase.ir login ${{ secrets.RECASE_USERNAME }} password ${{ secrets.RECASE_PASSWORD }}" > ~/.netrc
+          # مسیر فایل موقت برای ذخیره اعتبارنامه‌ها
+          CREDENTIALS_FILE="$HOME/.git-credentials-temp"
           
-          # تنظیم دسترسی‌های فایل .netrc به 600 (فقط مالک می‌تواند بخواند/بنویسد) برای امنیت
-          chmod 600 ~/.netrc
+          # ایجاد محتوای اعتبارنامه: پروتکل، هاست، پورت (اختیاری)، نام کاربری، رمز عبور
+          # توجه: این فرمت برای credential.helper=store است.
+          echo "http://git.recase.ir:80" >> "$CREDENTIALS_FILE"
+          echo "username=${{ secrets.RECASE_USERNAME }}" >> "$CREDENTIALS_FILE"
+          echo "password=${{ secrets.RECASE_PASSWORD }}" >> "$CREDENTIALS_FILE"
           
-          # (اختیاری) تنظیم متغیر محیطی GIT_NETRC_FILE اگر .netrc در مسیر پیش‌فرض نباشد.
-          # در این مورد، چون در ~/.netrc ساخته شده، نیازی نیست.
-          # echo "GIT_NETRC_FILE=$HOME/.netrc" >> $GITHUB_ENV
+          # تنظیم دسترسی‌های فایل اعتبارنامه به 600 (فقط مالک می‌تواند بخواند/بنویسد) برای امنیت
+          chmod 600 "$CREDENTIALS_FILE"
+          
+          # تنظیم Git برای استفاده از این فایل به عنوان credential store
+          git config --global credential.helper "store --file=$CREDENTIALS_FILE"
+          
+          echo "Git credentials configured."
 
       - name: Clone and Sync to Recase Git # کلون کردن ریپازیتوری مقصد و اعمال تغییرات
         run: |
@@ -43,13 +46,15 @@ jobs:
           RECASE_REPO_DIR="recase-front-clone"
           
           # آدرس کامل ریپازیتوری مقصد (بدون نام کاربری و رمز عبور در URL)
+          # Git به صورت خودکار از credential helper برای احراز هویت استفاده می‌کند.
           RECASE_REPO_URL="http://git.recase.ir/aed_group/aed_management_front.git" 
           
           # برنچ مقصد در ریپازیتوری git.recase.ir
           TARGET_BRANCH="main" # برنچ مقصد در git.recase.ir که تغییرات روی آن پوش می‌شوند.
 
           echo "Cloning Recase repository..."
-          # کلون کردن ریپازیتوری مقصد. Git به صورت خودکار از .netrc برای احراز هویت استفاده می‌کند.
+          # کلون کردن ریپازیتوری مقصد.
+          # --depth 1 فقط آخرین کامیت را کلون می‌کند که سرعت را بالا می‌برد.
           git clone --depth 1 --branch $TARGET_BRANCH "$RECASE_REPO_URL" "$RECASE_REPO_DIR"
 
           echo "Copying files from current repo to Recase repo..."
