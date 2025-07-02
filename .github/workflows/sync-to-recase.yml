@@ -28,7 +28,8 @@ jobs:
           
           # URL-Encode کردن رمز عبور برای جلوگیری از مشکلات کاراکترهای خاص
           # از jq برای URL-Encode کردن استفاده می‌کنیم.
-          PASSWORD_ENCODED=$(echo "${{ secrets.RECASE_PASSWORD }}" | jq -sRr @uri)
+          # تغییر: استفاده از 'echo -n' برای حذف کاراکتر newline در انتها
+          PASSWORD_ENCODED=$(echo -n "${{ secrets.RECASE_PASSWORD }}" | jq -sRr @uri)
           
           # آدرس کامل ریپازیتوری مقصد با استفاده از Secrets برای نام کاربری و رمز عبور URL-Encoded
           RECASE_REPO_URL="http://${{ secrets.RECASE_USERNAME }}:${PASSWORD_ENCODED}@git.recase.ir/aed_group/aed_management_front.git" 
