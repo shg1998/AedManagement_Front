@@ -21,14 +21,31 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Set up Git Credentials Directly # تنظیم مستقیم اعتبارنامه‌ها برای git.recase.ir
+      - name: Set up GIT_ASKPASS script # تنظیم اسکریپت GIT_ASKPASS برای احراز هویت
         run: |
-          # این دستورات نام کاربری و رمز عبور را مستقیماً برای هاست git.recase.ir در تنظیمات Git ذخیره می‌کنند.
-          # از HTTPS استفاده می‌کنیم زیرا لاگ‌ها نشان می‌دهند Git به آن پروتکل تغییر مسیر می‌دهد.
-          git config --global credential.https://git.recase.ir.username ${{ secrets.RECASE_USERNAME }}
-          git config --global credential.https://git.recase.ir.password ${{ secrets.RECASE_PASSWORD }}
+          # مسیر اسکریپت GIT_ASKPASS
+          ASKPASS_SCRIPT="$HOME/git-askpass-recase.sh"
           
-          echo "Git credentials configured directly for https://git.recase.ir."
+          # ایجاد محتوای اسکریپت:
+          # این اسکریپت، نام کاربری یا رمز عبور را بر اساس متنی که Git از آن می‌خواهد، چاپ می‌کند.
+          # GitHub Secrets به صورت امن در زمان اجرا جایگزین می‌شوند.
+          echo '#!/bin/bash' > "$ASKPASS_SCRIPT"
+          echo 'read -r prompt' >> "$ASKPASS_SCRIPT"
+          echo 'if [[ "$prompt" == "Username for '\''https://git.recase.ir'\'': "* ]]; then' >> "$ASKPASS_SCRIPT"
+          echo '  echo "${{ secrets.RECASE_USERNAME }}"' >> "$ASKPASS_SCRIPT"
+          echo 'elif [[ "$prompt" == "Password for '\''https://git.recase.ir'\'': "* ]]; then' >> "$ASKPASS_SCRIPT"
+          echo '  echo "${{ secrets.RECASE_PASSWORD }}"' >> "$ASKPASS_SCRIPT"
+          echo 'else' >> "$ASKPASS_SCRIPT"
+          echo '  exit 1' >> "$ASKPASS_SCRIPT" # اگر پرامپت ناشناخته بود، خطا بده
+          echo 'fi' >> "$ASKPASS_SCRIPT"
+          
+          # قابل اجرا کردن اسکریپت
+          chmod +x "$ASKPASS_SCRIPT"
+          
+          # تنظیم متغیر محیطی GIT_ASKPASS برای Git
+          echo "GIT_ASKPASS=$ASKPASS_SCRIPT" >> $GITHUB_ENV
+          
+          echo "GIT_ASKPASS script configured."
 
       - name: Clone and Sync to Recase Git # کلون کردن ریپازیتوری مقصد و اعمال تغییرات
         run: |
@@ -36,14 +53,14 @@ jobs:
           RECASE_REPO_DIR="recase-front-clone"
           
           # آدرس کامل ریپازیتوری مقصد (بدون نام کاربری و رمز عبور در URL)
-          # از HTTPS استفاده می‌کنیم تا با تنظیمات اعتبارنامه مطابقت داشته باشد.
+          # از HTTPS استفاده می‌کنیم، زیرا لاگ‌ها نشان می‌دهند Git به آن پروتکل تغییر مسیر می‌دهد.
           RECASE_REPO_URL="https://git.recase.ir/aed_group/aed_management_front.git" 
           
           # برنچ مقصد در ریپازیتوری git.recase.ir
           TARGET_BRANCH="main" # برنچ مقصد در git.recase.ir که تغییرات روی آن پوش می‌شوند.
 
           echo "Cloning Recase repository..."
-          # کلون کردن ریپازیتوری مقصد. Git به صورت خودکار از اعتبارنامه‌های پیکربندی شده استفاده می‌کند.
+          # کلون کردن ریپازیتوری مقصد. Git به صورت خودکار از اسکریپت GIT_ASKPASS استفاده می‌کند.
           git clone --depth 1 --branch $TARGET_BRANCH "$RECASE_REPO_URL" "$RECASE_REPO_DIR"
 
           echo "Copying files from current repo to Recase repo..."
