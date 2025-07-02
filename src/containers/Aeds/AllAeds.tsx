@@ -88,7 +88,6 @@ const AllAeds = () => {
     );
 
 
-
     const columns = useMemo<MRT_ColumnDef<any>[]>(
         () => [
             {
@@ -158,6 +157,13 @@ const AllAeds = () => {
                 maxSize: 20,
                 enableSorting: false,
                 accessorFn: (row: any) => row.location?.province === null ? "" : row.location?.province,
+            },
+            {
+                accessorKey: "location.city",
+                header: "City",
+                maxSize: 20,
+                enableSorting: false,
+                accessorFn: (row: any) => row.location?.city === null ? "" : row.location?.city,
             },
             // {
             //     accessorKey: "location.city",
@@ -521,7 +527,7 @@ const AllAeds = () => {
                 maxWidth={"xl"}
                 handleClose={handleCloseDetailsModal}
             >
-               <AedDetails aedId={selectedAed?.id} />
+                <AedDetails aedId={selectedAed?.id}/>
             </LeftModal>
         </Paper>
     );

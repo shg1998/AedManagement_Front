@@ -50,4 +50,5 @@ export interface DataTableProps {
   sorting?: any;
   remoteFilter?: any;
   remoteSorting?: any;
+  isRowSelfTestActionDisabled?: boolean;
 }
