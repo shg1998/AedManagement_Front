@@ -26,12 +26,19 @@ jobs:
           # نام پوشه‌ای که ریپازیتوری مقصد در آن کلون می‌شود
           RECASE_REPO_DIR="recase-front-clone"
           
-          # آدرس کامل ریپازیتوری مقصد با استفاده از Secrets برای نام کاربری و رمز عبور
-          # GitHub Actions به صورت خودکار مقادیر Secrets را در زمان اجرا جایگزین می‌کند.
-          RECASE_REPO_URL="http://${{ secrets.RECASE_USERNAME }}:${{ secrets.RECASE_PASSWORD }}@git.recase.ir/aed_group/aed_management_front.git" 
+          # URL-Encode کردن رمز عبور برای جلوگیری از مشکلات کاراکترهای خاص
+          # از jq برای URL-Encode کردن استفاده می‌کنیم.
+          PASSWORD_ENCODED=$(echo "${{ secrets.RECASE_PASSWORD }}" | jq -sRr @uri)
+          
+          # آدرس کامل ریپازیتوری مقصد با استفاده از Secrets برای نام کاربری و رمز عبور URL-Encoded
+          RECASE_REPO_URL="http://${{ secrets.RECASE_USERNAME }}:${PASSWORD_ENCODED}@git.recase.ir/aed_group/aed_management_front.git" 
           
           # برنچ مقصد در ریپازیتوری git.recase.ir
           TARGET_BRANCH="main" # برنچ مقصد در git.recase.ir که تغییرات روی آن پوش می‌شوند.
+
+          # --- خط جدید برای Debugging (اختیاری) ---
+          echo "Attempting to clone with URL: http://${{ secrets.RECASE_USERNAME }}:***@git.recase.ir/aed_group/aed_management_front.git"
+          # --- پایان خط جدید ---
 
           echo "Cloning Recase repository..."
           # کلون کردن ریپازیتوری مقصد
