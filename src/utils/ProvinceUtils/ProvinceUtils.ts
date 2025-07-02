@@ -48,8 +48,7 @@ export type ProvinceType = {
     lon: number;
     cities: CityType[];
 };
-
-
+//Salam
 export const iranProvinces: ProvinceType[] = [
     {
         id: 'alborz',
