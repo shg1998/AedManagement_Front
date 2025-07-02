@@ -3,8 +3,8 @@ import {MRT_ColumnDef} from "material-react-table";
 
 export const correctiveActionOptions = [
     {label: "🔧 Repair", value: "Repair"},
-    {label: "🧰 Pm", value: "Pm"},
     {label: "📢 Recall", value: "Recall"},
+    {label: "🧰 Pm", value: "Pm"},
     // {label: "Upgrade", value: "Upgrade"},
     {label: "🎓 Training", value: "Training"}
 ];

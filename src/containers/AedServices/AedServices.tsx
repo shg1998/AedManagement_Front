@@ -47,7 +47,7 @@ const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
     const [mode, setMode] = useState<'edit' | 'detail'>('detail');
     const [refetchTableData, setRefetchTableData] = useState<boolean>(true);
     const [dateFilters, setDateFilters] = useState<DateTimeFilterType | undefined>({
-        from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        from: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
         to: new Date(Date.now()).toISOString()
     });
     const [selectedAedServiceId, setSelectedAedServiceId] = useState<string>();
@@ -58,14 +58,18 @@ const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
     const [openManageAedServiceModal, setOpenManageAedServiceModal] =
         useState<boolean>(false);
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
-    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([{
-        id: 'aedId', value: aedId
-    }, {
-        id: 'visitDate', value: {from: dateFilters?.from, to: dateFilters?.to}
-    },
+    const restOfFilters = [
+        {
+            id: 'aedId', value: aedId
+        },
         {
             id: 'correctiveActionGroup', value: process
-        }]);
+        }
+    ]
+
+    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>(isAdmin || isSuperAdmin ? [...restOfFilters, {
+        id: 'visitDate', value: {from: dateFilters?.from, to: dateFilters?.to}
+    }] : restOfFilters);
     const [query, setQuery] = useState<string>();
     const [pagination, setPagination] = useState<MRT_PaginationState>({
         pageIndex: 0,
@@ -249,7 +253,7 @@ const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
                 if (key === 'correctiveActionGroup')
                     return `${key} eq '${item.value}'`;
 
-                if (key === 'visitDate')
+                if (key === 'visitDate' && (isAdmin || isSuperAdmin))
                     return `visitDate ge ${item.value?.from} and visitDate le ${item.value?.to}`;
 
                 const value = item.value.trim();
@@ -275,14 +279,16 @@ const AedServices: React.FC<AedServicesProps> = ({process, columns}) => {
                 headerChildren={
                     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
 
-                        <Button onClick={() => {
-                            setOpenTimeFilterModal(true);
-                        }}>⌚ Visit Time Filter</Button>
+                        {
+                            isAdmin || isSuperAdmin ? (<Button onClick={() => {
+                                setOpenTimeFilterModal(true);
+                            }}>⌚ Visit Time Filter</Button>) : <></>
+                        }
 
                         <CardTopActions
                             firstAction={() => {
                             }}
-                            secondTitle={isSuperAdmin || isAdmin ? undefined :  "Add "+ process}
+                            secondTitle={isSuperAdmin || isAdmin ? undefined : "Add " + process}
                             secondAction={() => {
                                 setSelectedAedServiceId('0');
                                 setOpenManageAedServiceModal(true);
