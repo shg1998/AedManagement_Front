@@ -17,6 +17,7 @@ import SelfTest from "../../services/SelfTest";
 import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/TimeUtils/time";
 import {internalTestConverter} from "../../utils/SelfTestUtils/SelfTestUtils";
 import {AedSelfTestDetailsType} from "./constants";
+import {useAuthState} from "../../context/AuthContext";
 
 
 const AllSelfTests = () => {
@@ -25,6 +26,7 @@ const AllSelfTests = () => {
         getAll,
     } = new SelfTest();
 
+    const {isAdmin, isSuperAdmin} = useAuthState();
     const {themeMode} = useThemeContext();
     const timeFilterRef = useRef<NewFilterHandle>(null);
     const tableInstanceRef = useRef(null);
@@ -33,17 +35,21 @@ const AllSelfTests = () => {
     const aedId = searchParams.get('id');
     const [refetchTableData] = useState<boolean>(true);
     const [dateFilters, setDateFilters] = useState<DateTimeFilterType | undefined>({
-        from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 6 years
+        from: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(), // 6 years
         to: new Date(Date.now()).toISOString()
     });
     const [openTimeFilterModal, setOpenTimeFilterModal] =
         useState<boolean>(false);
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
-    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([{
+    const restOfFilters = [{
         id: 'aedId', value: aedId
-    }, {
-        id: 'sentTime', value: {from: dateFilters?.from, to: dateFilters?.to}
-    }]);
+    }];
+
+    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>(
+        (isAdmin || isSuperAdmin) ? [...restOfFilters, {
+            id: 'sentTime', value: {from: dateFilters?.from, to: dateFilters?.to}
+        }] : restOfFilters);
+
     const [query, setQuery] = useState<string>();
     const [pagination, setPagination] = useState<MRT_PaginationState>({
         pageIndex: 0,
@@ -167,7 +173,7 @@ const AllSelfTests = () => {
                 if (key === 'aedId')
                     return `${key} eq ${item.value}`;
 
-                if (key === 'sentTime')
+                if (key === 'sentTime' && (isAdmin || isSuperAdmin))
                     return `sentTime ge ${item.value?.from} and sentTime le ${item.value?.to}`
 
                 const value = item.value.trim();
@@ -192,11 +198,13 @@ const AllSelfTests = () => {
                 header=""
                 headerChildren={
                     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
-
-                        <Button onClick={() => {
-                            setOpenTimeFilterModal(true);
-                        }}>⌚ Time Filter</Button>
-
+                        {
+                            (isSuperAdmin || isAdmin) ? (
+                                <Button onClick={() => {
+                                    setOpenTimeFilterModal(true);
+                                }}>⌚ Time Filter</Button>
+                            ) : <></>
+                        }
                     </div>
                 }
             >

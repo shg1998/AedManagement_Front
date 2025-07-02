@@ -59,7 +59,7 @@ const AllAeds = () => {
     const tableInstanceRef = useRef(null);
     const [refetchTableData, setRefetchTableData] = useState<boolean>(true);
     const [dateFilters, setDateFilters] = useState<DateTimeFilterType | undefined>({
-        from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        from: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
         to: new Date(Date.now()).toISOString()
     });
     const [openTimeFilterModal, setOpenTimeFilterModal] =
