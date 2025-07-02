@@ -11,7 +11,7 @@ interface DataPoint {
     trend: number;
 }
 
-const data: DataPoint[] = [
+const default_data: DataPoint[] = [
     { name: 'Shahrivar', pass: 3, fail: 1, trend: 4 },
     { name: 'Mehr', pass: 4, fail: 1, trend: 5 },
     { name: 'Aban', pass: 5, fail: 2, trend: 7 },
@@ -24,7 +24,11 @@ const data: DataPoint[] = [
     { name: 'Khordad', pass: 22, fail: 2, trend: 24 },
 ];
 
-const CustomBarChart: React.FC = () => {
+interface CustomBarChartProps {
+    data: DataPoint[];
+}
+
+const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) => {
     const { themeMode } = useThemeContext();
 
     const chartColors = themeMode === 'dark'

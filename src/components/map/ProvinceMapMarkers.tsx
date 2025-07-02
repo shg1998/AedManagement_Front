@@ -4,6 +4,7 @@ import {Box, Typography} from "@mui/material";
 import L, {DivIcon} from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {iranProvinces} from "../../utils/ProvinceUtils/ProvinceUtils";
+import {useThemeContext} from "../../ThemeContext";
 
 export interface Location {
     lat: number;
@@ -19,6 +20,17 @@ interface ProvinceMapMarkersProps {
     zoom?: number;
     onMarkerClick?: (location: Location) => void;
 }
+
+export const tileLayerThemes = {
+    light: {
+        url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        attribution: "",
+    },
+    dark: {
+        url: "https://tileserver.memomaps.de/tilegen/{z}/{x}/{y}.png",
+        attribution: '',
+    },
+};
 
 const ChangeView: React.FC<{ center: [number, number]; zoom: number }> = ({
                                                                               center,
@@ -62,7 +74,10 @@ const ProvinceMapMarkers: React.FC<ProvinceMapMarkersProps> = ({
                                                                    zoom = 10,
                                                                    onMarkerClick
                                                                }) => {
+    const {themeMode} = useThemeContext();
     const [center, setCenter] = useState<[number, number]>([35.6892, 51.389]);
+
+    const currentTileLayer = Reflect.get(tileLayerThemes, themeMode);
 
     useEffect(() => {
         const province = iranProvinces.find((p) => p.id === provinceId.toLowerCase());
@@ -80,8 +95,8 @@ const ProvinceMapMarkers: React.FC<ProvinceMapMarkersProps> = ({
                 scrollWheelZoom={true}
             >
                 <TileLayer
-                    attribution="&copy; OpenStreetMap contributors"
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution={currentTileLayer.attribution}
+                    url={currentTileLayer.url}
                 />
                 <ChangeView center={center} zoom={zoom}/>
                 {locations?.map((location, idx) => {

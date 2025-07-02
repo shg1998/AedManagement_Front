@@ -1,23 +1,23 @@
-import React, {createContext, useState} from "react";
-import {styled, Theme} from "@mui/material/styles";
-import {Avatar, Box} from "@mui/material/";
-import MuiAppBar, {AppBarProps as MuiAppBarProps} from "@mui/material/AppBar";
+import React, { createContext, useState } from "react";
+import { styled, Theme } from "@mui/material/styles";
+import { Avatar, Box } from "@mui/material/";
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import IconButton from "@mui/material/IconButton";
-import logoImage from "../../assets/images/logo-white.png";
-import {ButtonBase, Typography} from "@mui/material";
+import logoImage from "../../assets/images/logo-white.png"; // مسیر لوگو
+import { ButtonBase, Typography } from "@mui/material";
 import SideBar from "./SideBar/SideBar";
 import UserMenu from "./AppBar/UserMenu";
-import {getBaseUrl} from "../../config";
-import {useCurrentUserState} from "../../context/CurrentUserContext";
-import {makeStyles} from "@mui/styles";
-import {useThemeContext} from "../../ThemeContext";
-import AedImage from "../../assets/images/aed.png";
+import { getBaseUrl } from "../../config";
+import { useCurrentUserState } from "../../context/CurrentUserContext";
+import { makeStyles } from "@mui/styles";
+import { useThemeContext } from "../../ThemeContext";
+import AedImage from "../../assets/images/aed.png"; // مسیر عکس AED
 
-const Main = styled("main", {shouldForwardProp: (prop) => prop !== "open"})<{
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
     open?: boolean;
-}>(({theme, open}) => ({
+}>(({ theme, open }) => ({
     ...(!open && {
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
@@ -46,7 +46,7 @@ interface AppBarProps extends MuiAppBarProps {
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({theme, open}) => ({
+})<AppBarProps>(({ theme, open }) => ({
     transition: theme.transitions.create(["margin", "width"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     toolbarStyle: {
         display: "flex !important",
         flexDirection: "row",
-        justifyContent: "space-between !important",
+        justifyContent: "space-between !important", // این رو حفظ می‌کنیم تا لوگو و منو در کناره‌ها باشن
         direction: "ltr",
         padding: "8px !important",
         minHeight: "55px !important",
@@ -92,7 +92,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface SideWidthContextValue {
     sideWidth: string;
-
     setSideWidth(sideWidth: string): void;
 }
 
@@ -104,11 +103,10 @@ sessionStorage.setItem("openSidebar", "false");
 
 createContext<SideWidthContextValue>({
     sideWidth: "50px",
-    setSideWidth() {
-    },
+    setSideWidth() {},
 });
 
-const Dashboard: React.FC<DashboardPropsInterface> = ({component}) => {
+const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     const [open, setOpen] = useState(false);
     const classes = useStyles();
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -119,7 +117,8 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({component}) => {
     };
 
     const currentUserInfo = useCurrentUserState();
-    const {theme} = useThemeContext();
+    const { theme } = useThemeContext();
+
     return (
         <Box
             sx={{
@@ -127,34 +126,43 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({component}) => {
                 background: theme.palette.background.default,
             }}
         >
-            <CssBaseline/>
+            <CssBaseline />
             <AppBar className={classes.appBarStyle} position="fixed" open={open}>
                 <Toolbar className={classes.toolbarStyle}>
-                    <Box component="span" sx={{display: {xs: "none", md: "block"}}}>
+                    <Box component="span" sx={{ display: { xs: "none", md: "block" } }}>
                         <ButtonBase>
                             <img
                                 alt="sata_logo"
                                 style={{
                                     width: "200px",
-                                    height: '150px'
+                                    height: "150px",
                                 }}
                                 src={logoImage}
                             />
                         </ButtonBase>
                     </Box>
 
-                    <Box component="span" sx={{margin: 'auto', display: 'inline-block', mr: '42%'}}>
-                        <Typography sx={{fontSize: '28px !important'}} fontWeight={'bolder'}>
+                    <Box
+                        component="span"
+                        sx={{
+                            flexGrow: 1,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            mr: 21
+                        }}
+                    >
+                        <Typography sx={{ fontSize: "28px !important" }} fontWeight={"bolder"}>
                             <>
                                 <img
                                     src={AedImage}
                                     alt="AED"
                                     style={{
-                                        width: '3.5rem',
-                                        height: '3.5rem',
-                                        verticalAlign: 'middle',
-                                        marginRight: '0.2em',
-                                        marginTop: '-0.6em',
+                                        width: "3.5rem",
+                                        height: "3.5rem",
+                                        verticalAlign: "middle",
+                                        marginRight: "0.2em",
+                                        marginTop: "-0.6em",
                                     }}
                                 />
                                 AED Alert
@@ -163,7 +171,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({component}) => {
                     </Box>
 
                     <div>
-                        <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                             <Avatar
                                 alt=""
                                 src={
@@ -181,13 +189,12 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({component}) => {
                     </div>
                 </Toolbar>
             </AppBar>
-            <SideBar setSidebarOpen={setOpen}/>
+            <SideBar setSidebarOpen={setOpen} />
             <Main open={open}>
-                <div style={{overflowX: 'hidden', height: '100vh'}}>{component}</div>
+                <div style={{ overflowX: "hidden", height: "100vh" }}>{component}</div>
             </Main>
         </Box>
-    )
-        ;
+    );
 };
 
 export default Dashboard;
