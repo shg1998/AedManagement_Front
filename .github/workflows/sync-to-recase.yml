@@ -21,21 +21,25 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Set up GIT_ASKPASS script # تنظیم اسکریپت GIT_ASKPASS برای احراز هویت
+      - name: Set up GIT_ASKPASS script (with debug) # تنظیم اسکریپت GIT_ASKPASS برای احراز هویت و دیباگ
         run: |
-          # مسیر اسکریپت GIT_ASKPASS
           ASKPASS_SCRIPT="$HOME/git-askpass-recase.sh"
           
           # ایجاد محتوای اسکریپت:
           # این اسکریپت، نام کاربری یا رمز عبور را بر اساس متنی که Git از آن می‌خواهد، چاپ می‌کند.
           # GitHub Secrets به صورت امن در زمان اجرا جایگزین می‌شوند.
+          # اضافه کردن خطوط دیباگ برای چاپ پرامپت دریافتی
           echo '#!/bin/bash' > "$ASKPASS_SCRIPT"
           echo 'read -r prompt' >> "$ASKPASS_SCRIPT"
-          echo 'if [[ "$prompt" == "Username for '\''https://git.recase.ir'\'': "* ]]; then' >> "$ASKPASS_SCRIPT"
+          echo "DEBUG_ASKPASS: Received prompt: \"$prompt\"" >&2 # چاپ پرامپت به stderr برای لاگ‌ها
+          
+          # تطابق پرامپت با استفاده از grep برای انعطاف‌پذیری بیشتر
+          echo 'if echo "$prompt" | grep -q "Username for"; then' >> "$ASKPASS_SCRIPT"
           echo '  echo "${{ secrets.RECASE_USERNAME }}"' >> "$ASKPASS_SCRIPT"
-          echo 'elif [[ "$prompt" == "Password for '\''https://git.recase.ir'\'': "* ]]; then' >> "$ASKPASS_SCRIPT"
+          echo 'elif echo "$prompt" | grep -q "Password for"; then' >> "$ASKPASS_SCRIPT"
           echo '  echo "${{ secrets.RECASE_PASSWORD }}"' >> "$ASKPASS_SCRIPT"
           echo 'else' >> "$ASKPASS_SCRIPT"
+          echo '  echo "DEBUG_ASKPASS: Unexpected prompt: \"$prompt\" - Exiting with error." >&2' >> "$ASKPASS_SCRIPT"
           echo '  exit 1' >> "$ASKPASS_SCRIPT" # اگر پرامپت ناشناخته بود، خطا بده
           echo 'fi' >> "$ASKPASS_SCRIPT"
           
@@ -45,7 +49,7 @@ jobs:
           # تنظیم متغیر محیطی GIT_ASKPASS برای Git
           echo "GIT_ASKPASS=$ASKPASS_SCRIPT" >> $GITHUB_ENV
           
-          echo "GIT_ASKPASS script configured."
+          echo "GIT_ASKPASS script configured. Check logs for DEBUG_ASKPASS output."
 
       - name: Clone and Sync to Recase Git # کلون کردن ریپازیتوری مقصد و اعمال تغییرات
         run: |
