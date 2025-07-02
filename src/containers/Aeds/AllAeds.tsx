@@ -72,7 +72,10 @@ const AllAeds = () => {
         useState<boolean>(false);
 
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
-    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]); // { id: 'registerDateTime', value: {from: dateFilters?.from, to: dateFilters?.to}}
+    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>((isSuperAdmin || isAdmin) ? [{
+        id: 'registerDateTime',
+        value: {from: dateFilters?.from, to: dateFilters?.to}
+    }] : []);
     const [query, setQuery] = useState<string>("");
     const [selectedAed, setSelectedAed] = useState<AedType>();
     const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -386,8 +389,8 @@ const AllAeds = () => {
                 if (key === 'aedBatteryType')
                     return `${key} eq '${item.value}'`;
 
-                // if (key === 'registerDateTime')
-                //     return `registerDateTime ge ${item.value?.from} and registerDateTime le ${item.value?.to}`;
+                if (key === 'registerDateTime' && (isSuperAdmin || isAdmin))
+                    return `registerDateTime ge ${item.value?.from} and registerDateTime le ${item.value?.to}`;
 
                 if (key === 'internalTestResult') {
                     if (!item.value || item.value.length === 0) return null;
@@ -440,9 +443,11 @@ const AllAeds = () => {
                 headerChildren={
                     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
 
-                        {/*<Button onClick={() => {*/}
-                        {/*    setOpenTimeFilterModal(true);*/}
-                        {/*}}>⌚ Register Date Filter</Button>*/}
+                        {
+                            (isAdmin || isSuperAdmin) ? (<Button onClick={() => {
+                                setOpenTimeFilterModal(true);
+                            }}>⌚ Register Date Filter</Button>) : <></>
+                        }
 
                         <CardTopActions
                             firstAction={() => {
