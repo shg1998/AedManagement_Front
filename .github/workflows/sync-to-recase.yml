@@ -1,0 +1,73 @@
+name: Sync to Recase Git Repository # نام Workflow شما
+
+on:
+  push:
+    branches:
+      - develop # این Workflow وقتی روی برنچ 'develop' پوش می‌کنید، اجرا می‌شود.
+      # اگر برنچ اصلی شما نام دیگری دارد (مثلاً master)، آن را اینجا تغییر دهید.
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest # سیستم عاملی که Workflow روی آن اجرا می‌شود
+
+    steps:
+      - name: Checkout current repository # چک کردن کد ریپازیتوری فعلی (Repo A)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # برای اطمینان از دسترسی به تاریخچه کامل Git (اگر نیاز به تاریخچه دارید)
+
+      - name: Configure Git User # تنظیم نام کاربری و ایمیل برای کامیت‌های خودکار
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Clone and Sync to Recase Git # کلون کردن ریپازیتوری مقصد و اعمال تغییرات
+        run: |
+          # نام پوشه‌ای که ریپازیتوری مقصد در آن کلون می‌شود
+          RECASE_REPO_DIR="recase-front-clone"
+          
+          # آدرس کامل ریپازیتوری مقصد با استفاده از Secrets برای نام کاربری و رمز عبور
+          # GitHub Actions به صورت خودکار مقادیر Secrets را در زمان اجرا جایگزین می‌کند.
+          RECASE_REPO_URL="http://${{ secrets.RECASE_USERNAME }}:${{ secrets.RECASE_PASSWORD }}@git.recase.ir/aed_group/aed_management_front.git" 
+          
+          # برنچ مقصد در ریپازیتوری git.recase.ir
+          TARGET_BRANCH="main" # برنچ مقصد در git.recase.ir که تغییرات روی آن پوش می‌شوند.
+
+          echo "Cloning Recase repository..."
+          # کلون کردن ریپازیتوری مقصد
+          # --depth 1 فقط آخرین کامیت را کلون می‌کند که سرعت را بالا می‌برد.
+          git clone --depth 1 --branch $TARGET_BRANCH "$RECASE_REPO_URL" "$RECASE_REPO_DIR"
+
+          echo "Copying files from current repo to Recase repo..."
+          # حذف تمام محتوای پوشه مقصد (به جز پوشه .git) برای اطمینان از همگام‌سازی کامل
+          # این خط بسیار مهم است و باید با دقت استفاده شود.
+          # اگر نمی‌خواهید تمام محتوا جایگزین شود، این خط را کامنت کنید یا تغییر دهید.
+          find "$RECASE_REPO_DIR" -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
+
+          # کپی کردن تمام فایل‌ها و پوشه‌ها از ریپازیتوری فعلی به پوشه مقصد
+          # این دستور تمام فایل‌های پروژه شما را به ریپازیتوری مقصد کپی می‌کند.
+          cp -r ./* "$RECASE_REPO_DIR/"
+
+          echo "Navigating to Recase repository directory..."
+          # وارد شدن به پوشه ریپازیتوری مقصد
+          cd "$RECASE_REPO_DIR"
+
+          echo "Adding changes to Git..."
+          # اضافه کردن تمام تغییرات به Git
+          git add .
+
+          echo "Checking for changes..."
+          # بررسی اینکه آیا تغییری برای کامیت وجود دارد یا خیر
+          if git diff --staged --quiet; then
+            echo "No changes detected in Recase repository. Skipping commit and push."
+          else
+            echo "Committing changes..."
+            # کامیت کردن تغییرات
+            # [skip ci] باعث می‌شود که اگر در git.recase.ir هم Workflow ای تعریف شده باشد، اجرا نشود.
+            git commit -m "Automated sync from GitHub Actions [skip ci]" 
+          
+            echo "Pushing changes to Recase repository..."
+            # پوش کردن تغییرات به برنچ مقصد
+            git push origin "$TARGET_BRANCH"
+            echo "Successfully pushed changes to Recase repository."
+          fi
