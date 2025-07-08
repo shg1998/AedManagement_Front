@@ -6,6 +6,7 @@ import AllRepairs from "./SpecificAedServices/AllRepairs";
 import AllPms from "./SpecificAedServices/AllPms";
 import AllRecalls from "./SpecificAedServices/AllRecalls";
 import AllTrainings from "./SpecificAedServices/AllTrainings";
+import AllReturns from "./SpecificAedServices/AllReturns";
 
 const AllAedServices = () => {
     const [value, setValue] = useState(correctiveActionOptions[0].value);
@@ -25,6 +26,8 @@ const AllAedServices = () => {
                 return <AllRecalls/>;
             case 'Training':
                 return <AllTrainings/>;
+            case 'Return':
+                return <AllReturns/>;
         }
     };
 

@@ -6,7 +6,7 @@ import Select from "@mui/material/Select";
 import {truncateText} from "../../../utils/General/generalUtils";
 import AedServices from "../AedServices";
 
-const AllPms = () => {
+const AllReturns = () => {
     const columns = useMemo<MRT_ColumnDef<any>[]>(
         () => [
             {
@@ -76,8 +76,8 @@ const AllPms = () => {
 
 
     return (
-        <AedServices process={"Pm"} columns={columns}/>
+        <AedServices process={"Return"} columns={columns}/>
     );
 };
 
-export default AllPms;
+export default AllReturns;

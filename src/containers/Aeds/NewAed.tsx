@@ -1,11 +1,11 @@
 import Container from "@mui/material/Container";
 import React, {forwardRef, useImperativeHandle, useRef, useState} from "react";
-import {Box, Collapse, InputLabel} from "@mui/material";
+import {Box, Checkbox, Collapse, InputLabel} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import clsx from "clsx";
 import {useStyles} from "../../assets/scss/timeFilterStyle";
-import {FieldArray, Formik, getIn, useFormik} from "formik";
+import {FieldArray, Formik, FormikProps, getIn, useFormik} from "formik";
 import Button from "@mui/material/Button";
 import {useMutation} from "react-query";
 import {tError, tSuccess} from "../../utils/ToastUtils/toast";
@@ -29,6 +29,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import {truncateText} from "../../utils/General/generalUtils";
 import Attachment from "../../services/Attachment";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 
 const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) => {
@@ -74,6 +75,10 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
 
     const handleDownloadClicked = (id: any) => {
         downloadAttachment(id).then();
+    }
+
+    const handleIsActiveChanged = (e: React.ChangeEvent<HTMLInputElement>, formik: FormikProps<AedType>) => {
+        formik.setFieldValue("isActive", e.target.checked);
     }
 
     return (
@@ -141,6 +146,26 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                                     {formik.errors.registerDateTime}
                                 </Typography>
                             ) : null}
+                            <br/>
+
+                            <FormControlLabel
+                                className={classes.rememberContainer}
+                                control={
+                                    <Checkbox
+                                        color="primary"
+                                        name="isActive"
+                                        value={formik.values.isActive}
+                                        checked={formik.values.isActive}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleIsActiveChanged(e, formik)}
+                                    />
+                                }
+                                label={
+                                    <Typography className={classes.fontCustum}>
+                                        Is Active?
+                                    </Typography>
+                                }
+                            />
+
                             <br/>
 
                             <InputLabel htmlFor="aedBatteryType">

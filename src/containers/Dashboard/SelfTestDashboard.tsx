@@ -21,7 +21,7 @@ import { getStatus } from "../../utils/General/generalUtils";
 import CustomBarChart from "../../components/BarChart/CustomBarChart";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 
-const Dashboard = () => {
+const SelfTestDashboard = () => {
     const { themeMode } = useThemeContext();
     const { isAdmin, isSuperAdmin } = useAuthState();
     const { getAedStatus, getAedSelfTestLocation, getAedTestTrend } = new DashboardService();
@@ -78,7 +78,7 @@ const Dashboard = () => {
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                                 <DashboardIcon sx={{ fontSize: '2.5rem', mr: 1, color: 'primary.main' }} />
                                 <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold' }}>
-                                    {"AED Monitoring Dashboard"}
+                                    {"AED Monitoring Self Test Dashboard"}
                                 </Typography>
                             </Box>
                         </Grid>
@@ -137,7 +137,6 @@ const Dashboard = () => {
                         </Grid>
                     </Grid>
 
-                    {/* نقشه و چارت */}
                     <Grid container spacing={2}>
                         <Grid item sm={12} xl={7.2}>
                             <BasicCard
@@ -198,4 +197,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default SelfTestDashboard;

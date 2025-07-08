@@ -23,7 +23,7 @@ const AllParts = lazy(() => import("./containers/Part/AllParts"));
 const AllRepairTypes = lazy(() => import("./containers/RepairType/AllRepairTypes"));
 const AllNonConformity = lazy(() => import("./containers/NonConformity/AllNonConformities"));
 const NotFound = lazy(() => import("./containers/NotFound/NotFound"));
-const DashDashPage = lazy(() => import("./containers/Dashboard/Dashboard"));
+const DashDashPage = lazy(() => import("./containers/Dashboard/GeneralDashboard"));
 
 
 const App = (): React.JSX.Element => {

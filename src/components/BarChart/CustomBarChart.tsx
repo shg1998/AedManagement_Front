@@ -69,7 +69,7 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) =>
             },
         },
         xAxis: {
-            categories: data.map(item => item.name),
+            categories: data?.map(item => item.name),
             labels: {
                 style: {
                     color: chartColors.textColor,
@@ -149,7 +149,7 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) =>
         series: [
             {
                 name: 'Pass',
-                data: data.map(item => item.pass),
+                data: data?.map(item => item.pass),
                 color: chartColors.passColor,
                 tooltip: {
                     valueSuffix: ' tests',
@@ -157,7 +157,7 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) =>
             },
             {
                 name: 'Fail',
-                data: data.map(item => item.fail),
+                data: data?.map(item => item.fail),
                 color: chartColors.failColor,
                 tooltip: {
                     valueSuffix: ' tests',
@@ -166,7 +166,7 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) =>
             {
                 name: 'SelfTest Trend',
                 type: 'line',
-                data: data.map(item => item.trend),
+                data: data?.map(item => item.trend),
                 color: chartColors.trendLineColor,
                 lineWidth: 3,
                 marker: {

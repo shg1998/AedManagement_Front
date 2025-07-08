@@ -57,6 +57,7 @@ class Aed extends Api {
             delete data.id;
             const formData = new FormData();
             formData.append("serialNumber", data.serialNumber);
+            formData.append("isActive", data.isActive.toString());
             formData.append("registerDateTime", data.registerDateTime);
             formData.append("aedBatteryType", data.aedBatteryType);
             formData.append("location.province", data.province);
@@ -92,6 +93,7 @@ class Aed extends Api {
             const formData = new FormData();
             formData.append("id", data.id);
             formData.append("serialNumber", data.serialNumber);
+            formData.append("isActive", data.isActive.toString());
             formData.append("registerDateTime", data.registerDateTime);
             formData.append("aedBatteryType", data.aedBatteryType);
             formData.append("location.province", data.province);

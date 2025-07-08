@@ -5,8 +5,8 @@ export const correctiveActionOptions = [
     {label: "🔧 Repair", value: "Repair"},
     {label: "📢 Recall", value: "Recall"},
     {label: "🧰 Pm", value: "Pm"},
-    // {label: "Upgrade", value: "Upgrade"},
-    {label: "🎓 Training", value: "Training"}
+    {label: "🎓 Training", value: "Training"},
+    {label: "🔄 Return", value: "Return"}
 ];
 
 export type ReplacementPartType = {
@@ -99,7 +99,7 @@ export const CorrectiveActionGroupTypes: ItemType[] = [
     {title: "Repair", value: "Repair"},
     {title: "Pm", value: "Pm"},
     {title: "Recall", value: "Recall"},
-    // {title: "Upgrade", value: "Upgrade"},
+    {title: "Return", value: "Return"},
     {title: "Training", value: "Training"}
 ]
 

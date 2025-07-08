@@ -15,7 +15,8 @@ export const DEFAULT_AED_INFORMATION: AedType = {
     registerDateTime: convertTimeToLocale2(Date()),
     aedBatteryType: 'Chargeable',
     position: [35.6892, 51.389],
-    attachments: []
+    attachments: [],
+    isActive: true
 }
 
 export const testOptions = [
@@ -117,7 +118,8 @@ export type AedType = {
     registerDateTime: string;
     aedBatteryType: string;
     position?: [number, number] | null;
-    attachments? : AttachmentType[]
+    attachments? : AttachmentType[],
+    isActive: boolean,
 }
 
 export interface NewAedProps {

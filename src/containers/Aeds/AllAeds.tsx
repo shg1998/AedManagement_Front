@@ -17,7 +17,7 @@ import AedImage from "../../assets/images/aed.png"
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import NewAed from "./NewAed";
 import {AedType, NewAedHandle} from './constants';
-import {convertTimeToLocale2, getJalaliDateTime} from "../../utils/TimeUtils/time";
+import {getJalaliDateTime} from "../../utils/TimeUtils/time";
 import Select from "@mui/material/Select";
 import {useNavigate} from "react-router-dom";
 import ListItemText from "@mui/material/ListItemText";
@@ -25,7 +25,8 @@ import {useAuthState} from "../../context/AuthContext";
 import {getItemSecure} from "../../utils/AESCrypto/AESCrypto";
 import {tError, tSuccess} from "../../utils/ToastUtils/toast";
 import AedDetails from "./AedDetails";
-import {DEFAULT_AED_INFORMATION, testOptions } from "./constants";
+import {DEFAULT_AED_INFORMATION, testOptions} from "./constants";
+import BooleanCheckStatus from "../../utils/BooleanCheckStatus/BooleanCheckStatus";
 
 const AllAeds = () => {
 
@@ -58,7 +59,7 @@ const AllAeds = () => {
     const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>((isSuperAdmin || isAdmin) ? [{
         id: 'registerDateTime',
         value: {from: dateFilters?.from, to: dateFilters?.to}
-    }] : []);
+    }, {id: 'isActive', value: 'yes'}] : [{id: 'isActive', value: 'yes'}]);
     const [query, setQuery] = useState<string>("");
     const [selectedAed, setSelectedAed] = useState<AedType>();
     const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -151,13 +152,6 @@ const AllAeds = () => {
                 enableSorting: false,
                 accessorFn: (row: any) => row.location?.city === null ? "" : row.location?.city,
             },
-            // {
-            //     accessorKey: "location.city",
-            //     header: "City",
-            //     maxSize: 20,
-            //     enableSorting: false,
-            //     accessorFn: (row: any) => row.location?.city === null ? "" : row.location?.city,
-            // },
             {
                 accessorKey: "location.place",
                 header: "Place",
@@ -263,6 +257,33 @@ const AllAeds = () => {
                 ),
                 filterVariant: 'select',
             },
+            {
+                accessorKey: "isActive",
+                header: "IsActive",
+                maxSize: 10,
+                Cell: ({cell}) => <BooleanCheckStatus status={cell.getValue<boolean>()}/>,
+                filterFn: (row, columnId, filterValue) => {
+                    if (filterValue === 'all') return true;
+                    const isActive = row.getValue<boolean>(columnId);
+                    return filterValue === 'yes' ? isActive : !isActive;
+                },
+                Filter: ({column}) => (
+                    <Select
+                        sx={{
+                            width: '100%',
+                            fontSize: '0.875rem',
+                            padding: '0 8px',
+                        }}
+                        size="small"
+                        value={(column.getFilterValue() as string) ?? 'all'}
+                        onChange={(e) => column.setFilterValue(e.target.value)}>
+                        <MenuItem value="all">All</MenuItem>
+                        <MenuItem value="yes">Yes</MenuItem>
+                        <MenuItem value="no">No</MenuItem>
+                    </Select>
+                ),
+                filterVariant: 'select',
+            },
         ],
         []
     );
@@ -318,7 +339,9 @@ const AllAeds = () => {
             registerDateTime: row.registerDateTime,
             aedBatteryType: row.aedBatteryType,
             city: row.location.city,
-            position: [row.location.lat, row.location.long]
+            position: [row.location.lat, row.location.long],
+            attachments: row.attachments,
+            isActive: row.isActive,
         });
         setOpenManageAedModal(true);
     };
@@ -379,6 +402,11 @@ const AllAeds = () => {
                     if (!item.value || item.value.length === 0) return null;
                     const multiFilters = item.value.map((val: string) => `${key} eq '${val}'`);
                     return `(${multiFilters.join(' or ')})`;
+                }
+                if (item.id === 'isActive') {
+                    if (item.value === 'yes') return `${item.id} eq true`;
+                    if (item.value === 'no') return `${item.id} eq false`;
+                    return null;
                 }
 
                 const value = item.value?.trim?.() ?? '';
