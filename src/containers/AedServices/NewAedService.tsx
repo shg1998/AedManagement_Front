@@ -115,12 +115,6 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
     const [nonConformity, setNonConformity] = useState(data?.nonConformity ?? {});
     const [repairType, setRepairType] = useState(data?.repairType ?? {});
 
-    // const debouncedUserSearch = React.useRef(
-    //     debounce((val) => {
-    //         setSearchUser(val);
-    //     }, 500)
-    // ).current;
-
     const debouncedNonConformitySearch = React.useRef(
         debounce((val) => {
             setSearchNonConformity(val);

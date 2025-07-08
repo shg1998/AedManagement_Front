@@ -1,5 +1,5 @@
 import Api from "./API/Api";
-import {AedType} from "../containers/Aeds/NewAed";
+import {AedType} from "../containers/Aeds/constants";
 
 class Aed extends Api {
     urls = {
@@ -45,8 +45,7 @@ class Aed extends Api {
                     data: {}
                 }
             return result.data.data;
-        }
-        catch (e){
+        } catch (e) {
             console.log(e)
             return Promise.reject(e)
         }
@@ -56,23 +55,32 @@ class Aed extends Api {
         try {
             // @ts-ignore
             delete data.id;
-            const finalData = {
-                serialNumber: data.serialNumber,
-                registerDateTime: data.registerDateTime,
-                aedBatteryType: data.aedBatteryType,
-                location: {
-                    province: data.province,
-                    address: data.address,
-                    city: data.city,
-                    place: data.place,
-                    long: data.position?.[1],
-                    lat: data.position?.[0]
+            const formData = new FormData();
+            formData.append("serialNumber", data.serialNumber);
+            formData.append("registerDateTime", data.registerDateTime);
+            formData.append("aedBatteryType", data.aedBatteryType);
+            formData.append("location.province", data.province);
+            formData.append("location.address", data.address);
+            formData.append("location.city", data.city);
+            formData.append("location.place", data.place);
+            // @ts-ignore
+            formData.append("location.long", (data.position?.[1]));
+            // @ts-ignore
+            formData.append("location.lat", data.position?.[0]);
+
+            (data.attachments ?? []).forEach((attachment, index) => {
+                if (attachment.file) {
+                    formData.append(`attachments[${index}].file`, attachment.file);
                 }
-            }
-            const result = await this.postJsonData(
+                formData.append(`attachments[${index}].fileName`, attachment.fileName || attachment.file?.name || "");
+            });
+
+            const result = await this.postFormData(
                 this.urls.addAed,
-                finalData
+                formData
             );
+            if (result.name === "AxiosError")
+                return result.response.data;
             return result.data;
         } catch (e) {
             return Promise.reject(e);
@@ -81,24 +89,32 @@ class Aed extends Api {
 
     editAedForm = async (data: AedType): Promise<any> => {
         try {
-            let dataForApi: any = {
-                id: data.id,
-                serialNumber: data.serialNumber,
-                registerDateTime: data.registerDateTime,
-                aedBatteryType: data.aedBatteryType,
-                location: {
-                    province: data.province,
-                    address: data.address,
-                    city: data.city,
-                    place: data.place,
-                    long: data.position?.[1],
-                    lat: data.position?.[0]
+            const formData = new FormData();
+            formData.append("id", data.id);
+            formData.append("serialNumber", data.serialNumber);
+            formData.append("registerDateTime", data.registerDateTime);
+            formData.append("aedBatteryType", data.aedBatteryType);
+            formData.append("location.province", data.province);
+            formData.append("location.address", data.address);
+            formData.append("location.city", data.city);
+            formData.append("location.place", data.place);
+            // @ts-ignore
+            formData.append("location.long", (data.position?.[1]));
+            // @ts-ignore
+            formData.append("location.lat", data.position?.[0]);
+
+            (data.attachments ?? []).forEach((attachment, index) => {
+                if (attachment.file) {
+                    formData.append(`attachments[${index}].file`, attachment.file);
                 }
-            }
-            const result = await this.putJsonData(
+                formData.append(`attachments[${index}].fileName`, attachment.fileName || attachment.file?.name || "");
+            });
+            const result = await this.putFormData(
                 `/${this.urls.editAed}`,
-                dataForApi
+                formData
             );
+            if (result.name === "AxiosError")
+                return result.response.data;
             return result.data;
         } catch (e) {
             return Promise.reject(e);

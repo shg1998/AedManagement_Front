@@ -1,5 +1,4 @@
 import Api from "./API/Api";
-import {AedType} from "../containers/Aeds/NewAed";
 
 class SelfTest extends Api {
     urls = {

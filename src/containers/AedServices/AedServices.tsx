@@ -15,7 +15,7 @@ import DateTimeFilter, {
 import {useLocation} from "react-router-dom";
 import AedService from "../../services/AedService";
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
-import {NewAedHandle} from "../Aeds/NewAed";
+import {NewAedHandle} from "../Aeds/constants";
 import {
     AedServiceDetailsType, AedServicesProps,
     AedServiceType,

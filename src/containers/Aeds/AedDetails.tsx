@@ -3,7 +3,7 @@ import {useQuery} from "react-query";
 import Aed from "../../services/Aed";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import {useThemeContext} from "../../ThemeContext";
-import {Box, Divider, Grid, Paper, Typography} from "@mui/material";
+import {Box, Button, Divider, Grid, ListItem, Paper, Typography, useTheme} from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
@@ -18,6 +18,8 @@ import {StatusCard} from '../SelfTests/SelfTestDetails';
 import {getJalaliDateTime, getJalaliDateTime2} from "../../utils/TimeUtils/time";
 import AedImage from "../../assets/images/aedImage.png";
 import {getStatus} from "../../utils/General/generalUtils";
+import Attachment from "../../services/Attachment";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 
 type AedDetailsProps = {
     aedId?: string;
@@ -25,7 +27,8 @@ type AedDetailsProps = {
 
 const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
     const {themeMode} = useThemeContext();
-
+    const theme = useTheme();
+    const { downloadAttachment } = new Attachment();
     const colors = {
         light: {
             textPrimary: "#212121",
@@ -77,6 +80,10 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
             staleTime: 60 * 1000,
         }
     );
+
+    const handleDownloadClicked = (id: any) => {
+        downloadAttachment(id).then();
+    }
 
     const generateInternalTestResult = (status: string): string => {
         switch (status) {
@@ -370,6 +377,96 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                                     </Paper>
                                 </Grid>
                             </Grid>
+                            {/* Attachments */}
+                            <ListItem sx={{ px: 2, pt: 3, pb: 1 }}>
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        mb: 2,
+                                        gap: 1.5,
+                                        p: 1,
+                                        bgcolor: themeMode === 'dark' ? colors.dark.success : colors.light.successLight,
+                                        borderRadius: 2,
+                                        boxShadow: themeColors.boxShadow,
+                                        maxWidth: 240,
+                                        userSelect: "none"
+                                    }}
+                                >
+                                    <AttachFileIcon
+                                        sx={{
+                                            color: themeMode === 'dark' ? colors.dark.successLight : colors.light.success,
+                                            fontSize: 30
+                                        }}/>
+                                    <Typography
+                                        variant="h5"
+                                        sx={{
+                                            fontWeight: 700,
+                                            color: themeMode === 'dark' ? colors.dark.successLight : colors.light.success,
+                                            letterSpacing: 1,
+                                            textTransform: "uppercase",
+                                        }}
+                                    >
+                                        Attachments
+                                    </Typography>
+                                </Box>
+                            </ListItem>
+                            {/*<Divider component="li" />*/}
+                            {data?.attachments && data.attachments.length > 0 ? (
+                                data.attachments.map((attachment: any, idx: any) => (
+                                    <ListItem
+                                        key={idx}
+                                        sx={{
+                                            justifyContent: 'space-between',
+                                            px: 2,
+                                            py: 1,
+                                            bgcolor: idx % 2 === 0 ? theme.palette.action.hover : 'transparent',
+                                            borderRadius: 1,
+                                            transition: 'background-color 0.3s',
+                                            '&:hover': { bgcolor: theme.palette.action.selected },
+                                            flexWrap: 'wrap',
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="body1"
+                                            sx={{
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                                maxWidth: 300,
+                                                userSelect: 'text',
+                                            }}
+                                            title={attachment.fileName}
+                                        >
+                                            {attachment.fileName}
+                                        </Typography>
+                                        <Button
+                                            variant="outlined"
+                                            size="small"
+                                            onClick={() => handleDownloadClicked(attachment?.id)}
+                                            aria-label={`Download file ${attachment.fileName}`}
+                                            sx={{
+                                                ml: { xs: 0, sm: 2 },
+                                                mt: { xs: 1, sm: 0 },
+                                                minWidth: 100,
+                                            }}
+                                        >
+                                            Download
+                                        </Button>
+                                    </ListItem>
+                                ))
+                            ) : (
+                                <ListItem>
+                                    <Typography
+                                        color={theme.palette.text.disabled}
+                                        fontStyle="italic"
+                                        align="center"
+                                        width="100%"
+                                    >
+                                        🚫 No attachments found.
+                                    </Typography>
+                                </ListItem>
+                            )}
                         </Box>
                     </>
                 )

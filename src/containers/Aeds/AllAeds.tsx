@@ -15,7 +15,8 @@ import DateTimeFilter, {
 } from "../../components/CustomDateTimeFilter/DateTimeFilter";
 import AedImage from "../../assets/images/aed.png"
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
-import NewAed, {AedType, NewAedHandle} from "./NewAed";
+import NewAed from "./NewAed";
+import {AedType, NewAedHandle} from './constants';
 import {convertTimeToLocale2, getJalaliDateTime} from "../../utils/TimeUtils/time";
 import Select from "@mui/material/Select";
 import {useNavigate} from "react-router-dom";
@@ -24,25 +25,7 @@ import {useAuthState} from "../../context/AuthContext";
 import {getItemSecure} from "../../utils/AESCrypto/AESCrypto";
 import {tError, tSuccess} from "../../utils/ToastUtils/toast";
 import AedDetails from "./AedDetails";
-
-const DEFAULT_AED_INFORMATION: AedType = {
-    id: '0',
-    serialNumber: '',
-    province: 'Tehran',
-    city: 'تهران',
-    address: '',
-    place: '',
-    registerDateTime: convertTimeToLocale2(Date()),
-    aedBatteryType: 'Chargeable',
-    position: [35.6892, 51.389]
-}
-
-const testOptions = [
-    {label: "No Wifi", value: "NoWifi"},
-    {label: "Passed", value: "Pass"},
-    {label: "Failed", value: "Fail"},
-    {label: "Disconnected", value: "Disconnected"}
-];
+import {DEFAULT_AED_INFORMATION, testOptions } from "./constants";
 
 const AllAeds = () => {
 

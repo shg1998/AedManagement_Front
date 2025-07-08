@@ -1,6 +1,5 @@
 import Api from "./API/Api";
 import {AedServiceType} from "../containers/AedServices/constants";
-import {AedType} from "../containers/Aeds/NewAed";
 
 class AedService extends Api {
     urls = {
