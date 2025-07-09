@@ -82,7 +82,7 @@ const SelfTestDashboard = () => {
                                 </Typography>
                             </Box>
                         </Grid>
-                        {isAdmin || isSuperAdmin && (
+                        {(isAdmin || isSuperAdmin) && (
                             <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex', justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
                                 <FormControl size="small" sx={{ minWidth: 250, width: '100%', maxWidth: 300 }}>
                                     <InputLabel id="province-select-label">Select Province</InputLabel>
