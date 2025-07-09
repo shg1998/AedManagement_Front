@@ -4,9 +4,11 @@ import CancelIcon from "@mui/icons-material/Cancel";
 
 export interface checkStatusPropTypes {
     status: boolean;
+    trueText?: string;
+    falseText?: string;
 }
 
-const BooleanCheckStatus: React.FC<checkStatusPropTypes> = ({ status }) => {
+const BooleanCheckStatus: React.FC<checkStatusPropTypes> = ({ status, trueText = "Active", falseText= "InActive" }) => {
     return (
         <>
             {status ? (
@@ -26,7 +28,7 @@ const BooleanCheckStatus: React.FC<checkStatusPropTypes> = ({ status }) => {
                             width: "25px",
                         }}
                     />
-                    Active
+                    {trueText}
                 </div>
             ) : (
                 <div
@@ -46,7 +48,7 @@ const BooleanCheckStatus: React.FC<checkStatusPropTypes> = ({ status }) => {
                             width: "25px",
                         }}
                     />
-                    InActive
+                    {falseText}
                 </div>
             )
             }

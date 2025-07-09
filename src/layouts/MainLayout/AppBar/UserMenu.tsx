@@ -18,6 +18,7 @@ import LeftModal from "../../../components/Modal/LeftModal";
 import UserChangePassword, {
     NewChangeUserPasswordHandle
 } from "../../../containers/UserChangePassword/UserChangePassword";
+import {deleteItemSecure} from "../../../utils/AESCrypto/AESCrypto";
 
 interface UserMenuProps {
     anchorElUser: null | HTMLElement;
@@ -41,6 +42,12 @@ const UserMenu: React.FC<UserMenuProps> = (props) => {
         setTimeout(() => {
             localStorage.removeItem("mainToken");
             localStorage.removeItem("userRoleName");
+            localStorage.removeItem("province");
+            localStorage.removeItem("isInterProvinceRepairExpert");
+            deleteItemSecure('mainToken');
+            deleteItemSecure('userRoleName');
+            deleteItemSecure('province');
+            deleteItemSecure('isInterProvinceRepairExpert');
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key?.startsWith('/')) {

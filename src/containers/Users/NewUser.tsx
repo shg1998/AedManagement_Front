@@ -14,57 +14,13 @@ import Users from "../../services/Users";
 import {tError, tSuccess} from "../../utils/ToastUtils/toast";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { styled } from "@mui/material/styles";
-import {AdminType, NewAdminHandle, NewUserProps} from "../Admins/NewAdmin";
 import MySelect from "../../components/MySelect/MySelect";
 import {provinceItems} from "../../utils/ProvinceUtils/ProvinceUtils";
+import {AddUserSchema, EditUserSchema, NewUserHandle, NewUserProps, StyledTextField, UserType} from "./constants";
 
 
-const AddUserSchema = Yup.object().shape({
-    userName: Yup.string().required("⛔ Username is required!"),
-    fullName: Yup.string().required("⛔ FullName is required!"),
-    password: Yup.string()
-        .min(8, "⛔ Password must be at least 8 characters long.")
-        .max(20, "⛔ Password length is too long")
-        .required("⛔ Password is required"),
-    passwordConfirm: Yup.string()
-        .oneOf([Yup.ref("password")], "⛔ Password and confirmation must match.")
-        .required("⛔ Password Confirm is required."),
-    email: Yup.string()
-        .matches(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            "⛔ Email address is invalid."
-        )
-        .required("⛔ Email address is required"),
 
-});
-
-const EditUserSchema = Yup.object().shape({
-    userName: Yup.string().required("⛔ Username is required!"),
-    fullName: Yup.string().required("⛔ FullName is required!"),
-    email: Yup.string()
-        .matches(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            "⛔ Email address is invalid."
-        )
-        .required("⛔ Email address is required"),
-});
-
-const StyledTextField = styled(TextField)(({ theme }) => ({
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(4),
-    width: "100%",
-
-    "& input": {
-        fontSize: "18px",
-        paddingRight: theme.spacing(1),
-        height: "25px",
-        direction: "ltr",
-        textAlign: "left",
-        borderRadius: "100px",
-    },
-}));
-
-const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, ref) => {
+const NewUser = forwardRef<NewUserHandle, NewUserProps>(({data, closeModal}, ref) => {
     const classes = useStyles();
     const submitBtnRef = useRef<any>();
     const {postNewUserForm, editUserForm} = new Users();
@@ -98,7 +54,7 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
     });
 
 
-    const formik = useFormik<AdminType>({
+    const formik = useFormik<UserType>({
         initialValues: data,
         validationSchema: data.id === 0 ? AddUserSchema : EditUserSchema,
         onSubmit: async (values): Promise<any> => {
@@ -131,6 +87,10 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
 
     const handleIsActiveChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
         formik.setFieldValue("isActive", e.target.checked);
+    }
+
+    const handleIsInterProvinceRepairExpertChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+        formik.setFieldValue("isInterProvinceRepairExpert", e.target.checked);
     }
 
     return (
@@ -334,6 +294,24 @@ const NewUser = forwardRef<NewAdminHandle, NewUserProps>(({data, closeModal}, re
                         label={
                             <Typography className={classes.fontCustum}>
                                 Is Active?
+                            </Typography>
+                        }
+                    />
+
+                    <FormControlLabel
+                        className={classes.rememberContainer}
+                        control={
+                            <Checkbox
+                                color="primary"
+                                name="isInterProvinceRepairExpert"
+                                value={formik.values.isInterProvinceRepairExpert}
+                                checked={formik.values.isInterProvinceRepairExpert}
+                                onChange={handleIsInterProvinceRepairExpertChanged}
+                            />
+                        }
+                        label={
+                            <Typography className={classes.fontCustum}>
+                                Is Inter-Province Repair Expert ?
                             </Typography>
                         }
                     />

@@ -1,7 +1,6 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import DataTable from "../../components/DataTable/DataTable";
-import {Backdrop, MenuItem, Paper} from "@mui/material";
-import {useQuery} from "react-query";
+import {MenuItem, Paper} from "@mui/material";
 import {MRT_ColumnDef, MRT_ColumnFiltersState, MRT_PaginationState} from "material-react-table";
 import BasicCard from "../../components/Card/BasicCard";
 import PageHeader from "../../components/PageHeader/PageHeader";
@@ -9,13 +8,12 @@ import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import LeftModal from "../../components/Modal/LeftModal";
 import Users from "../../services/Users";
 import {useCustomTableQuery} from "../../hooks/use-custom-table-query";
-import CircularProgress from "@mui/material/CircularProgress";
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import {useThemeContext} from "../../ThemeContext";
 import BooleanCheckStatus from "../../utils/BooleanCheckStatus/BooleanCheckStatus";
 import NewUser from "./NewUser";
-import {AdminType, DEFAULT_USER_INFORMATION, NewAdminHandle} from "../Admins/NewAdmin";
 import Select from "@mui/material/Select";
+import {DEFAULT_USER_INFORMATION, NewUserHandle, UserType} from "./constants";
 
 type UserObject = {
     id: any;
@@ -33,7 +31,7 @@ const AllUsers = () => {
 
     const {themeMode} = useThemeContext();
 
-    const newUserRef = useRef<NewAdminHandle>(null);
+    const newUserRef = useRef<NewUserHandle>(null);
     const tableInstanceRef = useRef(null);
 
     /*
@@ -48,7 +46,7 @@ const AllUsers = () => {
         pageIndex: 0,
         pageSize: 10,
     });
-    const [selectedUser, setSelectedUser] = useState<AdminType>();
+    const [selectedUser, setSelectedUser] = useState<UserType>();
     const {data, isFetching, isLoading} = useCustomTableQuery(
         "users",
         refetchTableData,
@@ -113,6 +111,34 @@ const AllUsers = () => {
                 ),
                 filterVariant: 'select',
             },
+            {
+                accessorKey: "isInterProvinceRepairExpert",
+                header: "Inter-Province Expert",
+                maxSize: 10,
+                Cell: ({cell}) =>
+                    <BooleanCheckStatus status={cell.getValue<boolean>()} trueText={"Yes"} falseText={"No"}/>,
+                filterFn: (row, columnId, filterValue) => {
+                    if (filterValue === 'all') return true;
+                    const isActive = row.getValue<boolean>(columnId);
+                    return filterValue === 'yes' ? isActive : !isActive;
+                },
+                Filter: ({column}) => (
+                    <Select
+                        sx={{
+                            width: '100%',
+                            fontSize: '0.875rem',
+                            padding: '0 8px',
+                        }}
+                        size="small"
+                        value={(column.getFilterValue() as string) ?? 'all'}
+                        onChange={(e) => column.setFilterValue(e.target.value)}>
+                        <MenuItem value="all">All</MenuItem>
+                        <MenuItem value="yes">Yes</MenuItem>
+                        <MenuItem value="no">No</MenuItem>
+                    </Select>
+                ),
+                filterVariant: 'select',
+            },
         ],
         []
     );
@@ -135,7 +161,8 @@ const AllUsers = () => {
             password: '',
             passwordConfirm: '',
             isActive: row.isActive,
-            province: row.province
+            province: row.province,
+            isInterProvinceRepairExpert: row.isInterProvinceRepairExpert
         });
         setOpenManageUserModal(true);
     };
@@ -152,7 +179,7 @@ const AllUsers = () => {
     useEffect(() => {
         let filterString = columnFilters
             .map((item: any) => {
-                if (item.id === 'isActive') {
+                if (item.id === 'isActive' || item.id === 'isInterProvinceRepairExpert') {
                     if (item.value === 'yes') return `${item.id} eq true`;
                     if (item.value === 'no') return `${item.id} eq false`;
                     return null;

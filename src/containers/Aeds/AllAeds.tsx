@@ -16,7 +16,7 @@ import DateTimeFilter, {
 import AedImage from "../../assets/images/aed.png"
 import CardTopActions from "../../components/CardTopActions/CardTopActions";
 import NewAed from "./NewAed";
-import {AedType, NewAedHandle} from './constants';
+import {AedType, DEFAULT_AED_INFORMATION, NewAedHandle, testOptions} from './constants';
 import {getJalaliDateTime} from "../../utils/TimeUtils/time";
 import Select from "@mui/material/Select";
 import {useNavigate} from "react-router-dom";
@@ -25,7 +25,6 @@ import {useAuthState} from "../../context/AuthContext";
 import {getItemSecure} from "../../utils/AESCrypto/AESCrypto";
 import {tError, tSuccess} from "../../utils/ToastUtils/toast";
 import AedDetails from "./AedDetails";
-import {DEFAULT_AED_INFORMATION, testOptions} from "./constants";
 import BooleanCheckStatus from "../../utils/BooleanCheckStatus/BooleanCheckStatus";
 
 const AllAeds = () => {
@@ -361,6 +360,10 @@ const AllAeds = () => {
         return !isAdmin && !isSuperAdmin;
     }
 
+    const getIsInterProvinceRepairExpert = () => {
+        return JSON.parse(getItemSecure("isInterProvinceRepairExpert")?.toString()!);
+    }
+
     const handleDelete = (id: any) => {
         deleteAed(id).then(res => {
             if (res.isSuccess) {
@@ -423,7 +426,7 @@ const AllAeds = () => {
     useEffect(() => {
         if (isInUserRole()) {
             const province = getItemSecure('province');
-            if (province !== null && province !== "") {
+            if (province !== null && province !== "" && !getIsInterProvinceRepairExpert()) {
                 setColumnFilters([...columnFilters, {
                     id: 'Location/Province', value: province
                 }]);
@@ -479,7 +482,7 @@ const AllAeds = () => {
                         <div data-testid={"table"} style={{width: "100%"}}>
                             <DataTable
                                 ref={tableInstanceRef}
-                                columns={isInUserRole() ? columns.filter(s => s?.accessorKey !== 'location.province') : columns}
+                                columns={(isInUserRole() && !getIsInterProvinceRepairExpert()) ? columns.filter(s => s?.accessorKey !== 'location.province') : columns}
                                 data={data.data.data}
                                 isFetching={isFetching}
                                 pagination={pagination}

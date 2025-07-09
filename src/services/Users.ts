@@ -7,6 +7,7 @@ import {
     BatchDeleteInterface,
 } from "../interfaces";
 import {AdminType} from "../containers/Admins/NewAdmin";
+import {UserType} from "../containers/Users/constants";
 
 class Users extends Api {
     urls = {
@@ -97,7 +98,7 @@ class Users extends Api {
     }
     //----------------------------------------------------------------
 
-    editUserForm = async (data: AdminType): Promise<any> => {
+    editUserForm = async (data: UserType): Promise<any> => {
         try {
             let dataForApi: any = {
                 password : data.password.toString().trim() === "" ? null : data.password,
@@ -107,7 +108,8 @@ class Users extends Api {
                 userName: data.userName,
                 userId: data.id,
                 email: data.email,
-                province: data.province
+                province: data.province,
+                isInterProvinceRepairExpert: data.isInterProvinceRepairExpert
             }
             const result = await this.putJsonData(
                 `/${this.urls.userEdit}`,

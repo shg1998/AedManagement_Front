@@ -100,6 +100,7 @@ const Login = () => {
                 setItemSecure("mainToken", data.data.token);
                 setItemSecure("userRoleName", data.data.userRoleName);
                 setItemSecure("province", data.data?.province);
+                setItemSecure("isInterProvinceRepairExpert", data.data?.isInterProvinceRepairExpert);
                 AuthDispatch({
                     type: "LOGIN_SUCCESS", payload: {
                         isAdmin: data.data.userRoleName === 'Admin',
