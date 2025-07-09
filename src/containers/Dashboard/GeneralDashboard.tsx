@@ -3,6 +3,7 @@ import {Box, Paper, Tab, Tabs} from "@mui/material";
 import {useThemeContext} from "../../ThemeContext";
 import {dashboardOptions} from "./constants";
 import SelfTestDashboard from "./SelfTestDashboard";
+import ServiceDashboard from "./ServiceDashboard";
 
 const GeneralDashboard = () => {
     const [value, setValue] = useState(dashboardOptions[0].value);
@@ -17,7 +18,7 @@ const GeneralDashboard = () => {
             case 'SelfTests':
                 return <SelfTestDashboard/>;
             case 'Services':
-                return <></>;
+                return <ServiceDashboard/>;
         }
     };
 

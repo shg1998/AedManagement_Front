@@ -19,7 +19,7 @@ import LoadingComponent from "../../components/LoadingComponent/LoadingComponent
 import { getItemSecure } from "../../utils/AESCrypto/AESCrypto";
 import { getStatus } from "../../utils/General/generalUtils";
 import CustomBarChart from "../../components/BarChart/CustomBarChart";
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import BiotechIcon from "@mui/icons-material/Biotech";
 
 const SelfTestDashboard = () => {
     const { themeMode } = useThemeContext();
@@ -76,9 +76,9 @@ const SelfTestDashboard = () => {
                     <Grid container spacing={2} alignItems="center" mb={3}>
                         <Grid item xs={12} sm={isAdmin || isSuperAdmin ? 6 : 12} md={isAdmin || isSuperAdmin ? 8 : 12}>
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                <DashboardIcon sx={{ fontSize: '2.5rem', mr: 1, color: 'primary.main' }} />
+                                <BiotechIcon sx={{ fontSize: '2.5rem', mr: 1, color: 'primary.main' }} />
                                 <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold' }}>
-                                    {"AED Monitoring Self Test Dashboard"}
+                                    {"AED Monitoring Self Tests Dashboard"}
                                 </Typography>
                             </Box>
                         </Grid>

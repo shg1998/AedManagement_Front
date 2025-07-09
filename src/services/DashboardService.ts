@@ -5,11 +5,26 @@ class DashboardService extends Api {
         aedStatus: "Dashboard/aeds-status",
         aedSelfTestLocations: "Dashboard/aeds-self-tests-locations",
         aedTestTrend: "Dashboard/aed-test-trend",
+        aedServicesStatReport: "Dashboard/aed-services-statistical-report",
     };
 
     getAedStatus = async (province?: string): Promise<any> => {
         try {
             const result = await this.getData(this.urls.aedStatus + "/" + province, {});
+            if (!result)
+                return {
+                    data: {}
+                }
+            return result.data.data;
+        } catch (e) {
+            console.log(e)
+            return Promise.reject(e)
+        }
+    };
+
+    getAedServicesStatisticalReport = async (province?: string): Promise<any> => {
+        try {
+            const result = await this.getData(this.urls.aedServicesStatReport + "/" + province, {});
             if (!result)
                 return {
                     data: {}
