@@ -7,6 +7,7 @@ import AllPms from "./SpecificAedServices/AllPms";
 import AllRecalls from "./SpecificAedServices/AllRecalls";
 import AllTrainings from "./SpecificAedServices/AllTrainings";
 import AllReturns from "./SpecificAedServices/AllReturns";
+import AllDataCollections from "./SpecificAedServices/AllDataCollections";
 
 const AllAedServices = () => {
     const [value, setValue] = useState(correctiveActionOptions[0].value);
@@ -28,6 +29,8 @@ const AllAedServices = () => {
                 return <AllTrainings/>;
             case 'Return':
                 return <AllReturns/>;
+            case 'DataCollection':
+                return <AllDataCollections/>;
         }
     };
 

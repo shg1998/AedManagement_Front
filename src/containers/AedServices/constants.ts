@@ -6,7 +6,8 @@ export const correctiveActionOptions = [
     {label: "📢 Recall", value: "Recall"},
     {label: "🧰 Pm", value: "Pm"},
     {label: "🎓 Training", value: "Training"},
-    {label: "🔄 Return", value: "Return"}
+    {label: "🔄 Return", value: "Return"},
+    {label: "🗃️ Data Collection", value: "DataCollection"}
 ];
 
 export type ReplacementPartType = {
@@ -100,7 +101,8 @@ export const CorrectiveActionGroupTypes: ItemType[] = [
     {title: "Pm", value: "Pm"},
     {title: "Recall", value: "Recall"},
     {title: "Return", value: "Return"},
-    {title: "Training", value: "Training"}
+    {title: "Training", value: "Training"},
+    {title: "Data Collection", value: "DataCollection"},
 ]
 
 export interface NewAedHandle {
