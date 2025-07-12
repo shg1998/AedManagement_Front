@@ -1,8 +1,8 @@
 import React from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { Paper, Box } from '@mui/material';
-import { useThemeContext } from "../../ThemeContext";
+import {Paper, Box} from '@mui/material';
+import {useThemeContext} from "../../ThemeContext";
 
 interface DataPoint {
     name: string;
@@ -12,16 +12,16 @@ interface DataPoint {
 }
 
 const default_data: DataPoint[] = [
-    { name: 'Shahrivar', pass: 3, fail: 1, trend: 4 },
-    { name: 'Mehr', pass: 4, fail: 1, trend: 5 },
-    { name: 'Aban', pass: 5, fail: 2, trend: 7 },
-    { name: 'Azar', pass: 5, fail: 0, trend: 5 },
-    { name: 'Dey', pass:  7, fail: 1, trend: 8 },
-    { name: 'Bahman', pass: 10, fail: 2, trend: 12 },
-    { name: 'Esfand', pass: 13, fail: 1, trend: 14 },
-    { name: 'Farvardin', pass: 17, fail: 3, trend: 20 },
-    { name: 'Ordibehesht', pass: 19, fail: 3, trend: 22 },
-    { name: 'Khordad', pass: 22, fail: 2, trend: 24 },
+    {name: 'Shahrivar', pass: 3, fail: 1, trend: 4},
+    {name: 'Mehr', pass: 4, fail: 1, trend: 5},
+    {name: 'Aban', pass: 5, fail: 2, trend: 7},
+    {name: 'Azar', pass: 5, fail: 0, trend: 5},
+    {name: 'Dey', pass: 7, fail: 1, trend: 8},
+    {name: 'Bahman', pass: 10, fail: 2, trend: 12},
+    {name: 'Esfand', pass: 13, fail: 1, trend: 14},
+    {name: 'Farvardin', pass: 17, fail: 3, trend: 20},
+    {name: 'Ordibehesht', pass: 19, fail: 3, trend: 22},
+    {name: 'Khordad', pass: 22, fail: 2, trend: 24},
 ];
 
 interface CustomBarChartProps {
@@ -29,8 +29,8 @@ interface CustomBarChartProps {
 }
 
 const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) => {
-    const { themeMode } = useThemeContext();
-
+    const {themeMode} = useThemeContext();
+    const safeData = Array.isArray(data) ? data : default_data;
     const chartColors = themeMode === 'dark'
         ? {
             backgroundColor: '#333',
@@ -69,7 +69,7 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) =>
             },
         },
         xAxis: {
-            categories: data?.map(item => item.name),
+            categories: safeData.map(item => item.name),
             labels: {
                 style: {
                     color: chartColors.textColor,
@@ -149,7 +149,7 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) =>
         series: [
             {
                 name: 'Pass',
-                data: data?.map(item => item.pass),
+                data: safeData.map(item => item.pass),
                 color: chartColors.passColor,
                 tooltip: {
                     valueSuffix: ' tests',
@@ -157,7 +157,7 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) =>
             },
             {
                 name: 'Fail',
-                data: data?.map(item => item.fail),
+                data: safeData.map(item => item.fail),
                 color: chartColors.failColor,
                 tooltip: {
                     valueSuffix: ' tests',
@@ -166,7 +166,7 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) =>
             {
                 name: 'SelfTest Trend',
                 type: 'line',
-                data: data?.map(item => item.trend),
+                data: safeData.map(item => item.trend),
                 color: chartColors.trendLineColor,
                 lineWidth: 3,
                 marker: {
@@ -183,9 +183,9 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({data = default_data}) =>
     };
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <Paper sx={{ width: 'inherit', height: 595, padding: 2, backgroundColor: chartColors.paperBackgroundColor }}>
-                <HighchartsReact highcharts={Highcharts} options={options} />
+        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
+            <Paper sx={{width: 'inherit', height: 595, padding: 2, backgroundColor: chartColors.paperBackgroundColor}}>
+                <HighchartsReact highcharts={Highcharts} options={options}/>
             </Paper>
         </Box>
     );
