@@ -100,16 +100,16 @@ const App = (): React.JSX.Element => {
                                     }
                                 />
 
-                                <Route
-                                    path={routes.aedServices}
-                                    element={
-                                        <CustomRoute
-                                            element={<Dashboard component={<AllAedServices/>}/>}
-                                            section_name="aedServices"
-                                            module_name="aedServices"
-                                        />
-                                    }
-                                />
+                                {/*<Route*/}
+                                {/*    path={routes.aedServices}*/}
+                                {/*    element={*/}
+                                {/*        <CustomRoute*/}
+                                {/*            element={<Dashboard component={<AllAedServices/>}/>}*/}
+                                {/*            section_name="aedServices"*/}
+                                {/*            module_name="aedServices"*/}
+                                {/*        />*/}
+                                {/*    }*/}
+                                {/*/>*/}
 
                                 {
                                     isAdmin || isSuperAdmin ? (
@@ -126,20 +126,20 @@ const App = (): React.JSX.Element => {
                                     ) : <></>
                                 }
 
-                                {
-                                    isAdmin || isSuperAdmin ? (
-                                        <Route
-                                            path={routes.nonConformity}
-                                            element={
-                                                <CustomRoute
-                                                    element={<Dashboard component={<AllNonConformity/>}/>}
-                                                    section_name="nonConformity"
-                                                    module_name="nonConformity"
-                                                />
-                                            }
-                                        />
-                                    ) : <></>
-                                }
+                                {/*{*/}
+                                {/*    isAdmin || isSuperAdmin ? (*/}
+                                {/*        <Route*/}
+                                {/*            path={routes.nonConformity}*/}
+                                {/*            element={*/}
+                                {/*                <CustomRoute*/}
+                                {/*                    element={<Dashboard component={<AllNonConformity/>}/>}*/}
+                                {/*                    section_name="nonConformity"*/}
+                                {/*                    module_name="nonConformity"*/}
+                                {/*                />*/}
+                                {/*            }*/}
+                                {/*        />*/}
+                                {/*    ) : <></>*/}
+                                {/*}*/}
 
 
                                 <Route
@@ -153,35 +153,35 @@ const App = (): React.JSX.Element => {
                                     }
                                 />
 
-                                {
-                                    isAdmin || isSuperAdmin ? (
-                                        <Route
-                                            path={routes.parts}
-                                            element={
-                                                <CustomRoute
-                                                    element={<Dashboard component={<AllParts/>}/>}
-                                                    section_name="parts"
-                                                    module_name="parts"
-                                                />
-                                            }
-                                        />
-                                    ) : <></>
-                                }
+                                {/*{*/}
+                                {/*    isAdmin || isSuperAdmin ? (*/}
+                                {/*        <Route*/}
+                                {/*            path={routes.parts}*/}
+                                {/*            element={*/}
+                                {/*                <CustomRoute*/}
+                                {/*                    element={<Dashboard component={<AllParts/>}/>}*/}
+                                {/*                    section_name="parts"*/}
+                                {/*                    module_name="parts"*/}
+                                {/*                />*/}
+                                {/*            }*/}
+                                {/*        />*/}
+                                {/*    ) : <></>*/}
+                                {/*}*/}
 
-                                {
-                                    isAdmin || isSuperAdmin ? (
-                                        <Route
-                                            path={routes.repairType}
-                                            element={
-                                                <CustomRoute
-                                                    element={<Dashboard component={<AllRepairTypes/>}/>}
-                                                    section_name="repairType"
-                                                    module_name="repairType"
-                                                />
-                                            }
-                                        />
-                                    ) : <></>
-                                }
+                                {/*{*/}
+                                {/*    isAdmin || isSuperAdmin ? (*/}
+                                {/*        <Route*/}
+                                {/*            path={routes.repairType}*/}
+                                {/*            element={*/}
+                                {/*                <CustomRoute*/}
+                                {/*                    element={<Dashboard component={<AllRepairTypes/>}/>}*/}
+                                {/*                    section_name="repairType"*/}
+                                {/*                    module_name="repairType"*/}
+                                {/*                />*/}
+                                {/*            }*/}
+                                {/*        />*/}
+                                {/*    ) : <></>*/}
+                                {/*}*/}
 
                                 {
                                     isSuperAdmin ? (

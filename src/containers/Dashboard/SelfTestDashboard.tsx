@@ -27,7 +27,7 @@ const SelfTestDashboard = () => {
     const { getAedStatus, getAedSelfTestLocation, getAedTestTrend } = new DashboardService();
 
     const [selectedProvinceId, setSelectedProvinceId] = useState<string>(
-        isAdmin || isSuperAdmin ? "tehran" : getItemSecure('province')!
+        isAdmin || isSuperAdmin ? "all" : getItemSecure('province')!
     );
 
     const [openDetailsAedModal, setOpenDetailsAedModal] = useState<boolean>(false);
@@ -92,7 +92,7 @@ const SelfTestDashboard = () => {
                                         label="Select Province"
                                         onChange={(e) => setSelectedProvinceId(e.target.value)}
                                     >
-                                        {iranProvinces.map((province) => (
+                                        {[{id: 'all', name: 'همه استان ها'},...iranProvinces].map((province) => (
                                             <MenuItem key={province.id} value={province.id}>
                                                 {province.name}
                                             </MenuItem>
@@ -105,34 +105,27 @@ const SelfTestDashboard = () => {
 
                     {/* کارت‌های آمار AED */}
                     <Grid container spacing={2} mb={2}>
-                        <Grid item xs={12} sm={6} md={3} lg={2.4}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <BasicCard2 header="Total AEDs" headerIcon={<MonitorHeartIcon />} variant={"normal"}>
                                 {aedStatus?.totalAedCount}
                             </BasicCard2>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3} lg={2.4}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <BasicCard2 header="Passed SelfTests" headerIcon={<DoneOutlineIcon />}
                                         variant={"success"}>
                                 {aedStatus?.passedSelfTestCount}
                             </BasicCard2>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3} lg={2.4}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <BasicCard2 header="Failed SelfTests" headerIcon={<CancelIcon />} variant={"error"}>
                                 {aedStatus?.failedSelfTestCount}
                             </BasicCard2>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3} lg={2.4}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             <BasicCard2 header="Disconnected AEDs"
                                         headerIcon={<SignalCellularConnectedNoInternet1BarIcon />}
                                         variant={"warning"}>
                                 {aedStatus?.disconnectedAedCount}
-                            </BasicCard2>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3} lg={2.4}>
-                            <BasicCard2 header="No-Wifi AEDs"
-                                        headerIcon={<SignalWifiStatusbarConnectedNoInternet4Icon />}
-                                        variant={"noWifi"}>
-                                {aedStatus?.noWifiAedCount}
                             </BasicCard2>
                         </Grid>
                     </Grid>
@@ -147,7 +140,7 @@ const SelfTestDashboard = () => {
                                     isAedsLocationLoading ? <LoadingComponent /> : (
                                         <ProvinceMapMarkers
                                             provinceId={selectedProvinceId}
-                                            locations={aedsLocations?.data === undefined ? aedsLocations?.map((loc: any) => {
+                                            locations={aedsLocations?.data === undefined ? aedsLocations?.filter((w: any )=>w.internalTestResult !== 'NoWifi').map((loc: any) => {
                                                 return {
                                                     id: loc.aedId,
                                                     lat: loc.lat,
@@ -155,7 +148,7 @@ const SelfTestDashboard = () => {
                                                     label: '',
                                                     status: getStatus(loc.internalTestResult)!
                                                 }
-                                            }) : aedsLocations?.data?.map((loc: any) => {
+                                            }) : aedsLocations?.data?.filter((w: any )=>w.internalTestResult !== 'NoWifi').map((loc: any) => {
                                                 return {
                                                     id: loc.aedId,
                                                     lat: loc.lat,

@@ -144,48 +144,48 @@ const ListItems: React.FC = () => {
                                     },
                                 }) : (<></>)}
 
-                            {(isAdmin || isSuperAdmin) &&
-                                getListItem({
-                                    link: "", props: {
-                                        icon: faListAlt,
-                                        size: "lg",
-                                    },
-                                    section: "undefined",
-                                    name: "assets",
-                                    Icon: HomeRepairServiceIcon,
-                                    text: "Assets",
-                                    selected: [nonConformity, repairType, parts].includes(pageLocation.pathname),
-                                    isNested: false,
-                                    children: [
-                                        {
-                                            section: "undefined",
-                                            name: "nonConformity",
-                                            Icon: ErrorOutlineIcon,
-                                            text: "NonConformity",
-                                            selected: pageLocation.pathname === nonConformity,
-                                            link: nonConformity,
-                                            isNested: true,
-                                        },
-                                        {
-                                            section: "undefined",
-                                            name: "repairTypes",
-                                            Icon: HomeRepairServiceIcon,
-                                            text: "Repair Types",
-                                            selected: pageLocation.pathname === repairType,
-                                            link: repairType,
-                                            isNested: true,
-                                        },
-                                        {
-                                            section: "undefined",
-                                            name: "parts",
-                                            Icon: WidgetsIcon,
-                                            text: "Parts",
-                                            selected: pageLocation.pathname === parts,
-                                            link: parts,
-                                            isNested: true,
-                                        },
-                                    ]
-                                })}
+                            {/*{(isAdmin || isSuperAdmin) &&*/}
+                            {/*    getListItem({*/}
+                            {/*        link: "", props: {*/}
+                            {/*            icon: faListAlt,*/}
+                            {/*            size: "lg",*/}
+                            {/*        },*/}
+                            {/*        section: "undefined",*/}
+                            {/*        name: "assets",*/}
+                            {/*        Icon: HomeRepairServiceIcon,*/}
+                            {/*        text: "Assets",*/}
+                            {/*        selected: [nonConformity, repairType, parts].includes(pageLocation.pathname),*/}
+                            {/*        isNested: false,*/}
+                            {/*        children: [*/}
+                            {/*            {*/}
+                            {/*                section: "undefined",*/}
+                            {/*                name: "nonConformity",*/}
+                            {/*                Icon: ErrorOutlineIcon,*/}
+                            {/*                text: "NonConformity",*/}
+                            {/*                selected: pageLocation.pathname === nonConformity,*/}
+                            {/*                link: nonConformity,*/}
+                            {/*                isNested: true,*/}
+                            {/*            },*/}
+                            {/*            {*/}
+                            {/*                section: "undefined",*/}
+                            {/*                name: "repairTypes",*/}
+                            {/*                Icon: HomeRepairServiceIcon,*/}
+                            {/*                text: "Repair Types",*/}
+                            {/*                selected: pageLocation.pathname === repairType,*/}
+                            {/*                link: repairType,*/}
+                            {/*                isNested: true,*/}
+                            {/*            },*/}
+                            {/*            {*/}
+                            {/*                section: "undefined",*/}
+                            {/*                name: "parts",*/}
+                            {/*                Icon: WidgetsIcon,*/}
+                            {/*                text: "Parts",*/}
+                            {/*                selected: pageLocation.pathname === parts,*/}
+                            {/*                link: parts,*/}
+                            {/*                isNested: true,*/}
+                            {/*            },*/}
+                            {/*        ]*/}
+                            {/*    })}*/}
 
                         </List>
                         <Divider className={divider}/>

@@ -360,9 +360,6 @@ const AllAeds = () => {
         return !isAdmin && !isSuperAdmin;
     }
 
-    const getIsInterProvinceRepairExpert = () => {
-        return JSON.parse(getItemSecure("isInterProvinceRepairExpert")?.toString()!);
-    }
 
     const handleDelete = (id: any) => {
         deleteAed(id).then(res => {
@@ -426,7 +423,7 @@ const AllAeds = () => {
     useEffect(() => {
         if (isInUserRole()) {
             const province = getItemSecure('province');
-            if (province !== null && province !== "" && !getIsInterProvinceRepairExpert()) {
+            if (province !== null && province !== "") {
                 setColumnFilters([...columnFilters, {
                     id: 'Location/Province', value: province
                 }]);
@@ -482,7 +479,7 @@ const AllAeds = () => {
                         <div data-testid={"table"} style={{width: "100%"}}>
                             <DataTable
                                 ref={tableInstanceRef}
-                                columns={(isInUserRole() && !getIsInterProvinceRepairExpert()) ? columns.filter(s => s?.accessorKey !== 'location.province') : columns}
+                                columns={(isInUserRole()) ? columns.filter(s => s?.accessorKey !== 'location.province') : columns}
                                 data={data.data.data}
                                 isFetching={isFetching}
                                 pagination={pagination}
@@ -496,7 +493,7 @@ const AllAeds = () => {
                                 setColumnVisibility={setColumnVisibility}
                                 editRow={handleEditAed}
                                 rowSelfTests={handleRowSelfTests}
-                                rowServices={handleRowServices}
+                                // rowServices={handleRowServices}
                                 deleteRow={isSuperAdmin || isAdmin ? handleDelete : undefined}
                                 showRowDetail={handleShowDetails}
                                 onRowClicked={handleShowDetails}

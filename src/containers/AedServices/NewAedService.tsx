@@ -333,7 +333,6 @@ const NewAedService = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal},
                         {
                             (data.correctiveActionGroup !== "Pm" && data.correctiveActionGroup !== "Training" && data.correctiveActionGroup !== "DataCollection") && (
                                 <>
-                                    {/* Non Conformity */}
                                     <InputLabel htmlFor="nonConformityId">
                                         <Typography>😖 Non Conformity</Typography>
                                     </InputLabel>

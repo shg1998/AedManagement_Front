@@ -111,34 +111,34 @@ const AllUsers = () => {
                 ),
                 filterVariant: 'select',
             },
-            {
-                accessorKey: "isInterProvinceRepairExpert",
-                header: "Inter-Province Expert",
-                maxSize: 10,
-                Cell: ({cell}) =>
-                    <BooleanCheckStatus status={cell.getValue<boolean>()} trueText={"Yes"} falseText={"No"}/>,
-                filterFn: (row, columnId, filterValue) => {
-                    if (filterValue === 'all') return true;
-                    const isActive = row.getValue<boolean>(columnId);
-                    return filterValue === 'yes' ? isActive : !isActive;
-                },
-                Filter: ({column}) => (
-                    <Select
-                        sx={{
-                            width: '100%',
-                            fontSize: '0.875rem',
-                            padding: '0 8px',
-                        }}
-                        size="small"
-                        value={(column.getFilterValue() as string) ?? 'all'}
-                        onChange={(e) => column.setFilterValue(e.target.value)}>
-                        <MenuItem value="all">All</MenuItem>
-                        <MenuItem value="yes">Yes</MenuItem>
-                        <MenuItem value="no">No</MenuItem>
-                    </Select>
-                ),
-                filterVariant: 'select',
-            },
+            // {
+            //     accessorKey: "isInterProvinceRepairExpert",
+            //     header: "Inter-Province Expert",
+            //     maxSize: 10,
+            //     Cell: ({cell}) =>
+            //         <BooleanCheckStatus status={cell.getValue<boolean>()} trueText={"Yes"} falseText={"No"}/>,
+            //     filterFn: (row, columnId, filterValue) => {
+            //         if (filterValue === 'all') return true;
+            //         const isActive = row.getValue<boolean>(columnId);
+            //         return filterValue === 'yes' ? isActive : !isActive;
+            //     },
+            //     Filter: ({column}) => (
+            //         <Select
+            //             sx={{
+            //                 width: '100%',
+            //                 fontSize: '0.875rem',
+            //                 padding: '0 8px',
+            //             }}
+            //             size="small"
+            //             value={(column.getFilterValue() as string) ?? 'all'}
+            //             onChange={(e) => column.setFilterValue(e.target.value)}>
+            //             <MenuItem value="all">All</MenuItem>
+            //             <MenuItem value="yes">Yes</MenuItem>
+            //             <MenuItem value="no">No</MenuItem>
+            //         </Select>
+            //     ),
+            //     filterVariant: 'select',
+            // },
         ],
         []
     );

@@ -89,9 +89,9 @@ const NewUser = forwardRef<NewUserHandle, NewUserProps>(({data, closeModal}, ref
         formik.setFieldValue("isActive", e.target.checked);
     }
 
-    const handleIsInterProvinceRepairExpertChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-        formik.setFieldValue("isInterProvinceRepairExpert", e.target.checked);
-    }
+    // const handleIsInterProvinceRepairExpertChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     formik.setFieldValue("isInterProvinceRepairExpert", e.target.checked);
+    // }
 
     return (
         <div className={classes.BgContainer}>
@@ -298,23 +298,23 @@ const NewUser = forwardRef<NewUserHandle, NewUserProps>(({data, closeModal}, ref
                         }
                     />
 
-                    <FormControlLabel
-                        className={classes.rememberContainer}
-                        control={
-                            <Checkbox
-                                color="primary"
-                                name="isInterProvinceRepairExpert"
-                                value={formik.values.isInterProvinceRepairExpert}
-                                checked={formik.values.isInterProvinceRepairExpert}
-                                onChange={handleIsInterProvinceRepairExpertChanged}
-                            />
-                        }
-                        label={
-                            <Typography className={classes.fontCustum}>
-                                Is Inter-Province Repair Expert ?
-                            </Typography>
-                        }
-                    />
+                    {/*<FormControlLabel*/}
+                    {/*    className={classes.rememberContainer}*/}
+                    {/*    control={*/}
+                    {/*        <Checkbox*/}
+                    {/*            color="primary"*/}
+                    {/*            name="isInterProvinceRepairExpert"*/}
+                    {/*            value={formik.values.isInterProvinceRepairExpert}*/}
+                    {/*            checked={formik.values.isInterProvinceRepairExpert}*/}
+                    {/*            onChange={handleIsInterProvinceRepairExpertChanged}*/}
+                    {/*        />*/}
+                    {/*    }*/}
+                    {/*    label={*/}
+                    {/*        <Typography className={classes.fontCustum}>*/}
+                    {/*            Is Inter-Province Repair Expert ?*/}
+                    {/*        </Typography>*/}
+                    {/*    }*/}
+                    {/*/>*/}
 
                     <Button
                         ref={submitBtnRef}
