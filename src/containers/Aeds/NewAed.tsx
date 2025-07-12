@@ -43,6 +43,8 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
             if (data?.isSuccess) {
                 closeModal();
                 tSuccess(data?.data);
+            }else{
+                tError(data?.Message);
             }
         },
         onError: async (error: any) => {

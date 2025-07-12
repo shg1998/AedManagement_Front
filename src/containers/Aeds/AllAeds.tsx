@@ -347,6 +347,7 @@ const AllAeds = () => {
 
     const handleCloseDetailsModal = () => {
         setOpenDetailsAedModal(false);
+        setSelectedAed(DEFAULT_AED_INFORMATION);
     }
 
     function toODataPath(input: string): string {
