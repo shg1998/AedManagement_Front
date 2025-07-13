@@ -167,14 +167,6 @@ const AllAeds = () => {
                 accessorFn: (row: any) => row.registerDateTime === null ? "" : getJalaliDateTime(row?.registerDateTime),
             },
             {
-                accessorKey: "lastPmDateTime",
-                header: "Last PM Date",
-                maxSize: 20,
-                enableSorting: false,
-                enableColumnFilter: false,
-                accessorFn: (row: any) => row.lastPmDateTime === null ? "" : row.lastPmDateTime === '0001-01-01T00:00:00' ? '-' : getJalaliDateTime(row?.lastPmDateTime),
-            },
-            {
                 accessorKey: "internalTestResult",
                 header: "Last Self Test",
                 Cell: ({cell}) => {
