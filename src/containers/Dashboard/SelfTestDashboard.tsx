@@ -133,8 +133,7 @@ const SelfTestDashboard = () => {
                     <Grid container spacing={2}>
                         <Grid item sm={12} xl={7.2}>
                             <BasicCard
-                                header={isAdmin || isSuperAdmin ? "Distribution of AEDs in each province"
-                                    : `Distribution of AEDs in each province (${iranProvinces.find(p => p.id === getItemSecure('province'))?.name || 'Your Province'})`}
+                                header={"Distribution of AEDs"}
                             >
                                 {
                                     isAedsLocationLoading ? <LoadingComponent /> : (
