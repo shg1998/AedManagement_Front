@@ -42,7 +42,7 @@ const AllAeds = () => {
     const tableInstanceRef = useRef(null);
     const [refetchTableData, setRefetchTableData] = useState<boolean>(true);
     const [dateFilters, setDateFilters] = useState<DateTimeFilterType | undefined>({
-        from: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+        from: new Date(Date.now() - 3650 * 24 * 60 * 60 * 1000).toISOString(),
         to: new Date(Date.now()).toISOString()
     });
     const [openTimeFilterModal, setOpenTimeFilterModal] =
@@ -93,14 +93,6 @@ const AllAeds = () => {
                 maxSize: 20,
                 enableSorting: false,
                 accessorFn: (row: any) => row.serialNumber === null ? "" : row.serialNumber,
-            },
-            {
-                accessorKey: "registerExpert",
-                header: "Register Expert",
-                enableHiding: false,
-                maxSize: 20,
-                enableSorting: false,
-                accessorFn: (row: any) => row.user === null ? "-" : row.user?.fullName,
             },
             {
                 accessorKey: "aedBatteryType",
@@ -157,6 +149,14 @@ const AllAeds = () => {
                 maxSize: 20,
                 enableSorting: false,
                 accessorFn: (row: any) => row.location?.place === null ? "" : row.location?.place,
+            },
+
+            {
+                accessorKey: "location.unit",
+                header: "Department",
+                maxSize: 20,
+                enableSorting: false,
+                accessorFn: (row: any) => row.location?.unit === null ? "" : row.location?.unit,
             },
             {
                 accessorKey: "registerDateTime",
@@ -330,6 +330,7 @@ const AllAeds = () => {
             registerDateTime: row.registerDateTime,
             aedBatteryType: row.aedBatteryType,
             city: row.location.city,
+            unit: row.location.unit,
             position: [row.location.lat, row.location.long],
             attachments: row.attachments,
             isActive: row.isActive,
@@ -456,7 +457,7 @@ const AllAeds = () => {
                         <CardTopActions
                             firstAction={() => {
                             }}
-                            secondTitle={(isSuperAdmin || isAdmin) ? undefined : "Add AED"}
+                            secondTitle={"Add AED"}
                             secondAction={() => {
                                 setSelectedAed(DEFAULT_AED_INFORMATION);
                                 setOpenManageAedModal(true);
@@ -511,7 +512,7 @@ const AllAeds = () => {
                     ref={newAedRef}
                     data={selectedAed?.id === '0' ? {
                         ...DEFAULT_AED_INFORMATION,
-                        province: !isSuperAdmin && !isAdmin ? (getItemSecure('province') ?? 'Tehran') : 'Tehran'
+                        province: !isSuperAdmin && !isAdmin ? (getItemSecure('province') ?? 'tehran') : 'tehran'
                     } : selectedAed!}
                     closeModal={closeCreateEditModal}
                 />

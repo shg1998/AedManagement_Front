@@ -129,20 +129,20 @@ const ListItems: React.FC = () => {
                                     },
                                 }) : (<></>)}
 
-                            {isAdmin || isSuperAdmin ?
-                                getListItem({
-                                    section: "undefined",
-                                    name: "users",
-                                    Icon: GroupIcon,
-                                    text: 'Users',
-                                    selected: isOpenPageOfThisGroup(users),
-                                    link: users,
-                                    isNested: false,
-                                    props: {
-                                        icon: faListAlt,
-                                        size: "lg",
-                                    },
-                                }) : (<></>)}
+                            {/*{isAdmin || isSuperAdmin ?*/}
+                            {/*    getListItem({*/}
+                            {/*        section: "undefined",*/}
+                            {/*        name: "users",*/}
+                            {/*        Icon: GroupIcon,*/}
+                            {/*        text: 'Users',*/}
+                            {/*        selected: isOpenPageOfThisGroup(users),*/}
+                            {/*        link: users,*/}
+                            {/*        isNested: false,*/}
+                            {/*        props: {*/}
+                            {/*            icon: faListAlt,*/}
+                            {/*            size: "lg",*/}
+                            {/*        },*/}
+                            {/*    }) : (<></>)}*/}
 
                             {/*{(isAdmin || isSuperAdmin) &&*/}
                             {/*    getListItem({*/}

@@ -20,6 +20,7 @@ import AedImage from "../../assets/images/aedImage.png";
 import {getStatus} from "../../utils/General/generalUtils";
 import Attachment from "../../services/Attachment";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
+import {iranProvinces} from "../../utils/ProvinceUtils/ProvinceUtils";
 
 type AedDetailsProps = {
     aedId?: string;
@@ -153,7 +154,16 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                                         Serial Number: <strong>{data?.serialNumber}</strong>
                                     </Typography>
                                     <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
+                                        Province: <strong>{(iranProvinces.filter(s=>s.value === data?.location?.province))[0]?.title}</strong>
+                                    </Typography>
+                                    <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
+                                        city: <strong>{data?.location?.city}</strong>
+                                    </Typography>
+                                    <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
                                         Place: <strong>{data?.location?.place}</strong>
+                                    </Typography>
+                                    <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
+                                        Department: <strong>{data?.location?.unit}</strong>
                                     </Typography>
                                     <Typography variant="body1" sx={{color: themeColors.textPrimary}}>
                                         Self Test
@@ -315,7 +325,7 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                                             locations={[{
                                                 lat: data?.location?.lat ?? 0,
                                                 lon: data?.location?.long ?? 0,
-                                                label: `${data?.location?.place}, ${data?.location?.address}`,
+                                                label: `${data?.location?.place},${data?.location?.unit}, ${data?.location?.address ? data?.location?.address : ""}`,
                                                 status: getStatus(data?.internalTestResult)!
                                             }]}
                                         />

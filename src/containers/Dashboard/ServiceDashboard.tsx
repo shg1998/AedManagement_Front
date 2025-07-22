@@ -65,8 +65,8 @@ const ServiceDashboard = () => {
                                         onChange={(e) => setSelectedProvinceId(e.target.value)}
                                     >
                                         {iranProvinces.map((province) => (
-                                            <MenuItem key={province.id} value={province.id}>
-                                                {province.name}
+                                            <MenuItem key={province.value} value={province.value}>
+                                                {province.title}
                                             </MenuItem>
                                         ))}
                                     </Select>

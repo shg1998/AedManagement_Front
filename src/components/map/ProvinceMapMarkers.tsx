@@ -80,7 +80,7 @@ const ProvinceMapMarkers: React.FC<ProvinceMapMarkersProps> = ({
     const currentTileLayer = Reflect.get(tileLayerThemes, themeMode);
 
     useEffect(() => {
-        const province = iranProvinces.find((p) => p.id === provinceId.toLowerCase());
+        const province = iranProvinces.find((p) => p.value === provinceId.toLowerCase());
         if (province) {
             setCenter([province.lat, province.lon]);
         }

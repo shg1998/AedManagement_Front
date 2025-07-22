@@ -61,7 +61,8 @@ class Aed extends Api {
             formData.append("registerDateTime", data.registerDateTime);
             formData.append("aedBatteryType", data.aedBatteryType);
             formData.append("location.province", data.province);
-            formData.append("location.address", data.address);
+            formData.append("location.unit", data.unit!);
+            formData.append("location.address", data.address!);
             formData.append("location.city", data.city);
             formData.append("location.place", data.place);
             // @ts-ignore
@@ -97,7 +98,8 @@ class Aed extends Api {
             formData.append("registerDateTime", data.registerDateTime);
             formData.append("aedBatteryType", data.aedBatteryType);
             formData.append("location.province", data.province);
-            formData.append("location.address", data.address);
+            formData.append("location.address", data.address!);
+            formData.append("location.unit", data.unit!);
             formData.append("location.city", data.city);
             formData.append("location.place", data.place);
             // @ts-ignore

@@ -92,9 +92,9 @@ const SelfTestDashboard = () => {
                                         label="Select Province"
                                         onChange={(e) => setSelectedProvinceId(e.target.value)}
                                     >
-                                        {[{id: 'all', name: 'همه استان ها'},...iranProvinces].map((province) => (
-                                            <MenuItem key={province.id} value={province.id}>
-                                                {province.name}
+                                        {[{value: 'all', title: 'همه استان ها'},...iranProvinces].map((province) => (
+                                            <MenuItem key={province.value} value={province.value}>
+                                                {province.title}
                                             </MenuItem>
                                         ))}
                                     </Select>

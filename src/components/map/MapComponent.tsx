@@ -29,9 +29,12 @@ L.Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
-const ChangeView: React.FC<{ center: [number, number] }> = ({center}) => {
+const ChangeView: React.FC<{ center: [number, number] }> = ({center = [35.6892, 51.389]}) => {
     const map = useMap();
     useEffect(() => {
+        if(center[0] === null)
+            return;
+        console.log(center);
         map.setView(center, 13);
 
     }, [center, map]);
@@ -109,11 +112,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     useEffect(() => {
         if (province) {
-            const p = provinces.find((p) => p.id === province);
+            const p = provinces.find((p) => p.value === province);
             if (p) {
                 setCenter([p.lat, p.lon]);
                 if (!city && p.cities && p.cities.length > 0) {
-                    setCity(p.cities[0].name);
+                    setCity(p.cities[0].title);
                 }
             }
         }
@@ -124,8 +127,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     useEffect(() => {
         if (province && city) {
-            const p = provinces.find((p) => p.id === province);
-            const c = p?.cities.find((c) => c.name === city);
+            const p = provinces.find((p) => p.value === province);
+            const c = p?.cities.find((c) => c.title === city);
             if (c) setCenter([c.lat, c.lon]);
         }
         setInputValue('');
@@ -134,12 +137,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }, [city, province]);
 
     useEffect(() => {
+
         if (initialPosition) {
+            if(initialPosition[0] === null) return;
             setCenter(initialPosition);
             setMarkerPosition(initialPosition);
         }
     }, [initialPosition]);
-
 
 
     useEffect(() => {
@@ -148,7 +152,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
             return;
         }
 
-        const query = `${inputValue}, ${city}, ${provinces.find((p) => p.id === province)?.name || ''}`;
+        const query = `${inputValue}, ${city}, ${provinces.find((p) => p.value === province)?.title || ''}`;
 
         const delayDebounceFn = setTimeout(() => {
             setLoading(true);
@@ -191,8 +195,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
                         onChange={(e) => setProvince(e.target.value)}
                 >
                     {provinces.map((p) => (
-                        <MenuItem key={p.id} value={p.id}>
-                            {p.name}
+                        <MenuItem key={p.value} value={p.value}>
+                            {p.title}
                         </MenuItem>
                     ))}
                 </Select>
@@ -209,10 +213,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 >
                     {province &&
                         provinces
-                            .find((p) => p.id === province)
+                            .find((p) => p.value === province)
                             ?.cities.map((cityName) => (
-                            <MenuItem key={cityName.name} value={cityName.name}>
-                                {cityName.name}
+                            <MenuItem key={cityName.title} value={cityName.title}>
+                                {cityName.title}
                             </MenuItem>
                         ))}
                 </Select>

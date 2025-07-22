@@ -1,6 +1,6 @@
 import Container from "@mui/material/Container";
 import React, {forwardRef, useImperativeHandle, useRef, useState} from "react";
-import {Box, Checkbox, Collapse, InputLabel} from "@mui/material";
+import {Box, Checkbox, Collapse, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import clsx from "clsx";
@@ -30,6 +30,7 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import {truncateText} from "../../utils/General/generalUtils";
 import Attachment from "../../services/Attachment";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import {iranProvinces} from "../../utils/ProvinceUtils/ProvinceUtils";
 
 
 const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) => {
@@ -167,6 +168,7 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                                     </Typography>
                                 }
                             />
+                            <br/>
 
                             <br/>
 
@@ -191,6 +193,49 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                             <br/>
                             <br/>
 
+                            <InputLabel htmlFor="province">
+                                <Typography className={classes.inputLabel}>
+                                    🏙️ Province*
+                                </Typography>
+                            </InputLabel>
+                            <br/>
+                            <MySelect
+                                label=""
+                                formik={formik}
+                                items={iranProvinces}
+                                {...formik.getFieldProps("province")}
+                            />
+                            {formik.errors.province && formik.touched.province ? (
+                                <Typography className={clsx(classes.errorText, "errorMessage")}>
+                                    {formik.errors.province}
+                                </Typography>
+                            ) : null}
+                            <br/>
+                            <br/>
+                            <InputLabel htmlFor="city">
+                                <Typography className={classes.inputLabel}>🏭 City*</Typography>
+                            </InputLabel>
+                            <StyledTextField
+                                margin="normal"
+                                fullWidth
+                                id="city"
+                                autoComplete="city"
+                                sx={{
+                                    mb: 3,
+                                }}
+                                {...formik.getFieldProps("city")}
+                                className={clsx({
+                                    [classes.errorBorder]:
+                                    formik.errors.city && formik.touched.city,
+                                })}
+                            />
+                            {formik.errors.city && formik.touched.city ? (
+                                <Typography className={clsx(classes.errorText, "errorMessage")}>
+                                    {formik.errors.city}
+                                </Typography>
+                            ) : null}
+
+                            <br/>
                             <InputLabel htmlFor="place">
                                 <Typography className={classes.inputLabel}>📍 Place Name*</Typography>
                             </InputLabel>
@@ -216,11 +261,37 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
 
                             <br/>
 
+                            <InputLabel htmlFor="unit">
+                                <Typography className={classes.inputLabel}>🛐 Department</Typography>
+                            </InputLabel>
+                            <StyledTextField
+                                margin="normal"
+                                fullWidth
+                                id="unit"
+                                autoComplete="unit"
+                                sx={{
+                                    mb: 3,
+                                }}
+                                {...formik.getFieldProps("unit")}
+                                className={clsx({
+                                    [classes.errorBorder]:
+                                    formik.errors.unit && formik.touched.unit,
+                                })}
+                            />
+                            {formik.errors.unit && formik.touched.unit ? (
+                                <Typography className={clsx(classes.errorText, "errorMessage")}>
+                                    {formik.errors.unit}
+                                </Typography>
+                            ) : null}
+
+                            <br/>
+
                             <InputLabel htmlFor="address">
                                 <Typography className={classes.inputLabel}>
-                                    🗺️ Location Address*
+                                    🗺️ Location Address
                                 </Typography>
                             </InputLabel>
+                            <br/>
                             <TextField
                                 fullWidth
                                 id="address"
@@ -237,7 +308,7 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                             )}
 
                             <InputLabel>
-                                <Typography>📎 Attachments (Optional)</Typography>
+                                <Typography>📎 Attachments</Typography>
                             </InputLabel>
                             <br/>
                             <FieldArray
@@ -377,7 +448,7 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                                     }
                                     sx={{textTransform: 'none', fontWeight: 'bold', fontSize: '1.1rem'}}
                                 >
-                                    📌 Location*
+                                    📌 Location
                                 </Button>
 
                                 <Collapse in={openMapSection} timeout="auto" unmountOnExit>

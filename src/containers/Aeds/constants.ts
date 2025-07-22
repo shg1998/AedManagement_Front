@@ -8,15 +8,16 @@ import {AttachmentType} from "../AedServices/constants";
 export const DEFAULT_AED_INFORMATION: AedType = {
     id: '0',
     serialNumber: '',
-    province: 'Tehran',
+    province: 'tehran',
     city: 'تهران',
     address: '',
     place: '',
     registerDateTime: convertTimeToLocale2(Date()),
     aedBatteryType: 'Chargeable',
-    position: [35.6892, 51.389],
+    // position: [35.6892, 51.389],
     attachments: [],
-    isActive: true
+    isActive: true,
+    unit: ''
 }
 
 export const testOptions = [
@@ -40,9 +41,6 @@ export const AddAedSchema = Yup.object().shape({
     serialNumber: Yup.string()
         .required("⛔ Serial Number is required!"),
 
-    address: Yup.string()
-        .required("⛔ Address is required!"),
-
     place: Yup.string()
         .required("⛔ Place is required!"),
 
@@ -51,10 +49,7 @@ export const AddAedSchema = Yup.object().shape({
         .test("is-valid-date", "⛔ Invalid date format.", (value: any) => {
             return value && !isNaN(Date.parse(value));
         }),
-    position: Yup.array()
-        .of(Yup.number())
-        .length(2, "⛔ Position must include latitude and longitude")
-        .required("⛔ Selecting a position on the map is required"),
+
     attachments: Yup.array().of(
         Yup.object().shape({
             name: Yup.string().nullable(),
@@ -113,13 +108,14 @@ export type AedType = {
     serialNumber: string;
     province: string;
     city: string;
-    address: string;
+    address?: string;
     place: string;
     registerDateTime: string;
     aedBatteryType: string;
     position?: [number, number] | null;
     attachments? : AttachmentType[],
     isActive: boolean,
+    unit?: string
 }
 
 export interface NewAedProps {

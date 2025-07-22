@@ -111,20 +111,20 @@ const App = (): React.JSX.Element => {
                                 {/*    }*/}
                                 {/*/>*/}
 
-                                {
-                                    isAdmin || isSuperAdmin ? (
-                                        <Route
-                                            path={routes.users}
-                                            element={
-                                                <CustomRoute
-                                                    element={<Dashboard component={<AllUsers/>}/>}
-                                                    section_name="users"
-                                                    module_name="users"
-                                                />
-                                            }
-                                        />
-                                    ) : <></>
-                                }
+                                {/*{*/}
+                                {/*    isAdmin || isSuperAdmin ? (*/}
+                                {/*        <Route*/}
+                                {/*            path={routes.users}*/}
+                                {/*            element={*/}
+                                {/*                <CustomRoute*/}
+                                {/*                    element={<Dashboard component={<AllUsers/>}/>}*/}
+                                {/*                    section_name="users"*/}
+                                {/*                    module_name="users"*/}
+                                {/*                />*/}
+                                {/*            }*/}
+                                {/*        />*/}
+                                {/*    ) : <></>*/}
+                                {/*}*/}
 
                                 {/*{*/}
                                 {/*    isAdmin || isSuperAdmin ? (*/}
