@@ -170,7 +170,7 @@ const Login = () => {
     return (
         <LoginTemplate>
             <Typography className={classes.title} data-testid={"login-form"}>
-                💻 Saadat AED Management
+                💻 Pix AED Management
             </Typography>{" "}
             <form style={{direction: 'ltr'}} className={classes.formContainer} onSubmit={formik.handleSubmit}>
                 <InputLabel htmlFor="username">

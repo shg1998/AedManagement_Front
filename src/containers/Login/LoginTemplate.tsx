@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import {makeStyles} from "@mui/styles";
 import backgroundImage from "../../assets/images/bgLogin.jpg";
-import logoImage from "../../assets/images/logo-white.png";
+import logoImage from "../../assets/images/pix_logo_header.svg";
 import React, {PropsWithChildren} from "react";
 import {Theme} from "@mui/material";
 
@@ -41,8 +41,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
         marginBottom: "20px",
     },
     logoImage: {
-        width: "20rem",
-        height: "30vh",
+        width: "10rem",
+        height: "25vh",
         marginTop: "30px",
         "@media (max-width: 500px)": {
             width: "10rem",

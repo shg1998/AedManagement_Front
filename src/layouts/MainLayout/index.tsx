@@ -5,7 +5,7 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import IconButton from "@mui/material/IconButton";
-import logoImage from "../../assets/images/logo-white.png"; // مسیر لوگو
+import logoImage from "../../assets/images/pix_logo_header.svg"; // مسیر لوگو
 import { ButtonBase, Typography } from "@mui/material";
 import SideBar from "./SideBar/SideBar";
 import UserMenu from "./AppBar/UserMenu";
@@ -134,7 +134,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                             <img
                                 alt="sata_logo"
                                 style={{
-                                    width: "200px",
+                                    width: "100px",
                                     height: "150px",
                                 }}
                                 src={logoImage}
