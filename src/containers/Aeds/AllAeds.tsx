@@ -19,7 +19,7 @@ import NewAed from "./NewAed";
 import {AedType, DEFAULT_AED_INFORMATION, NewAedHandle, testOptions} from './constants';
 import {getJalaliDateTime} from "../../utils/TimeUtils/time";
 import Select from "@mui/material/Select";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import ListItemText from "@mui/material/ListItemText";
 import {useAuthState} from "../../context/AuthContext";
 import {getItemSecure} from "../../utils/AESCrypto/AESCrypto";
@@ -36,6 +36,9 @@ const AllAeds = () => {
 
     const {isAdmin, isSuperAdmin} = useAuthState();
     const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const type = queryParams.get("type");
     const newAedRef = useRef<NewAedHandle>(null);
     const {themeMode} = useThemeContext();
     const timeFilterRef = useRef<NewFilterHandle>(null);
@@ -55,10 +58,38 @@ const AllAeds = () => {
         useState<boolean>(false);
 
     const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
-    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>((isSuperAdmin || isAdmin) ? [{
-        id: 'registerDateTime',
-        value: {from: dateFilters?.from, to: dateFilters?.to}
-    }, {id: 'isActive', value: 'yes'}] : [{id: 'isActive', value: 'yes'}]);
+
+    const generateColumnsInitialStates = (): MRT_ColumnFiltersState => {
+        let state: MRT_ColumnFiltersState = [];
+
+        switch (type) {
+            case "connected":
+                state.push({ id: "internalTestResult", value: ['Pass', 'Fail', 'Disconnected'] });
+                break;
+            case "passed":
+                state.push({ id: "internalTestResult", value: ['Pass'] });
+                break;
+            case "failed":
+                state.push({ id: "internalTestResult", value: ['Fail'] });
+                break;
+            case "disconnected":
+                state.push({ id: "internalTestResult", value: ['Disconnected'] });
+                break;
+        }
+
+        if (isSuperAdmin || isAdmin) {
+            state.push(
+                { id: 'registerDateTime', value: { from: dateFilters?.from, to: dateFilters?.to } },
+                { id: 'isActive', value: 'yes' }
+            );
+        } else {
+            state.push({ id: 'isActive', value: 'yes' });
+        }
+
+        return state;
+    };
+
+    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>(generateColumnsInitialStates());
     const [query, setQuery] = useState<string>("");
     const [selectedAed, setSelectedAed] = useState<AedType>();
     const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -72,7 +103,6 @@ const AllAeds = () => {
         getAll,
         query
     );
-
 
     const columns = useMemo<MRT_ColumnDef<any>[]>(
         () => [
@@ -382,30 +412,31 @@ const AllAeds = () => {
                 return !(item.id === 'internalTestResult' && item.value === 'all');
             })
             .map((item: any) => {
-                let key = item.id;
-                if (key.toString().includes('.')) {
-                    key = toODataPath(key.toString());
+                if(item.id){
+                    let key = item.id;
+                    if (key?.toString().includes('.')) {
+                        key = toODataPath(key.toString());
+                    }
+                    if (key === 'aedBatteryType')
+                        return `${key} eq '${item.value}'`;
+
+                    if (key === 'registerDateTime' && (isSuperAdmin || isAdmin))
+                        return `registerDateTime ge ${item.value?.from} and registerDateTime le ${item.value?.to}`;
+
+                    if (key === 'internalTestResult') {
+                        if (!item.value || item.value.length === 0) return null;
+                        const multiFilters = item.value.map((val: string) => `${key} eq '${val}'`);
+                        return `(${multiFilters.join(' or ')})`;
+                    }
+                    if (item.id === 'isActive') {
+                        if (item.value === 'yes') return `${item.id} eq true`;
+                        if (item.value === 'no') return `${item.id} eq false`;
+                        return null;
+                    }
+
+                    const value = item.value?.trim?.() ?? '';
+                    return `contains(${key},'${value}')`;
                 }
-                if (key === 'aedBatteryType')
-                    return `${key} eq '${item.value}'`;
-
-                if (key === 'registerDateTime' && (isSuperAdmin || isAdmin))
-                    return `registerDateTime ge ${item.value?.from} and registerDateTime le ${item.value?.to}`;
-
-                if (key === 'internalTestResult') {
-                    if (!item.value || item.value.length === 0) return null;
-                    const multiFilters = item.value.map((val: string) => `${key} eq '${val}'`);
-                    return `(${multiFilters.join(' or ')})`;
-                }
-                if (item.id === 'isActive') {
-                    if (item.value === 'yes') return `${item.id} eq true`;
-                    if (item.value === 'no') return `${item.id} eq false`;
-                    return null;
-                }
-
-                const value = item.value?.trim?.() ?? '';
-                return `contains(${key},'${value}')`;
-
             })
             .filter(Boolean)
             .join(" and ");

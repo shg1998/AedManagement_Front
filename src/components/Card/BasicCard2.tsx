@@ -73,16 +73,11 @@ const BasicCard: React.FC<PropsWithChildren<CardProps>> = ({
         >
             <CardHeader
                 title={
-                    <Typography
-                        variant="h6"
-                        component="div"
+                    <Box
                         sx={{
                             display: "flex",
                             alignItems: "center",
-                            fontWeight: 700,
-                            letterSpacing: 0.5,
-                            fontFamily: "'Inter', sans-serif",
-                            color: colors.main,
+                            overflow: "hidden",
                         }}
                     >
                         <Box
@@ -91,14 +86,32 @@ const BasicCard: React.FC<PropsWithChildren<CardProps>> = ({
                                 mr: 1,
                                 display: "flex",
                                 alignItems: "center",
-                                fontSize: 28,
+                                fontSize: { xs: 20, sm: 24, md: 28 },
                                 color: colors.main,
+                                flexShrink: 0,
                             }}
                         >
                             {headerIcon ?? <InfoOutlinedIcon fontSize="medium" />}
                         </Box>
-                        {header}
-                    </Typography>
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                fontWeight: 700,
+                                letterSpacing: { xs: 0, sm: 0.5 },
+                                fontFamily: "'Inter', sans-serif",
+                                color: colors.main,
+                                fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+                                lineHeight: 1.2,
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                userSelect: "none",
+                            }}
+                        >
+                            {header}
+                        </Typography>
+                    </Box>
                 }
                 action={headerChildren}
                 sx={{
@@ -111,6 +124,7 @@ const BasicCard: React.FC<PropsWithChildren<CardProps>> = ({
                     },
                 }}
             />
+
             <Divider sx={{ borderColor: colors.border, mx: 3, mb: 2 }} />
             <CardContent
                 sx={{
