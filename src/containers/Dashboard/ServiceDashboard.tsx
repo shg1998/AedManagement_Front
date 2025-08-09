@@ -36,7 +36,6 @@ const ServiceDashboard = () => {
         () => getAedServicesStatisticalReport(selectedProvinceId),
         {
             enabled: !!selectedProvinceId,
-            staleTime: 60 * 1000,
         }
     );
 

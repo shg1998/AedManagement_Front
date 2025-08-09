@@ -6,14 +6,20 @@ import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import IconButton from "@mui/material/IconButton";
 import logoImage from "../../assets/images/logo-white.png"; // مسیر لوگو
-import { ButtonBase, Typography } from "@mui/material";
+import {ButtonBase, Grid, Typography} from "@mui/material";
 import SideBar from "./SideBar/SideBar";
 import UserMenu from "./AppBar/UserMenu";
-import { getBaseUrl } from "../../config";
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useCurrentUserState } from "../../context/CurrentUserContext";
 import { makeStyles } from "@mui/styles";
 import { useThemeContext } from "../../ThemeContext";
 import AedImage from "../../assets/images/aed.png"; // مسیر عکس AED
+import { Badge } from "@mui/material/";
+import {useNavigate} from "react-router-dom";
+import routes from "../../routes/routes";
+import {useQuery} from "react-query";
+import Alarm from "../../services/Alarm";
+
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
     open?: boolean;
@@ -107,16 +113,29 @@ createContext<SideWidthContextValue>({
 });
 
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
+    const {getCount} = new Alarm();
     const [open, setOpen] = useState(false);
     const classes = useStyles();
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
         null
     );
+    const navigate = useNavigate();
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
     };
 
-    const currentUserInfo = useCurrentUserState();
+    const handleAlarms = () => {
+        navigate(routes.alarms);
+    }
+
+    const {data: notificationCount = 0, isLoading: isAedsLocationLoading} = useQuery(
+        ['unreadAlarms'],
+        () => getCount(),
+        {
+            staleTime: 30 * 1000,
+        }
+    );
+
     const { theme } = useThemeContext();
 
     return (
@@ -129,7 +148,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             <CssBaseline />
             <AppBar className={classes.appBarStyle} position="fixed" open={open}>
                 <Toolbar className={classes.toolbarStyle}>
-                    <Box component="span" sx={{ display: { xs: "none", md: "block" } }}>
+                    <Box component="span" sx={{display: {xs: "none", md: "block"}}}>
                         <ButtonBase>
                             <img
                                 alt="sata_logo"
@@ -152,7 +171,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                             mr: 21
                         }}
                     >
-                        <Typography sx={{ fontSize: "28px !important" }} fontWeight={"bolder"}>
+                        <Typography sx={{fontSize: "28px !important"}} fontWeight={"bolder"}>
                             <>
                                 <img
                                     src={AedImage}
@@ -169,17 +188,20 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                             </>
                         </Typography>
                     </Box>
-
+                    <Grid sx={{mr: 4, my: 1}}>
+                        <IconButton onClick={handleAlarms} sx={{p: 0}}>
+                            <Badge
+                                badgeContent={isAedsLocationLoading ? 0 :notificationCount}
+                                color="error"
+                            >
+                                <NotificationsActiveIcon color={"secondary"} fontSize={"large"}/>
+                            </Badge>
+                        </IconButton>
+                    </Grid>
                     <div>
-                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
                             <Avatar
                                 alt=""
-                                src={
-                                    currentUserInfo?.image_url
-                                        ? getBaseUrl().replace("api/", "") +
-                                        currentUserInfo?.image_url
-                                        : ""
-                                }
                             />
                         </IconButton>
                         <UserMenu
@@ -189,9 +211,9 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                     </div>
                 </Toolbar>
             </AppBar>
-            <SideBar setSidebarOpen={setOpen} />
+            <SideBar setSidebarOpen={setOpen}/>
             <Main open={open}>
-                <div style={{ overflowX: "hidden", height: "100vh" }}>{component}</div>
+                <div style={{overflowX: "hidden", height: "100vh"}}>{component}</div>
             </Main>
         </Box>
     );

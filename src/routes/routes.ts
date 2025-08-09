@@ -9,6 +9,7 @@ const routes = {
   aedServices: '/dashboard/services',
   parts: '/dashboard/parts',
   repairType: '/dashboard/repairType',
+  alarms: '/dashboard/alarms',
   dashboard: '/dashboard'
 };
 

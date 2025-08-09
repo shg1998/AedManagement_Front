@@ -74,6 +74,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
         "& .MuiTableCell-body": {
             padding: "10px 20px",
+
             textAlign: "center!important",
             "& .MuiCheckbox-colorPrimary": {
                 width: "100%",
@@ -512,13 +513,19 @@ const DataTable: ForwardRefRenderFunction<TableRef, DataTableProps> = (
                     event.preventDefault();
                     onRowClicked(row.original);
                 }
+                console.log(row?.original)
             },
             onContextMenu: (event: any) => {
                 if (hasContextMenu) {
                     handleContextMenu(event, row.original);
                 }
             },
-            sx: {cursor: "pointer"},
+            sx: {cursor: "pointer" , fontWeight: row.original?.isRead === false ? "bold !important" : "normal !important"},
+        }),
+        muiTableBodyCellProps: ({ row }) => ({
+            sx: {
+                fontWeight: row.original?.isRead === false ? "bolder" : "normal",
+            },
         }),
         muiTableContainerProps: {
             ref: tableInstanceRef, //get access to the table container element

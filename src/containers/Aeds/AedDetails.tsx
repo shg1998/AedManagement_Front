@@ -78,7 +78,6 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
         () => fetchDetails(aedId!),
         {
             enabled: !!aedId,
-            staleTime: 60 * 1000,
         }
     );
 
