@@ -78,6 +78,7 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
         () => fetchDetails(aedId!),
         {
             enabled: !!aedId,
+            refetchOnWindowFocus: false,
         }
     );
 

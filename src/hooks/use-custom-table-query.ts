@@ -28,7 +28,8 @@ export const useCustomTableQuery = (
             return result;
         },
         keepPreviousData,
-        retry
+        retry,
+        refetchOnWindowFocus: false,
     });
     return res;
 }
