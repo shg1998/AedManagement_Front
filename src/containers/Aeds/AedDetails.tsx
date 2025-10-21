@@ -273,7 +273,7 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                             </Grid>
 
                             <Grid container spacing={2}>
-                                <Grid item sm={12} md={6}>
+                                <Grid item sm={12}>
                                     <Box
                                         sx={{
                                             display: "flex",
@@ -322,67 +322,13 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                                         }}
                                     >
                                         <ProvinceMapMarkers
+                                            provinceId={(iranProvinces.filter(s=>s.value === data?.location?.province))[0]?.value}
                                             locations={[{
                                                 lat: data?.location?.lat ?? 0,
                                                 lon: data?.location?.long ?? 0,
                                                 label: `${data?.location?.place},${data?.location?.unit}, ${data?.location?.address ? data?.location?.address : ""}`,
                                                 status: getStatus(data?.internalTestResult)!
                                             }]}
-                                        />
-                                    </Paper>
-                                </Grid>
-                                <Grid item sm={12} md={6}>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            mb: 2,
-                                            gap: 1.5,
-                                            p: 1,
-                                            bgcolor: themeMode === 'dark' ? "#8e7038" : "#d6c4a5",
-                                            borderRadius: 2,
-                                            boxShadow: themeColors.boxShadow,
-                                            maxWidth: 240,
-                                            userSelect: "none"
-                                        }}
-                                    >
-                                        <ImageIcon
-                                            sx={{color: themeMode === 'dark' ? "#d6c4a5" : "#8e7038", fontSize: 30}}/>
-                                        <Typography
-                                            variant="h5"
-                                            sx={{
-                                                fontWeight: 700,
-                                                color: themeMode === 'dark' ? "#d6c4a5" : "#8e7038",
-                                                letterSpacing: 1,
-                                                textTransform: "uppercase",
-                                            }}
-                                        >
-                                            Aed Image
-                                        </Typography>
-                                    </Box>
-
-                                    <Paper
-                                        elevation={6}
-                                        sx={{
-                                            borderRadius: 3,
-                                            bgcolor: 'transparent',
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            height: 600,
-                                            boxShadow: themeColors.paperShadowLight,
-                                        }}
-                                    >
-                                        <Box
-                                            component="img"
-                                            src={AedImage}
-                                            alt="AED Device"
-                                            sx={{
-                                                maxWidth: '100%',
-                                                maxHeight: '100%',
-                                                borderRadius: 2,
-                                                objectFit: 'contain',
-                                            }}
                                         />
                                     </Paper>
                                 </Grid>
@@ -422,61 +368,61 @@ const AedDetails: React.FC<AedDetailsProps> = ({aedId}) => {
                                 </Box>
                             </ListItem>
                             {/*<Divider component="li" />*/}
-                            {data?.attachments && data.attachments.length > 0 ? (
-                                data.attachments.map((attachment: any, idx: any) => (
-                                    <ListItem
-                                        key={idx}
-                                        sx={{
-                                            justifyContent: 'space-between',
-                                            px: 2,
-                                            py: 1,
-                                            bgcolor: idx % 2 === 0 ? theme.palette.action.hover : 'transparent',
-                                            borderRadius: 1,
-                                            transition: 'background-color 0.3s',
-                                            '&:hover': { bgcolor: theme.palette.action.selected },
-                                            flexWrap: 'wrap',
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="body1"
-                                            sx={{
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                                maxWidth: 300,
-                                                userSelect: 'text',
-                                            }}
-                                            title={attachment.fileName}
-                                        >
-                                            {attachment.fileName}
-                                        </Typography>
-                                        <Button
-                                            variant="outlined"
-                                            size="small"
-                                            onClick={() => handleDownloadClicked(attachment?.id)}
-                                            aria-label={`Download file ${attachment.fileName}`}
-                                            sx={{
-                                                ml: { xs: 0, sm: 2 },
-                                                mt: { xs: 1, sm: 0 },
-                                                minWidth: 100,
-                                            }}
-                                        >
-                                            Download
-                                        </Button>
-                                    </ListItem>
-                                ))
-                            ) : (
-                                <ListItem>
-                                    <Typography
-                                        color={theme.palette.text.disabled}
-                                        fontStyle="italic"
-                                        align="center"
-                                        width="100%"
-                                    >
-                                        🚫 No attachments found.
-                                    </Typography>
-                                </ListItem>
-                            )}
+                            {/*{data?.attachments && data.attachments.length > 0 ? (*/}
+                            {/*    data.attachments.map((attachment: any, idx: any) => (*/}
+                            {/*        <ListItem*/}
+                            {/*            key={idx}*/}
+                            {/*            sx={{*/}
+                            {/*                justifyContent: 'space-between',*/}
+                            {/*                px: 2,*/}
+                            {/*                py: 1,*/}
+                            {/*                bgcolor: idx % 2 === 0 ? theme.palette.action.hover : 'transparent',*/}
+                            {/*                borderRadius: 1,*/}
+                            {/*                transition: 'background-color 0.3s',*/}
+                            {/*                '&:hover': { bgcolor: theme.palette.action.selected },*/}
+                            {/*                flexWrap: 'wrap',*/}
+                            {/*            }}*/}
+                            {/*        >*/}
+                            {/*            <Typography*/}
+                            {/*                variant="body1"*/}
+                            {/*                sx={{*/}
+                            {/*                    overflow: 'hidden',*/}
+                            {/*                    textOverflow: 'ellipsis',*/}
+                            {/*                    whiteSpace: 'nowrap',*/}
+                            {/*                    maxWidth: 300,*/}
+                            {/*                    userSelect: 'text',*/}
+                            {/*                }}*/}
+                            {/*                title={attachment.fileName}*/}
+                            {/*            >*/}
+                            {/*                {attachment.fileName}*/}
+                            {/*            </Typography>*/}
+                            {/*            <Button*/}
+                            {/*                variant="outlined"*/}
+                            {/*                size="small"*/}
+                            {/*                onClick={() => handleDownloadClicked(attachment?.id)}*/}
+                            {/*                aria-label={`Download file ${attachment.fileName}`}*/}
+                            {/*                sx={{*/}
+                            {/*                    ml: { xs: 0, sm: 2 },*/}
+                            {/*                    mt: { xs: 1, sm: 0 },*/}
+                            {/*                    minWidth: 100,*/}
+                            {/*                }}*/}
+                            {/*            >*/}
+                            {/*                Download*/}
+                            {/*            </Button>*/}
+                            {/*        </ListItem>*/}
+                            {/*    ))*/}
+                            {/*) : (*/}
+                            {/*    <ListItem>*/}
+                            {/*        <Typography*/}
+                            {/*            color={theme.palette.text.disabled}*/}
+                            {/*            fontStyle="italic"*/}
+                            {/*            align="center"*/}
+                            {/*            width="100%"*/}
+                            {/*        >*/}
+                            {/*            🚫 No attachments found.*/}
+                            {/*        </Typography>*/}
+                            {/*    </ListItem>*/}
+                            {/*)}*/}
                         </Box>
                     </>
                 )
