@@ -44,7 +44,7 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
             if (data?.isSuccess) {
                 closeModal();
                 tSuccess(data?.data);
-            }else{
+            } else {
                 tError(data?.Message);
             }
         },
@@ -94,6 +94,12 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                         if (values.id === '0') {
                             // @ts-ignore
                             delete values.id;
+                            if (!values.position) {
+                                const city = iranProvinces.find((p) => p.value === values.province)?.cities[0];
+                                if (city) {
+                                    values.position = [city.lat, city.lon];
+                                }
+                            }
                             addAed(values);
                         } else {
                             editAed(values);
@@ -457,9 +463,9 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                                             if (data.id === '0' && data.address?.trim() === '')
                                                 formik.setFieldValue("address", text)
                                         }}
-                                                      city={data.city}
+                                                      city={formik.values.city}
                                                       setCity={(data: any) => formik.setFieldValue("city", data)}
-                                                      provin={data.province}
+                                                      provin={formik.values.province ?? 'tehran'}
                                                       setPosition={(data: any) => formik.setFieldValue("position", data)}
                                                       initialPosition={data.position}
                                         />
@@ -478,6 +484,6 @@ const NewAed = forwardRef<NewAedHandle, NewAedProps>(({data, closeModal}, ref) =
                 </Formik>
             </Container>
         </div>
-);
+    );
 });
 export default NewAed;

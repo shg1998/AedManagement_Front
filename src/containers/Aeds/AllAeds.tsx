@@ -543,7 +543,6 @@ const AllAeds = () => {
                     ref={newAedRef}
                     data={selectedAed?.id === '0' ? {
                         ...DEFAULT_AED_INFORMATION,
-                        province: !isSuperAdmin && !isAdmin ? (getItemSecure('province') ?? 'tehran') : 'tehran'
                     } : selectedAed!}
                     closeModal={closeCreateEditModal}
                 />

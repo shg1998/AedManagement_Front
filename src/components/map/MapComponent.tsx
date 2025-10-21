@@ -32,9 +32,8 @@ L.Icon.Default.mergeOptions({
 const ChangeView: React.FC<{ center: [number, number] }> = ({center = [35.6892, 51.389]}) => {
     const map = useMap();
     useEffect(() => {
-        if(center[0] === null)
+        if (center[0] === null)
             return;
-        console.log(center);
         map.setView(center, 13);
 
     }, [center, map]);
@@ -113,9 +112,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
     useEffect(() => {
         if (province) {
             const p = provinces.find((p) => p.value === province);
+
             if (p) {
                 setCenter([p.lat, p.lon]);
-                if (!city && p.cities && p.cities.length > 0) {
+                if (p.cities && p.cities.length > 0) {
                     setCity(p.cities[0].title);
                 }
             }
@@ -124,6 +124,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
         setOptions([]);
         setMarkerLabel('');
     }, [province]);
+
+    useEffect(() => {
+        setProvince(provin);
+    }, [provin]);
 
     useEffect(() => {
         if (province && city) {
@@ -139,7 +143,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     useEffect(() => {
 
         if (initialPosition) {
-            if(initialPosition[0] === null) return;
+            if (initialPosition[0] === null) return;
             setCenter(initialPosition);
             setMarkerPosition(initialPosition);
         }
@@ -188,11 +192,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
         <Box sx={{width: '100%', maxWidth: 700, margin: '0 auto', padding: 2}}>
             <FormControl fullWidth sx={{mb: 2}}>
                 <InputLabel id="province-label">Province</InputLabel>
-                <Select disabled
-                        labelId="province-label"
-                        value={province}
-                        label="Province"
-                        onChange={(e) => setProvince(e.target.value)}
+                <Select
+                    labelId="province-label"
+                    value={province}
+                    label="Province"
+                    onChange={(e) => setProvince(e.target.value)}
                 >
                     {provinces.map((p) => (
                         <MenuItem key={p.value} value={p.value}>
@@ -209,9 +213,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     value={city}
                     label="City"
                     onChange={(e) => setCity(e.target.value)}
-                    disabled={!province}
                 >
-                    {province &&
+                    {
                         provinces
                             .find((p) => p.value === province)
                             ?.cities.map((cityName) => (
