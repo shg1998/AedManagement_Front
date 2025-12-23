@@ -14,7 +14,7 @@ class Aed extends Api {
         limit?: number, skip?: number, filter?: string
     ): Promise<any> => {
         try {
-            let queryParams = `top=${limit}&skip=${skip} &orderby=RegisterDateTime desc`;
+            let queryParams = `top=${limit}&skip=${skip} &orderby=LastSelfTestDateTime desc`;
             if (filter) {
                 queryParams += `&filter=${filter}`;
             }
