@@ -11,8 +11,8 @@ The web dashboard interface for the global Automated External Defibrillator (AED
 
 ## 🛠 Tech Stack
 * **Core:** React.js
-* **Build Tool / Bundler:** Vite / Create React App
-* **State Management:** Redux Toolkit / React Context
-* **UI Components & Styling:** Tailwind CSS / Material UI
+* **Build Tool / Bundler:** Create React App
+* **State Management:** React Context
+* **UI Components & Styling:** Material UI
 * **HTTP Client:** Axios
 * **API Integration:** Connects directly with the .NET 8 Backend API
